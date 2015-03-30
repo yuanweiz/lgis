@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lgis", "lgis\Lgis.csproj", "{88A7066B-7F07-4DC1-BDF0-40242B5E49DD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUI", "GUI\GUI.csproj", "{2008E016-B12E-410E-88ED-DF690932A275}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{88A7066B-7F07-4DC1-BDF0-40242B5E49DD}.Debug|x86.ActiveCfg = Debug|x86
+		{88A7066B-7F07-4DC1-BDF0-40242B5E49DD}.Debug|x86.Build.0 = Debug|x86
+		{88A7066B-7F07-4DC1-BDF0-40242B5E49DD}.Release|x86.ActiveCfg = Release|x86
+		{88A7066B-7F07-4DC1-BDF0-40242B5E49DD}.Release|x86.Build.0 = Release|x86
+		{2008E016-B12E-410E-88ED-DF690932A275}.Debug|x86.ActiveCfg = Debug|x86
+		{2008E016-B12E-410E-88ED-DF690932A275}.Debug|x86.Build.0 = Debug|x86
+		{2008E016-B12E-410E-88ED-DF690932A275}.Release|x86.ActiveCfg = Release|x86
+		{2008E016-B12E-410E-88ED-DF690932A275}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
