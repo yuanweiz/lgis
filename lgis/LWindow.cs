@@ -15,7 +15,7 @@ namespace Lgis
             get { return _Scale; }
             set { _Scale = value; }
         }
-        public double _Scale = 1.0;
+        double _Scale = 1.0;
         public LWindow (System.Windows.Forms.Control container,double _x, double _y, double pixelsize,Graphics g)
         {
             Container = container;
@@ -48,13 +48,30 @@ namespace Lgis
                 Scale = cw / lw;
             else
                 Scale = ch / lh;
+
+            // some alignment around the layer
+            Scale *= .95;
             Container.Invalidate();
         }
-        public void ZoomToLayer(LLayerGroup L)
+        public void ZoomToLayer(LLayerGroup l)
         {
+            double ch = (double)Container.Height;
+            double cw = (double)Container.Width;
+            double lh = l.Height;
+            double lw = l.Width;
+            if (Double.IsNaN(cw) || double.IsNaN(ch) || double.IsNaN(lh) || double.IsNaN(lw))
+                throw new Exception("NaN exception ");
+            Center.X = (l.XMax + l.XMin) / 2;
+            Center.Y = (l.YMax + l.YMin) / 2;
+            if (ch / cw > lh / lw)
+                Scale = cw / lw;
+            else
+                Scale = ch / lh;
+            Container.Invalidate();
+            Scale *= .95;
         }
 
-#region debug
+#region Drawing functions and Coordinate convertion
         public void Draw(Graphics g, LLayerGroup lg)
         {
             LMapObject o ;
@@ -117,19 +134,28 @@ namespace Lgis
                     break;
             }
         }
-        Point ToScreenCoordinate(Graphics g,LPoint p)
+        Point ToScreenCoordinate(LPoint p)
         {
             double X = p.X, Y = p.Y;
             double newX, newY;
-            RectangleF r = g.ClipBounds;
-            double Height = r.Height, Width = r.Width;
+            double Height = Container.Height, Width = Container.Width;
             newX = (X - Center.X) * Scale + Width / 2;
             newY = (-Y + Center.Y) * Scale + Height / 2;
             return new Point((int)newX, (int)newY);
         }
+        public Point ToGeographicCoordinate(Point p) 
+        {
+            double X = p.X, Y = p.Y;
+            double newX, newY;
+            double Width = Container.Width;
+            double Height = Container.Height;
+            newX = (X - Width / 2) / Scale + Center.X;
+            newY = (Height / 2 - Y) / Scale + Center.Y;
+            return new Point((int)newX, (int)newY);
+        }
         void DrawPoint(Graphics g, LPoint _p)
         {
-            Point p = ToScreenCoordinate(g, _p);
+            Point p = ToScreenCoordinate(_p);
             g.FillEllipse(Brushes.Black, p.X, p.Y, 2, 2);
         }
         void DrawLines(Graphics g, LPolyline pl)
@@ -137,7 +163,7 @@ namespace Lgis
             Point[] pts = new Point[pl.Count];
             for (int i = 0; i < pl.Count; ++i)
             {
-                pts[i] = ToScreenCoordinate(g, pl[i]);
+                pts[i] = ToScreenCoordinate(pl[i]);
             }
             g.DrawLines(Pens.Black, pts);
         }
@@ -146,11 +172,10 @@ namespace Lgis
             Point[] pts = new Point[pg.Count];
             for (int i = 0; i < pg.Count; ++i)
             {
-                pts[i] = ToScreenCoordinate(g, pg[i]);
+                pts[i] = ToScreenCoordinate(pg[i]);
             }
             g.DrawPolygon(Pens.Black, pts);
         }
-        
 #endregion
     }
 }

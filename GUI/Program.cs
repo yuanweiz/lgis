@@ -25,8 +25,9 @@ namespace GUI
             //ut.TestEnvelope();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            //Application.Run(new Form1());
             //ut.TestLayerGroup();
+            ut.TestList();
             Console.ReadLine();
         }
     }

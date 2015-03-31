@@ -86,5 +86,26 @@ namespace Lgis
             Console.WriteLine(vl[0].ToString());
             Console.WriteLine(vl[1].ToString());
         }
+        /// <summary>
+        /// It turns out that Copy() method
+        /// can't be implemented via
+        /// new List( Array)
+        /// 
+        /// </summary>
+        public void TestList()
+        {
+            List<LPoint> lst1 = new List<LPoint>();
+            List<LPoint> lst2 = new List<LPoint>();
+            LPoint p = new LPoint(1, 3);
+            lst1.Add(p);
+            lst2 = new List<LPoint>(lst1.ToArray());
+            p.X = 3;
+            Console.WriteLine(lst2[0]);
+        }
+
+        public void TestEvent()
+        {
+        }
+
     }
 }

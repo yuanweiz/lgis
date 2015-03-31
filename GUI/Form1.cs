@@ -12,14 +12,17 @@ namespace GUI
     public partial class Form1 : Form
     {
         LPoint center = new LPoint(0, 0);
+        bool editing;
         LWindow w;
-        Point mouseLocation;
+        Point mouseLocation = new Point(0,0);
         LVectorLayer vl = new LVectorLayer();
         bool mouseDragging;
         public Form1()
         {
             InitializeComponent();
+            btnStopEditing.Enabled = false;
             w = new LWindow(pictureBox1, center, 50.0);
+            lblScale.Text = "Scale:" + w.Scale.ToString();
             LPolyline pl;
             LPolygon pg;
             vl.Add(new LPoint(2, 2));
@@ -28,9 +31,9 @@ namespace GUI
             pl.Add(new LPoint(1, 1));
             pl.Add(new LPoint(1, 3));
             pl.Add(new LPoint(3, 2));
-            pg.Add(new LPoint(1, 1));
-            pg.Add(new LPoint(1, 3));
-            pg.Add(new LPoint(3, 2));
+            pg.Add(new LPoint(2, 1));
+            pg.Add(new LPoint(2, 3));
+            pg.Add(new LPoint(4, 2));
         }
 
         private void pictureBox1_Click(object sender, EventArgs e)
@@ -52,12 +55,14 @@ namespace GUI
         {
             w.Scale = w.Scale * 1.25;
             pictureBox1.Invalidate();
+            lblScale.Invalidate();
         }
 
         private void btnZoomOut_Click(object sender, EventArgs e)
         {
             w.Scale = w.Scale * .8;
             pictureBox1.Invalidate();
+            lblScale.Invalidate();
         }
 
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
@@ -80,12 +85,50 @@ namespace GUI
                 pictureBox1.Invalidate();
             }
             else
-                return;
+            {
+                mouseLocation = e.Location;
+                lblCoordinate.Invalidate();
+            }
         }
 
         private void btnZoomToLayer_Click(object sender, EventArgs e)
         {
             w.ZoomToLayer(vl);
+            lblScale.Invalidate();
+        }
+
+        private void lblScale_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblScale_Paint(object sender, PaintEventArgs e)
+        {
+            lblScale.Text = "Scale:" + w.Scale.ToString();
+        }
+
+        private void lblCoordinate_Paint(object sender, PaintEventArgs e)
+        {
+            lblCoordinate.Text = "(X,Y)=" + w.ToGeographicCoordinate(mouseLocation).ToString();
+        }
+
+        private void btnStartEditting_Click(object sender, EventArgs e)
+        {
+            editing = true;
+            btnStopEditing.Enabled = true;
+            btnStartEditing.Enabled = false;
+        }
+
+        private void btnStopEditing_Click(object sender, EventArgs e)
+        {
+            editing = false;
+            btnStopEditing.Enabled = false;
+            btnStartEditing.Enabled = true;
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

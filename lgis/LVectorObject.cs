@@ -46,7 +46,12 @@ namespace Lgis
         public static implicit operator Point(LPoint p){
             return new Point((int)p.X, (int)p.Y);
         }
+        public LPoint Copy()
+        {
+            return new LPoint(this);
+        }
     }
+
     public class LPolyline : LVectorObject
     {
         List<LPoint> Points = new List<LPoint>();
@@ -88,6 +93,18 @@ namespace Lgis
                 pts[i] = new Point((int)p[i].X, (int)p[i].Y);
             }
             return pts;
+        }
+        public LPolyline(int capacity)
+        {
+            Points = new List<LPoint>(capacity);
+        }
+        public LPolyline Copy()
+        {
+            LPolyline newPolyline = new LPolyline(this.Count);
+            foreach ( LPoint p in Points ){
+                newPolyline.Add(p.Copy());
+            }
+            return newPolyline;
         }
         internal override void RefreshEnvelope()
         {
@@ -220,6 +237,14 @@ namespace Lgis
             Points[idx]._Owner = LMapObject.Null;
             Points.RemoveAt(idx);
             RefreshEnvelope();
+        }
+        public LPolygon Copy()
+        {
+            LPolygon newPolyline = new LPolygon();
+            foreach ( LPoint p in Points ){
+                newPolyline.Add(p.Copy());
+            }
+            return newPolyline;
         }
         internal override void RefreshEnvelope()
         {
