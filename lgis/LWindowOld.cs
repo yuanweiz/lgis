@@ -1,59 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
+using System.Drawing;
 
 namespace Lgis
 {
-    public partial class LWindow : UserControl
-    {
-        [ToolboxItem(true)]
 
-        public LWindow()
-        {
-            InitializeComponent();
-        }
-        public LPoint Center
-        {
-            get { return _Center; }
-            set { 
-                _Center = value;
-                this.Invalidate();
-            }
-        }
-        LPoint _Center = new LPoint(0,0);
+    public class LWindowOld
+    {
+        public readonly System.Windows.Forms.Control Container=null;
+        public LPoint Center = null;
         public double Scale
         {
             get { return _Scale; }
-            set { 
-                _Scale = value;
-                this.Invalidate();
-            }
+            set { _Scale = value; }
         }
         double _Scale = 1.0;
-        public LLayerGroup Layers
+        public LWindowOld (System.Windows.Forms.Control container,double _x, double _y, double pixelsize,Graphics g)
         {
-            get { return _Layers; }
-            set
-            {
-                _Layers = value;
-                this.Invalidate();
-            }
-        }
-        LLayerGroup _Layers = new LLayerGroup();
-
-
-        public LWindow (double _x, double _y, double pixelsize,Graphics g)
-        {
+            Container = container;
             Center = new LPoint(_x, _y);
             Scale = pixelsize;
         }
-        public LWindow(LPoint center, double pixelsize)
+        public LWindowOld(System.Windows.Forms.Control container,LPoint center, double pixelsize)
         {
+            Container = container;
             Center = new LPoint(center);
             Scale = pixelsize;
         }
@@ -62,16 +34,15 @@ namespace Lgis
         {
             Center.X -= (double)screendx / Scale;
             Center.Y += (double)screendy / Scale;
-            this.Invalidate();
         }
-        public void ZoomToLayer( LLayerGroup l)
+        public void ZoomToLayer( LLayer l)
         {
-            double ch = Height;
-            double cw = Width;
+            double ch = (double)Container.Height;
+            double cw = (double)Container.Width;
             double lh = l.Height;
             double lw = l.Width;
-            if ( double.IsNaN(lh) || double.IsNaN(lw) || Width == 0 || lw < 1.0)
-                throw new Exception("devided by zero / NaN");
+            if (Double.IsNaN(cw) || double.IsNaN(ch) || double.IsNaN(lh) || double.IsNaN(lw))
+                throw new Exception("NaN exception ");
             Center.X = (l.XMax + l.XMin) / 2;
             Center.Y = (l.YMax + l.YMin) / 2;
             if (ch / cw > lh / lw)
@@ -81,13 +52,28 @@ namespace Lgis
 
             // some alignment around the layer
             Scale *= .95;
+            Container.Invalidate();
         }
+        public void ZoomToLayer(LLayerGroup l)
+        {
+            double ch = (double)Container.Height;
+            double cw = (double)Container.Width;
+            double lh = l.Height;
+            double lw = l.Width;
+            if (Double.IsNaN(cw) || double.IsNaN(ch) || double.IsNaN(lh) || double.IsNaN(lw))
+                throw new Exception("NaN exception ");
+            Center.X = (l.XMax + l.XMin) / 2;
+            Center.Y = (l.YMax + l.YMin) / 2;
+            if (ch / cw > lh / lw)
+                Scale = cw / lw;
+            else
+                Scale = ch / lh;
+            Container.Invalidate();
+            Scale *= .95;
+        }
+
 #region Drawing functions and Coordinate convertion
-        public void DrawLayer (LLayerGroup lg){
-            Layers = lg;
-            this.Invalidate();
-        }
-        void Draw(Graphics g, LLayerGroup lg)
+        public void Draw(Graphics g, LLayerGroup lg)
         {
             LMapObject o ;
             for(int i =0;i< lg.Count; ++i)
@@ -98,15 +84,16 @@ namespace Lgis
                     case ObjectType.LayerGroup:
                         Draw(g, (LLayerGroup)o);
                         break;
-                    case ObjectType.Layer:
+                    case ObjectType.Vector:
+                    case ObjectType.Raster:
                         Draw(g, (LLayer)o);
                         break;
                     default:
-                        throw new Exception("ObjectType can't be Drawn: ObjectType:"+o.ObjectType.ToString());
+                        throw new Exception("ObjectType can't be Drawn ");
                 }
             }
         }
-        void Draw(Graphics g, LLayer l)
+        public void Draw(Graphics g, LLayer l)
         {
             switch (l.LayerType)
             {
@@ -152,6 +139,7 @@ namespace Lgis
         {
             double X = p.X, Y = p.Y;
             double newX, newY;
+            double Height = Container.Height, Width = Container.Width;
             newX = (X - Center.X) * Scale + Width / 2;
             newY = (-Y + Center.Y) * Scale + Height / 2;
             return new Point((int)newX, (int)newY);
@@ -160,6 +148,8 @@ namespace Lgis
         {
             double X = p.X, Y = p.Y;
             double newX, newY;
+            double Width = Container.Width;
+            double Height = Container.Height;
             newX = (X - Width / 2) / Scale + Center.X;
             newY = (Height / 2 - Y) / Scale + Center.Y;
             return new Point((int)newX, (int)newY);
@@ -188,15 +178,5 @@ namespace Lgis
             g.DrawPolygon(Pens.Black, pts);
         }
 #endregion
-
-        private void LWindow_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void LWindow_Paint(object sender, PaintEventArgs e)
-        {
-                Draw(e.Graphics, Layers);
-        }
     }
 }

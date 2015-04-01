@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Lgis
 {
-    public enum ObjectType { Vector, Raster, LayerGroup, Unknown };
+    public enum ObjectType { Vector, Raster, Layer,LayerGroup, Unknown };
     public enum FeatureType { Point, Polygon, Polyline, PolyPolyline, PolyPolygon, Polypoint,Rectangle,Unknown };
     public class LMapObject
     {

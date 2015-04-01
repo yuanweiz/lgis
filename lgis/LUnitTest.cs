@@ -73,7 +73,7 @@ namespace Lgis
         }
         public void TestWindow( Control c)
         {
-            LWindow w = new LWindow(c, new LPoint(0, 0), 50);
+            LWindowOld w = new LWindowOld(c, new LPoint(0, 0), 50);
         }
         public void TestLayerGroup() {
             LLayerGroup lg = new LLayerGroup();

@@ -10,8 +10,13 @@ namespace Lgis
     {
         public readonly LayerType LayerType;
         public bool Visible{get;set;}
-        protected LLayer (LayerType ft){
+        protected LLayer (LayerType ft):base(ObjectType.Layer){
             LayerType= ft;
+        }
+        public static implicit operator LLayerGroup (LLayer l){
+            LLayerGroup lg = new LLayerGroup();
+            lg.Add(l);
+            return lg;
         }
     }
     public class LVectorLayer : LLayer 

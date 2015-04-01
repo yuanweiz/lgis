@@ -1,8 +1,9 @@
-D:\code\lgis\lgis\obj\x86\Debug\lgis.MainForm.resources
-D:\code\lgis\lgis\obj\x86\Debug\lgis.Properties.Resources.resources
-D:\code\lgis\lgis\bin\Debug\lgis.pdb
-D:\code\lgis\lgis\obj\x86\Debug\lgis.pdb
 D:\code\lgis\lgis\bin\Debug\lgis.dll
-D:\code\lgis\lgis\obj\x86\Debug\lgis.dll
-D:\code\lgis\lgis\obj\x86\Debug\Lgis.csprojResolveAssemblyReference.cache
+D:\code\lgis\lgis\bin\Debug\lgis.pdb
+D:\code\lgis\lgis\obj\x86\Debug\Lgis.LWindow.resources
+D:\code\lgis\lgis\obj\x86\Debug\Lgis.MainForm.resources
+D:\code\lgis\lgis\obj\x86\Debug\Lgis.Properties.Resources.resources
 D:\code\lgis\lgis\obj\x86\Debug\Lgis.csproj.GenerateResource.Cache
+D:\code\lgis\lgis\obj\x86\Debug\lgis.dll
+D:\code\lgis\lgis\obj\x86\Debug\lgis.pdb
+D:\code\lgis\lgis\obj\x86\Debug\Lgis.csprojResolveAssemblyReference.cache

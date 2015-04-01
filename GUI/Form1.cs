@@ -13,7 +13,6 @@ namespace GUI
     {
         LPoint center = new LPoint(0, 0);
         bool editing;
-        LWindow w;
         Point mouseLocation = new Point(0,0);
         LVectorLayer vl = new LVectorLayer();
         bool mouseDragging;
@@ -21,8 +20,7 @@ namespace GUI
         {
             InitializeComponent();
             btnStopEditing.Enabled = false;
-            w = new LWindow(pictureBox1, center, 50.0);
-            lblScale.Text = "Scale:" + w.Scale.ToString();
+            //lblScale.Text = "Scale:" + w.Scale.ToString();
             LPolyline pl;
             LPolygon pg;
             vl.Add(new LPoint(2, 2));
@@ -34,6 +32,8 @@ namespace GUI
             pg.Add(new LPoint(2, 1));
             pg.Add(new LPoint(2, 3));
             pg.Add(new LPoint(4, 2));
+            lWindow1.Layers.Add(vl) ;
+            lWindow1.Invalidate();
         }
 
         private void pictureBox1_Click(object sender, EventArgs e)
@@ -43,7 +43,7 @@ namespace GUI
 
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
         {
-            w.Draw(e.Graphics, vl);
+            //w.Draw(e.Graphics, vl);
         }
 
         private void pictureBox1_Resize(object sender, EventArgs e)
@@ -53,16 +53,12 @@ namespace GUI
 
         private void btnZoom_Click(object sender, EventArgs e)
         {
-            w.Scale = w.Scale * 1.25;
-            pictureBox1.Invalidate();
-            lblScale.Invalidate();
+            lWindow1.Scale *= 1.25;
         }
 
         private void btnZoomOut_Click(object sender, EventArgs e)
         {
-            w.Scale = w.Scale * .8;
-            pictureBox1.Invalidate();
-            lblScale.Invalidate();
+            lWindow1.Scale *= .8;
         }
 
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
@@ -80,9 +76,8 @@ namespace GUI
         {
             if (mouseDragging)
             {
-                w.AlterCenter(e.Location.X - mouseLocation.X, e.Location.Y - mouseLocation.Y);
+                lWindow1.AlterCenter(e.Location.X - mouseLocation.X, e.Location.Y - mouseLocation.Y);
                 mouseLocation = e.Location;
-                pictureBox1.Invalidate();
             }
             else
             {
@@ -93,7 +88,7 @@ namespace GUI
 
         private void btnZoomToLayer_Click(object sender, EventArgs e)
         {
-            w.ZoomToLayer(vl);
+            lWindow1.ZoomToLayer(vl);
             lblScale.Invalidate();
         }
 
@@ -104,12 +99,12 @@ namespace GUI
 
         private void lblScale_Paint(object sender, PaintEventArgs e)
         {
-            lblScale.Text = "Scale:" + w.Scale.ToString();
+            lblScale.Text = "Scale:" + lWindow1.Scale.ToString();
         }
 
         private void lblCoordinate_Paint(object sender, PaintEventArgs e)
         {
-            lblCoordinate.Text = "(X,Y)=" + w.ToGeographicCoordinate(mouseLocation).ToString();
+            lblCoordinate.Text = "(X,Y)=" + lWindow1.ToGeographicCoordinate(mouseLocation).ToString();
         }
 
         private void btnStartEditting_Click(object sender, EventArgs e)
@@ -129,6 +124,46 @@ namespace GUI
         private void Form1_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void lWindow1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblCoordinate_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lWindow1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void lWindow1_MouseUp(object sender, MouseEventArgs e)
+        {
+            mouseDragging = false;
+        }
+
+        private void lWindow1_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (mouseDragging)
+            {
+                lWindow1.AlterCenter(e.Location.X - mouseLocation.X, e.Location.Y - mouseLocation.Y);
+                mouseLocation = e.Location;
+            }
+            else
+            {
+                mouseLocation = e.Location;
+                lblCoordinate.Invalidate();
+            }
+        }
+
+        private void lWindow1_MouseDown(object sender, MouseEventArgs e)
+        {
+            mouseDragging = true;
+            mouseLocation = e.Location;
         }
     }
 }

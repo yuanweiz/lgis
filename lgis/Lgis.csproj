@@ -58,13 +58,19 @@
     <Compile Include="LConfig.cs" />
     <Compile Include="LException.cs" />
     <Compile Include="LGeoDatabase.cs" />
-    <Compile Include="LLayerGroup.cs" />
-    <Compile Include="LLayer.cs" />
-    <Compile Include="LMapObject.cs" />
-    <Compile Include="LRasterObject.cs" />
+    <Compile Include="Geometry\LLayerGroup.cs" />
+    <Compile Include="Geometry\LLayer.cs" />
+    <Compile Include="Geometry\LMapObject.cs" />
+    <Compile Include="Geometry\LRasterObject.cs" />
     <Compile Include="LUnitTest.cs" />
-    <Compile Include="LVectorObject.cs" />
-    <Compile Include="LWindow.cs" />
+    <Compile Include="Geometry\LVectorObject.cs" />
+    <Compile Include="LWindow.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="LWindow.Designer.cs">
+      <DependentUpon>LWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LWindowOld.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -73,6 +79,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="LWindow.resx">
+      <DependentUpon>LWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
