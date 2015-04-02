@@ -13,7 +13,8 @@ namespace Lgis
             get { return _X;}
             set { 
                 _X = value;
-                _Envelope = new LEnvelope(_X, _Y, _X, _Y);
+                Envelope = new LEnvelope(_X, _Y, _X, _Y);
+                Owner.RefreshEnvelope();
             }
         }
         public double Y
@@ -21,7 +22,8 @@ namespace Lgis
             get { return _Y;}
             set { 
                 _Y = value;
-                _Envelope = new LEnvelope(_X, _Y, _X, _Y);
+                Envelope = new LEnvelope(_X, _Y, _X, _Y);
+                Owner.RefreshEnvelope();
             }
         }
         double _X, _Y;
@@ -29,13 +31,13 @@ namespace Lgis
         {
             X = x;
             Y = y;
-            _Owner.RefreshEnvelope();
+            Owner.RefreshEnvelope();
         }
         public LPoint(LPoint p):base(FeatureType.Point)
         {
             X = p.X;
             Y = p.Y;
-            _Owner.RefreshEnvelope();
+            Owner.RefreshEnvelope();
         }
         public override string ToString()
         {
@@ -50,82 +52,6 @@ namespace Lgis
         {
             return new LPoint(this);
         }
-    }
-
-    public class LPolyline : LVectorObject
-    {
-        List<LPoint> Points = new List<LPoint>();
-        public int Count { get { return Points.Count; } }
-        public static explicit operator List<LPoint>(LPolyline pl)
-        {
-            return pl.Points;
-        }
-        public LPoint this[int index]
-        {
-            get{ return Points[index];}
-            set { Points[index] = value; }
-        }
-        public LPolyline(List<LPoint> lp):base(FeatureType.Polyline)
-        {
-            Points = lp;
-        }
-        public LPolyline():base(FeatureType.Polyline) { }
-        public void Add (LPoint p){
-            p._Owner = this;
-            Points.Add(p);
-            RefreshEnvelope();
-        }
-        public void RemoveAt(int idx)
-        {
-            Points[idx]._Owner = LMapObject.Null;
-            Points.RemoveAt(idx);
-            RefreshEnvelope();
-        }
-        public static explicit operator LPoint[](LPolyline p)
-        {
-            return p.Points.ToArray();
-        }
-        public static explicit operator Point[](LPolyline p)
-        {
-            Point[] pts = new Point[p.Count];
-            for (int i = 0; i < p.Count; ++i)
-            {
-                pts[i] = new Point((int)p[i].X, (int)p[i].Y);
-            }
-            return pts;
-        }
-        public LPolyline(int capacity)
-        {
-            Points = new List<LPoint>(capacity);
-        }
-        public LPolyline Copy()
-        {
-            LPolyline newPolyline = new LPolyline(this.Count);
-            foreach ( LPoint p in Points ){
-                newPolyline.Add(p.Copy());
-            }
-            return newPolyline;
-        }
-        internal override void RefreshEnvelope()
-        {
-            _Envelope = LEnvelope.Null;
-            foreach (LPoint p in Points)
-            {
-                _Envelope += p.Envelope;
-            }
-            _Owner.RefreshEnvelope();
-        }
-        #region debug
-        public override string ToString()
-        {
-            string s = "";
-            foreach (LPoint p in Points)
-            {
-                s += p.ToString();
-            }
-            return s;
-        }
-        #endregion
     }
     public class LPolyPolyline : LVectorObject
     {
@@ -147,23 +73,23 @@ namespace Lgis
         }
         public void Add (LPolyline pl){
             Lines.Add(pl);
-            pl._Owner = this;
+            pl.Owner = this;
             RefreshEnvelope();
         }
         public void RemoveAt(int idx)
         {
-            Lines[idx]._Owner = LMapObject.Null;
+            Lines[idx].Owner = LMapObject.Null;
             Lines.RemoveAt(idx);
             RefreshEnvelope();
         }
         internal override void RefreshEnvelope()
         {
-            _Envelope = LEnvelope.Null;
+            Envelope = LEnvelope.Null;
             foreach (LPolyline pl in Lines)
             {
-                _Envelope += pl.Envelope;
+                Envelope += pl.Envelope;
             }
-            _Owner.RefreshEnvelope();
+            Owner.RefreshEnvelope();
         }
         public override string ToString()
         {
@@ -175,9 +101,18 @@ namespace Lgis
             return s;
         }
     }
+
     public class LPolyPoint : LVectorObject
     {
         public LPolyPoint() : base(FeatureType.Polypoint) { }
+        public LPolyPoint(int capacity) : base(FeatureType.Polypoint) { 
+            Points = new List<LPoint>(capacity);
+        }
+        public LPolyPoint(List<LPoint> points)
+            : base(FeatureType.Polypoint)
+        {
+            Points = points;
+        }
         public List<LPoint> Points = new List<LPoint>();
         public int Count { get { return Points.Count; } }
         public LPoint this[int idx]
@@ -187,86 +122,84 @@ namespace Lgis
         }
         public void Add(LPoint p)
         {
-            p._Owner = this;
+            p.Owner = this;
             Points.Add(p);
             RefreshEnvelope();
         }
         public void RemoveAt(int idx)
         {
-            Points[idx]._Owner = LMapObject.Null;
+            Points[idx].Owner = LMapObject.Null;
             Points.RemoveAt(idx);
             RefreshEnvelope();
         }
+        public LPolyPoint Copy(){
+            LPolyPoint newpp = new LPolyPoint(Count);
+            foreach (LPoint p in Points ){
+                newpp.Add(p.Copy());
+            }
+            return newpp;
+        }
+
+        public LPolygon ToLPolygon(){
+            return new LPolygon(Points);
+        }
+        public LPolyline ToLPolyline()
+        {
+            return new LPolyline(Points);
+        }
+
         internal override void RefreshEnvelope()
         {
-            _Envelope = LEnvelope.Null;
+            Envelope = LEnvelope.Null;
             foreach (LPoint p in Points)
             {
-                _Envelope += p.Envelope;
+                Envelope += p.Envelope;
             }
-            _Owner.RefreshEnvelope();
+            Owner.RefreshEnvelope();
         }
     }
 
-    public class LPolygon : LVectorObject
+    public class LPolyline : LPolyPoint
     {
-        List<LPoint> Points = new List<LPoint>();
-        public int Count { get { return Points.Count; } }
-        public static explicit operator List<LPoint>(LPolygon pl)
+        public LPolyline(): base()
         {
-            return pl.Points;
+            FeatureType = FeatureType.Polyline;
         }
-        public LPoint this[int index]
+        public LPolyline(List<LPoint> lp) : base(lp)
         {
-            get{ return Points[index];}
-            set { Points[index] = value; }
+            FeatureType = FeatureType.Polyline;
         }
-        public LPolygon(List<LPoint> lp):base (FeatureType.Polygon)
+        public LPolyline(int capacity)
+            : base(capacity)
         {
-            Points = lp;
+            FeatureType = FeatureType.Polyline;
         }
-        public LPolygon():base(FeatureType.Polygon) { }
-        public void Add(LPoint p)
+        public LPolyline Copy()
         {
-            p._Owner = this;
-            Points.Add(p);
-            RefreshEnvelope();
+            return base.Copy().ToLPolyline();
         }
-        public void RemoveAt(int idx)
-        {
-            Points[idx]._Owner = LMapObject.Null;
-            Points.RemoveAt(idx);
-            RefreshEnvelope();
-        }
-        public LPolygon Copy()
-        {
-            LPolygon newPolyline = new LPolygon();
-            foreach ( LPoint p in Points ){
-                newPolyline.Add(p.Copy());
-            }
-            return newPolyline;
-        }
-        internal override void RefreshEnvelope()
-        {
-            _Envelope = LEnvelope.Null;
-            foreach (LPoint p in Points)
-            {
-                _Envelope += p.Envelope;
-            }
-            _Owner.RefreshEnvelope();
-        }
-        #region debug
-        public override string ToString()
-        {
-            string s = "";
-            foreach (LPoint p in Points)
-            {
-                s += ("(" + p.X.ToString() + "," + p.Y.ToString() + ")");
-            }
-            return s;
-        }
-        #endregion
     }
+    public class LPolygon : LPolyPoint {
+        public LPolygon():base()
+        {
+            FeatureType = FeatureType.Polygon;
+        }
+        public LPolygon(List<LPoint> lp)
+            : base(lp)
+        {
+            FeatureType = FeatureType.Polygon;
+        }
+        public LPolygon(int capacity)
+            : base(capacity)
+        {
+            FeatureType = FeatureType.Polygon;
+        }
+        public new LPolygon Copy()
+        {
+            return base.Copy().ToLPolygon();
+        }
+    }
+
     public class LPolyPolygon : LVectorObject
     {
         public LPolyPolygon() : base(FeatureType.PolyPolygon) { }
@@ -283,24 +216,24 @@ namespace Lgis
             }
         }
         public void Add (LPolygon p){
-            p._Owner = this;
+            p.Owner = this;
             Polygons.Add(p);
             RefreshEnvelope();
         }
         public void RemoveAt(int idx)
         {
-            Polygons[idx]._Owner = LMapObject.Null;
+            Polygons[idx].Owner = LMapObject.Null;
             Polygons.RemoveAt(idx);
             RefreshEnvelope();
         }
         internal override void RefreshEnvelope()
         {
-            _Envelope = LEnvelope.Null;
+            Envelope = LEnvelope.Null;
             foreach (LPolygon p in Polygons)
             {
-                _Envelope += p.Envelope;
+                Envelope += p.Envelope;
             }
-            _Owner.RefreshEnvelope();
+            Owner.RefreshEnvelope();
         }
         public override string ToString()
         {
@@ -312,6 +245,7 @@ namespace Lgis
             return s;
         }
     }
+
     public class LRectangle : LVectorObject
     {
         public LRectangle(double _xmin, double _ymin, double _xmax, double _ymax) : base(FeatureType.Rectangle)

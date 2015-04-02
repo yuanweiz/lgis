@@ -26,7 +26,7 @@ namespace Lgis
             }
         }
         LPoint _Center = new LPoint(0,0);
-        public double Scale
+        public new double Scale
         {
             get { return _Scale; }
             set { 
@@ -46,17 +46,8 @@ namespace Lgis
         }
         LLayerGroup _Layers = new LLayerGroup();
 
-
-        public LWindow (double _x, double _y, double pixelsize,Graphics g)
-        {
-            Center = new LPoint(_x, _y);
-            Scale = pixelsize;
-        }
-        public LWindow(LPoint center, double pixelsize)
-        {
-            Center = new LPoint(center);
-            Scale = pixelsize;
-        }
+#region 方法
+        #region 绘图与坐标转换函数
 
         public void AlterCenter(int screendx, int screendy)
         {
@@ -64,6 +55,12 @@ namespace Lgis
             Center.Y += (double)screendy / Scale;
             this.Invalidate();
         }
+
+        public void DrawLayer (LLayerGroup lg){
+            Layers = lg;
+            this.Invalidate();
+        }
+
         public void ZoomToLayer( LLayerGroup l)
         {
             double ch = Height;
@@ -82,11 +79,16 @@ namespace Lgis
             // some alignment around the layer
             Scale *= .95;
         }
-#region Drawing functions and Coordinate convertion
-        public void DrawLayer (LLayerGroup lg){
-            Layers = lg;
-            this.Invalidate();
+
+        public Point ToGeographicCoordinate(Point p) 
+        {
+            double X = p.X, Y = p.Y;
+            double newX, newY;
+            newX = (X - Width / 2) / Scale + Center.X;
+            newY = (Height / 2 - Y) / Scale + Center.Y;
+            return new Point((int)newX, (int)newY);
         }
+
         void Draw(Graphics g, LLayerGroup lg)
         {
             LMapObject o ;
@@ -106,6 +108,7 @@ namespace Lgis
                 }
             }
         }
+
         void Draw(Graphics g, LLayer l)
         {
             switch (l.LayerType)
@@ -148,6 +151,7 @@ namespace Lgis
                     break;
             }
         }
+
         Point ToScreenCoordinate(LPoint p)
         {
             double X = p.X, Y = p.Y;
@@ -156,19 +160,13 @@ namespace Lgis
             newY = (-Y + Center.Y) * Scale + Height / 2;
             return new Point((int)newX, (int)newY);
         }
-        public Point ToGeographicCoordinate(Point p) 
-        {
-            double X = p.X, Y = p.Y;
-            double newX, newY;
-            newX = (X - Width / 2) / Scale + Center.X;
-            newY = (Height / 2 - Y) / Scale + Center.Y;
-            return new Point((int)newX, (int)newY);
-        }
+
         void DrawPoint(Graphics g, LPoint _p)
         {
             Point p = ToScreenCoordinate(_p);
             g.FillEllipse(Brushes.Black, p.X, p.Y, 2, 2);
         }
+
         void DrawLines(Graphics g, LPolyline pl)
         {
             Point[] pts = new Point[pl.Count];
@@ -178,6 +176,7 @@ namespace Lgis
             }
             g.DrawLines(Pens.Black, pts);
         }
+
         void DrawPolygon(Graphics g, LPolygon pg)
         {
             Point[] pts = new Point[pg.Count];
@@ -187,8 +186,11 @@ namespace Lgis
             }
             g.DrawPolygon(Pens.Black, pts);
         }
-#endregion
 
+
+        #endregion
+
+        #region Winform相关事件
         private void LWindow_Load(object sender, EventArgs e)
         {
 
@@ -198,5 +200,7 @@ namespace Lgis
         {
                 Draw(e.Graphics, Layers);
         }
+        #endregion
+#endregion
     }
 }
