@@ -27,7 +27,7 @@ namespace Lgis
             }
         }
         double _X, _Y;
-        public LPoint(double x, double y) : base(FeatureType.Point)
+        public LPoint(double x = 0, double y = 0) : base(FeatureType.Point)
         {
             X = x;
             Y = y;

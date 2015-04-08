@@ -12,11 +12,7 @@ namespace Lgis
     public partial class LWindow : UserControl
     {
         [ToolboxItem(true)]
-
-        public LWindow()
-        {
-            InitializeComponent();
-        }
+        #region Public Properties and fields
         public LPoint Center
         {
             get { return _Center; }
@@ -24,7 +20,6 @@ namespace Lgis
                 _Center = value;
             }
         }
-        LPoint _Center = new LPoint(0,0);
         public new double Scale
         {
             get { return _Scale; }
@@ -32,7 +27,6 @@ namespace Lgis
                 _Scale = value;
             }
         }
-        double _Scale = 1.0;
         public LLayerGroup Layers
         {
             get { return _Layers; }
@@ -41,10 +35,31 @@ namespace Lgis
                 _Layers = value;
             }
         }
-        LLayerGroup _Layers = new LLayerGroup();
 
-#region 方法
-        #region 绘图与坐标转换函数
+        LLayerGroup _Layers = new LLayerGroup();
+        LPoint _Center = new LPoint(0,0);
+        double _Scale = 1.0;
+#endregion
+
+        #region private fields
+
+        LPolygon editingPolygon = new LPolygon();
+        LPolyline editingPolyline = new LPolyline();
+        LPoint editingPoint = new LPoint();
+
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// Defalut Constructor, inherited from UserControl
+        /// </summary>
+        public LWindow()
+        {
+            InitializeComponent();
+        }
+        
+        #region Drawing Functions
 
         public void AlterCenter(int screendx, int screendy)
         {
@@ -185,7 +200,7 @@ namespace Lgis
 
         #endregion
 
-        #region Winform相关事件
+        #region Winform-related events
         private void LWindow_Load(object sender, EventArgs e)
         {
 

@@ -55,6 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Geometry\LSymbol.cs" />
     <Compile Include="LConfig.cs" />
     <Compile Include="LException.cs" />
     <Compile Include="LGeoDatabase.cs" />

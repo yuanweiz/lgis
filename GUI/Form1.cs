@@ -11,7 +11,6 @@ namespace GUI
 {
     public partial class Form1 : Form
     {
-        LPoint center = new LPoint(0, 0);
         Point mouseLocation = new Point(0,0);
         LVectorLayer vl = new LVectorLayer();
         List<Point> trackingPolygon = new List<Point>();
@@ -22,8 +21,6 @@ namespace GUI
         {
             InitializeComponent();
             btnStopEditing.Enabled = false;
-            LPolyline pl;
-            LPolygon pg;
             lWindow1.Layers.Add(vl) ;
             lWindow1.Invalidate();
         }
