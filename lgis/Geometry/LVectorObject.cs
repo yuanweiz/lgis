@@ -112,6 +112,7 @@ namespace Lgis
             : base(FeatureType.Polypoint)
         {
             Points = points;
+            RefreshEnvelope();
         }
         public List<LPoint> Points = new List<LPoint>();
         public int Count { get { return Points.Count; } }
@@ -174,7 +175,7 @@ namespace Lgis
         {
             FeatureType = FeatureType.Polyline;
         }
-        public LPolyline Copy()
+        public new LPolyline Copy()
         {
             return base.Copy().ToLPolyline();
         }

@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            Lgis.LLayerGroup lLayerGroup1 = new Lgis.LLayerGroup();
+            Lgis.LLayerGroup lLayerGroup43 = new Lgis.LLayerGroup();
             this.btnZoomIn = new System.Windows.Forms.Button();
             this.btnZoomOut = new System.Windows.Forms.Button();
             this.btnZoomToLayer = new System.Windows.Forms.Button();
@@ -47,11 +47,11 @@
             this.btnZoomIn.TabIndex = 1;
             this.btnZoomIn.Text = "Zoom In";
             this.btnZoomIn.UseVisualStyleBackColor = true;
-            this.btnZoomIn.Click += new System.EventHandler(this.btnZoom_Click);
+            this.btnZoomIn.Click += new System.EventHandler(this.btnZoomIn_Click);
             // 
             // btnZoomOut
             // 
-            this.btnZoomOut.Location = new System.Drawing.Point(515, 79);
+            this.btnZoomOut.Location = new System.Drawing.Point(515, 63);
             this.btnZoomOut.Name = "btnZoomOut";
             this.btnZoomOut.Size = new System.Drawing.Size(75, 23);
             this.btnZoomOut.TabIndex = 2;
@@ -61,7 +61,7 @@
             // 
             // btnZoomToLayer
             // 
-            this.btnZoomToLayer.Location = new System.Drawing.Point(515, 135);
+            this.btnZoomToLayer.Location = new System.Drawing.Point(515, 107);
             this.btnZoomToLayer.Name = "btnZoomToLayer";
             this.btnZoomToLayer.Size = new System.Drawing.Size(75, 34);
             this.btnZoomToLayer.TabIndex = 3;
@@ -93,7 +93,7 @@
             // 
             // btnStartEditing
             // 
-            this.btnStartEditing.Location = new System.Drawing.Point(515, 190);
+            this.btnStartEditing.Location = new System.Drawing.Point(515, 160);
             this.btnStartEditing.Name = "btnStartEditing";
             this.btnStartEditing.Size = new System.Drawing.Size(75, 36);
             this.btnStartEditing.TabIndex = 6;
@@ -103,7 +103,7 @@
             // 
             // btnStopEditing
             // 
-            this.btnStopEditing.Location = new System.Drawing.Point(515, 242);
+            this.btnStopEditing.Location = new System.Drawing.Point(515, 211);
             this.btnStopEditing.Name = "btnStopEditing";
             this.btnStopEditing.Size = new System.Drawing.Size(75, 38);
             this.btnStopEditing.TabIndex = 7;
@@ -115,17 +115,13 @@
             // 
             this.lWindow1.BackColor = System.Drawing.Color.White;
             this.lWindow1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lWindow1.Layers = lLayerGroup1;
+            this.lWindow1.Layers = lLayerGroup43;
             this.lWindow1.Location = new System.Drawing.Point(14, 12);
             this.lWindow1.Name = "lWindow1";
             this.lWindow1.Scale = 1D;
             this.lWindow1.Size = new System.Drawing.Size(445, 359);
             this.lWindow1.TabIndex = 8;
             this.lWindow1.Load += new System.EventHandler(this.lWindow1_Load);
-            this.lWindow1.Paint += new System.Windows.Forms.PaintEventHandler(this.lWindow1_Paint);
-            this.lWindow1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lWindow1_MouseDoubleClick);
-            this.lWindow1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.lWindow1_MouseDown);
-            this.lWindow1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.lWindow1_MouseMove);
             // 
             // Form1
             // 
@@ -143,7 +139,6 @@
             this.DoubleBuffered = true;
             this.Name = "Form1";
             this.Text = "Form1";
-            this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

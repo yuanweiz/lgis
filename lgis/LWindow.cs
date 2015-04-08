@@ -12,13 +12,15 @@ namespace Lgis
     public partial class LWindow : UserControl
     {
         [ToolboxItem(true)]
+        enum StatusType { Lock, Edit, Pan, None ,ZoomIn,ZoomOut}
+        enum EditingType { Polygon, PolyLine, Point }
+        EditingType editingType = EditingType.Polygon;
+
         #region Public Properties and fields
+
         public LPoint Center
         {
             get { return _Center; }
-            set { 
-                _Center = value;
-            }
         }
         public new double Scale
         {
@@ -27,38 +29,98 @@ namespace Lgis
                 _Scale = value;
             }
         }
+        public LVectorLayer editingLayer = null;
         public LLayerGroup Layers
         {
             get { return _Layers; }
-            set
-            {
-                _Layers = value;
-            }
+            set { _Layers = value; }
         }
 
         LLayerGroup _Layers = new LLayerGroup();
         LPoint _Center = new LPoint(0,0);
         double _Scale = 1.0;
-#endregion
+
+        #endregion
 
         #region private fields
 
+        StatusType status = StatusType.Pan;
+
+        //Editing Target
+
+        //List<Point> editingPolygon = new List<Point>();
+        //List<Point> editingPolyline = new List<Point>();
+        //Point editingPoint = new Point();
         LPolygon editingPolygon = new LPolygon();
-        LPolyline editingPolyline = new LPolyline();
-        LPoint editingPoint = new LPoint();
+        List<Point> editingPolyline = new List<Point>();
+        Point editingPoint = new Point();
+
+        //Cursors
+        Cursor csrCross = new Cursor(typeof(LWindow), "Resources.Cross.ico");
+        Cursor csrZoomIn = new Cursor(typeof(LWindow), "Resources.ZoomIn.ico");
+        Cursor csrZoomOut = new Cursor(typeof(LWindow), "Resources.ZoomOut.ico");
+        Cursor csrPanUp = new Cursor(typeof(LWindow), "Resources.PanUp.ico");
+
+        //mouse
+        Point mouseLocation;
 
         #endregion
 
         #region Methods
 
+        #region public Methods
         /// <summary>
         /// Defalut Constructor, inherited from UserControl
         /// </summary>
         public LWindow()
         {
             InitializeComponent();
+            Cursor = csrPanUp;
         }
-        
+
+        //Zoom
+        public void ZoomIn()
+        {
+            Scale *= 1.25;
+            Cursor = csrZoomIn;
+            Refresh();
+        }
+        public void ZoomOut()
+        {
+            Scale *= .8;
+            Cursor = csrZoomOut;
+            Refresh();
+        }
+
+        //Pan
+        public void Pan()
+        {
+            status = StatusType.Pan;
+            Cursor = csrPanUp;
+        }
+
+        /// <summary>
+        /// Set status to enable editting
+        /// </summary>
+        public void StartEditing()
+        {
+            status = StatusType.Edit;
+            Cursor = csrCross;
+        }
+        public void StopEditing()
+        {
+            switch (editingType)
+            {
+                case EditingType.Polygon:
+                    editingPolygon = new LPolygon();
+                    break;
+            }
+            Refresh();
+            Pan();
+        }
+
+        #endregion
+
         #region Drawing Functions
 
         public void AlterCenter(int screendx, int screendy)
@@ -71,6 +133,25 @@ namespace Lgis
             Layers = lg;
         }
 
+        public void ZoomToLayer()
+        {
+            double ch = Height;
+            double cw = Width;
+            double lh = Layers.Height;
+            double lw = Layers.Width;
+            if (double.IsNaN(lh) || double.IsNaN(lw) || Width == 0 || lw < 1.0)
+                return;
+            Center.X = (Layers.XMax + Layers.XMin) / 2;
+            Center.Y = (Layers.YMax + Layers.YMin) / 2;
+            if (ch / cw > lh / lw)
+                Scale = cw / lw;
+            else
+                Scale = ch / lh;
+
+            // some alignment around the layer
+            Scale *= .95;
+
+        }
         public void ZoomToLayer( LLayerGroup l)
         {
             double ch = Height;
@@ -119,6 +200,23 @@ namespace Lgis
             }
         }
 
+        void DrawEditingPolygon(Graphics g)
+        {
+            int Count = editingPolygon.Count;
+            if (Count == 0)
+                return;
+            Point[] pts = new Point[Count];
+            for (int i = 0; i < Count; ++i)
+                pts[i] = ToScreenCoordinate(editingPolygon[i]); 
+            if (editingPolygon.Count > 1)
+            {
+                //Point[] pts = editingPolygon.ToArray();
+                g.DrawLines(Pens.Black, pts);
+            }
+            g.DrawLine(Pens.Black, pts[0], mouseLocation);
+            g.DrawLine(Pens.Black, pts[Count-1], mouseLocation);
+        }
+
         void Draw(Graphics g, LLayer l)
         {
             switch (l.LayerType)
@@ -157,7 +255,6 @@ namespace Lgis
                     }
                     break;
                 case LayerType.Raster:
-                    throw new NotImplementedException("Raster datatype under development");
                     break;
             }
         }
@@ -201,6 +298,7 @@ namespace Lgis
         #endregion
 
         #region Winform-related events
+
         private void LWindow_Load(object sender, EventArgs e)
         {
 
@@ -209,8 +307,82 @@ namespace Lgis
         private void LWindow_Paint(object sender, PaintEventArgs e)
         {
                 Draw(e.Graphics, Layers);
+                switch (status)
+                {
+                    case StatusType.Edit:
+                        DrawEditingPolygon(e.Graphics);
+                        break;
+                    default: 
+                        break;
+                }
         }
+        private void LWindow_MouseDown(object sender, MouseEventArgs e)
+        {
+            mouseLocation = e.Location;
+            if (e.Clicks > 1)
+                return;
+            switch (status)
+            {
+                case StatusType.ZoomIn:
+                    ZoomIn();
+                    break;
+                case StatusType.ZoomOut:
+                    ZoomOut();
+                    break;
+                case StatusType.None:
+                    status = StatusType.Pan;
+                    break;
+                case StatusType.Edit:
+                    editingPolygon.Add(ToGeographicCoordinate(mouseLocation));
+                    break;
+                default:
+                    break;
+            }
+
+        }
+
+        private void LWindow_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            switch ( editingType ){
+                case EditingType.Polygon:
+                    if (editingPolygon.Count > 2)
+                    {
+                        editingLayer.Add(editingPolygon.Copy());
+                        editingPolygon = new LPolygon();
+                    }
+                    else
+                    {
+                        editingPolygon = new LPolygon();
+                        Refresh();
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
         #endregion
+
+        private void LWindow_MouseMove(object sender, MouseEventArgs e)
+        {
+            switch (status)
+            {
+                case StatusType.Pan:
+                    if (e.Button != MouseButtons.Left)
+                        return;
+                    AlterCenter(e.Location.X - mouseLocation.X, e.Location.Y - mouseLocation.Y);
+                    mouseLocation = e.Location;
+                    Invalidate();
+                    break;
+                case StatusType.Edit:
+                    mouseLocation = e.Location;
+                    Refresh();
+                    break;
+                default:
+                    break;
+            }
+        }
+
 #endregion
     }
 }

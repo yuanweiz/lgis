@@ -41,6 +41,9 @@
             this.Size = new System.Drawing.Size(289, 236);
             this.Load += new System.EventHandler(this.LWindow_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.LWindow_Paint);
+            this.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.LWindow_MouseDoubleClick);
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.LWindow_MouseDown);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.LWindow_MouseMove);
             this.ResumeLayout(false);
 
         }
