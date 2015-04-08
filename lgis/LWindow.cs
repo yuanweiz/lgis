@@ -55,6 +55,28 @@ namespace Lgis
         List<Point> editingPolyline = new List<Point>();
         Point editingPoint = new Point();
 
+        //Symbol Settings
+        Color fillingColor = Color.FromArgb(239, 228, 176);
+        Color boundaryColor = Color.Black;
+        Color trackingColor = Color.DarkGreen;
+
+        float boundaryWidth = 1.0f;
+        float trackingWidth = 1.0f;
+
+        Pen boundaryPen
+        {
+            get { return new Pen(boundaryColor, boundaryWidth); }
+        }
+        Pen trackingPen
+        {
+            get { return new Pen(trackingColor, trackingWidth); }
+        }
+        SolidBrush fillingBrush
+        {
+            get { return new SolidBrush(fillingColor); }
+        }
+
+
         //Cursors
         Cursor csrCross = new Cursor(typeof(LWindow), "Resources.Cross.ico");
         Cursor csrZoomIn = new Cursor(typeof(LWindow), "Resources.ZoomIn.ico");
@@ -211,10 +233,10 @@ namespace Lgis
             if (editingPolygon.Count > 1)
             {
                 //Point[] pts = editingPolygon.ToArray();
-                g.DrawLines(Pens.Black, pts);
+                g.DrawLines(trackingPen, pts);
             }
-            g.DrawLine(Pens.Black, pts[0], mouseLocation);
-            g.DrawLine(Pens.Black, pts[Count-1], mouseLocation);
+            g.DrawLine(trackingPen, pts[0], mouseLocation);
+            g.DrawLine(trackingPen, pts[Count-1], mouseLocation);
         }
 
         void Draw(Graphics g, LLayer l)
@@ -281,7 +303,7 @@ namespace Lgis
             {
                 pts[i] = ToScreenCoordinate(pl[i]);
             }
-            g.DrawLines(Pens.Black, pts);
+            g.DrawLines(boundaryPen, pts);
         }
 
         void DrawPolygon(Graphics g, LPolygon pg)
@@ -291,7 +313,8 @@ namespace Lgis
             {
                 pts[i] = ToScreenCoordinate(pg[i]);
             }
-            g.DrawPolygon(Pens.Black, pts);
+            g.FillPolygon(fillingBrush, pts);
+            g.DrawPolygon(boundaryPen, pts);
         }
 
 
