@@ -123,9 +123,9 @@
             this.lWindow1.TabIndex = 8;
             this.lWindow1.Load += new System.EventHandler(this.lWindow1_Load);
             this.lWindow1.Paint += new System.Windows.Forms.PaintEventHandler(this.lWindow1_Paint);
+            this.lWindow1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lWindow1_MouseDoubleClick);
             this.lWindow1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.lWindow1_MouseDown);
             this.lWindow1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.lWindow1_MouseMove);
-            this.lWindow1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.lWindow1_MouseUp);
             // 
             // Form1
             // 

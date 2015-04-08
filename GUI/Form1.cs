@@ -12,84 +12,39 @@ namespace GUI
     public partial class Form1 : Form
     {
         LPoint center = new LPoint(0, 0);
-        bool editing;
         Point mouseLocation = new Point(0,0);
         LVectorLayer vl = new LVectorLayer();
-        bool mouseDragging;
+        List<Point> trackingPolygon = new List<Point>();
+        //bool mouseDragging;
+        enum OperationType { None,Edit,Pan} ;
+        OperationType opType = OperationType.None;
         public Form1()
         {
             InitializeComponent();
             btnStopEditing.Enabled = false;
-            //lblScale.Text = "Scale:" + w.Scale.ToString();
             LPolyline pl;
             LPolygon pg;
-            vl.Add(new LPoint(2, 2));
-            vl.Add(pl=new LPolyline());
-            vl.Add(pg=new LPolygon());
-            pl.Add(new LPoint(1, 1));
-            pl.Add(new LPoint(1, 3));
-            pl.Add(new LPoint(3, 2));
-            pg.Add(new LPoint(2, 1));
-            pg.Add(new LPoint(2, 3));
-            pg.Add(new LPoint(4, 2));
             lWindow1.Layers.Add(vl) ;
             lWindow1.Invalidate();
-        }
-
-        private void pictureBox1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void pictureBox1_Paint(object sender, PaintEventArgs e)
-        {
-            //w.Draw(e.Graphics, vl);
-        }
-
-        private void pictureBox1_Resize(object sender, EventArgs e)
-        {
-
         }
 
         private void btnZoom_Click(object sender, EventArgs e)
         {
             lWindow1.Scale *= 1.25;
+            lWindow1.Refresh();
         }
 
         private void btnZoomOut_Click(object sender, EventArgs e)
         {
             lWindow1.Scale *= .8;
-        }
-
-        private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
-        {
-            mouseDragging = true;
-            mouseLocation = e.Location;
-        }
-
-        private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
-        {
-            mouseDragging = false;
-        }
-
-        private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (mouseDragging)
-            {
-                lWindow1.AlterCenter(e.Location.X - mouseLocation.X, e.Location.Y - mouseLocation.Y);
-                mouseLocation = e.Location;
-            }
-            else
-            {
-                mouseLocation = e.Location;
-                lblCoordinate.Invalidate();
-            }
+            lWindow1.Refresh();
         }
 
         private void btnZoomToLayer_Click(object sender, EventArgs e)
         {
             lWindow1.ZoomToLayer(vl);
-            lblScale.Invalidate();
+            lblScale.Refresh();
+            lWindow1.Refresh();
         }
 
         private void lblScale_Click(object sender, EventArgs e)
@@ -109,14 +64,14 @@ namespace GUI
 
         private void btnStartEditting_Click(object sender, EventArgs e)
         {
-            editing = true;
+            opType = OperationType.Edit;
             btnStopEditing.Enabled = true;
             btnStartEditing.Enabled = false;
         }
 
         private void btnStopEditing_Click(object sender, EventArgs e)
         {
-            editing = false;
+            opType = OperationType.None;
             btnStopEditing.Enabled = false;
             btnStartEditing.Enabled = true;
         }
@@ -138,32 +93,69 @@ namespace GUI
 
         private void lWindow1_Paint(object sender, PaintEventArgs e)
         {
-
-        }
-
-        private void lWindow1_MouseUp(object sender, MouseEventArgs e)
-        {
-            mouseDragging = false;
+            if (trackingPolygon.Count == 0)
+                return;
+            Graphics g = e.Graphics;
+            if (trackingPolygon.Count > 1)
+            {
+                Point[] pts = trackingPolygon.ToArray();
+                g.DrawLines(Pens.Black, pts);
+            }
+            g.DrawLine(Pens.Black, trackingPolygon[0], mouseLocation);
+            g.DrawLine(Pens.Black, trackingPolygon[trackingPolygon.Count-1], mouseLocation);
         }
 
         private void lWindow1_MouseMove(object sender, MouseEventArgs e)
         {
-            if (mouseDragging)
+            try
             {
-                lWindow1.AlterCenter(e.Location.X - mouseLocation.X, e.Location.Y - mouseLocation.Y);
-                mouseLocation = e.Location;
+                switch (opType)
+                {
+                    case OperationType.Pan:
+                        if (e.Button != MouseButtons.Left)
+                            return;
+                        lWindow1.AlterCenter(e.Location.X - mouseLocation.X, e.Location.Y - mouseLocation.Y);
+                        mouseLocation = e.Location;
+                        lblCoordinate.Invalidate();
+                        lWindow1.Invalidate();
+                        break;
+                    case OperationType.Edit:
+                        mouseLocation = e.Location;
+                        lWindow1.Refresh();
+                        break;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                mouseLocation = e.Location;
-                lblCoordinate.Invalidate();
+                MessageBox.Show(ex.ToString());
             }
         }
 
         private void lWindow1_MouseDown(object sender, MouseEventArgs e)
         {
-            mouseDragging = true;
             mouseLocation = e.Location;
+            switch (opType)
+            {
+                case OperationType.None:
+                    opType = OperationType.Pan;
+                    break;
+                case OperationType.Edit:
+                    trackingPolygon.Add(mouseLocation);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void lWindow1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            LPolygon plg = new LPolygon();
+            foreach (Point p in trackingPolygon)
+            {
+                plg.Add(lWindow1.ToGeographicCoordinate(p));
+            }
+            vl.Add(plg);
+            trackingPolygon.Clear();
         }
     }
 }

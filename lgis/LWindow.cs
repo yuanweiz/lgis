@@ -22,7 +22,6 @@ namespace Lgis
             get { return _Center; }
             set { 
                 _Center = value;
-                this.Invalidate();
             }
         }
         LPoint _Center = new LPoint(0,0);
@@ -31,7 +30,6 @@ namespace Lgis
             get { return _Scale; }
             set { 
                 _Scale = value;
-                this.Invalidate();
             }
         }
         double _Scale = 1.0;
@@ -41,7 +39,6 @@ namespace Lgis
             set
             {
                 _Layers = value;
-                this.Invalidate();
             }
         }
         LLayerGroup _Layers = new LLayerGroup();
@@ -53,12 +50,10 @@ namespace Lgis
         {
             Center.X -= (double)screendx / Scale;
             Center.Y += (double)screendy / Scale;
-            this.Invalidate();
         }
 
         public void DrawLayer (LLayerGroup lg){
             Layers = lg;
-            this.Invalidate();
         }
 
         public void ZoomToLayer( LLayerGroup l)
@@ -67,8 +62,8 @@ namespace Lgis
             double cw = Width;
             double lh = l.Height;
             double lw = l.Width;
-            if ( double.IsNaN(lh) || double.IsNaN(lw) || Width == 0 || lw < 1.0)
-                throw new Exception("devided by zero / NaN");
+            if (double.IsNaN(lh) || double.IsNaN(lw) || Width == 0 || lw < 1.0)
+                return;
             Center.X = (l.XMax + l.XMin) / 2;
             Center.Y = (l.YMax + l.YMin) / 2;
             if (ch / cw > lh / lw)
@@ -80,13 +75,13 @@ namespace Lgis
             Scale *= .95;
         }
 
-        public Point ToGeographicCoordinate(Point p) 
+        public LPoint ToGeographicCoordinate(Point p) 
         {
             double X = p.X, Y = p.Y;
             double newX, newY;
             newX = (X - Width / 2) / Scale + Center.X;
             newY = (Height / 2 - Y) / Scale + Center.Y;
-            return new Point((int)newX, (int)newY);
+            return new LPoint(newX, newY);
         }
 
         void Draw(Graphics g, LLayerGroup lg)
