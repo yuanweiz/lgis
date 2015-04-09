@@ -2,9 +2,9 @@ D:\code\lgis\GUI\bin\Debug\GUI.exe
 D:\code\lgis\GUI\bin\Debug\GUI.pdb
 D:\code\lgis\GUI\bin\Debug\lgis.dll
 D:\code\lgis\GUI\bin\Debug\lgis.pdb
+D:\code\lgis\GUI\obj\x86\Debug\GUI.csprojResolveAssemblyReference.cache
+D:\code\lgis\GUI\obj\x86\Debug\GUI.Form1.resources
 D:\code\lgis\GUI\obj\x86\Debug\GUI.Properties.Resources.resources
+D:\code\lgis\GUI\obj\x86\Debug\GUI.csproj.GenerateResource.Cache
 D:\code\lgis\GUI\obj\x86\Debug\GUI.exe
 D:\code\lgis\GUI\obj\x86\Debug\GUI.pdb
-D:\code\lgis\GUI\obj\x86\Debug\GUI.Form1.resources
-D:\code\lgis\GUI\obj\x86\Debug\GUI.csprojResolveAssemblyReference.cache
-D:\code\lgis\GUI\obj\x86\Debug\GUI.csproj.GenerateResource.Cache

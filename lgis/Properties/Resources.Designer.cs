@@ -59,45 +59,5 @@ namespace Lgis.Properties {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
-        /// </summary>
-        internal static System.Drawing.Icon Cross {
-            get {
-                object obj = ResourceManager.GetObject("Cross", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
-        /// </summary>
-        internal static System.Drawing.Icon PanUp {
-            get {
-                object obj = ResourceManager.GetObject("PanUp", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
-        /// </summary>
-        internal static System.Drawing.Icon ZoomIn {
-            get {
-                object obj = ResourceManager.GetObject("ZoomIn", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
-        /// </summary>
-        internal static System.Drawing.Icon ZoomOut {
-            get {
-                object obj = ResourceManager.GetObject("ZoomOut", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
-            }
-        }
     }
 }

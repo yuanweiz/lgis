@@ -63,6 +63,12 @@
     <Compile Include="Geometry\LLayer.cs" />
     <Compile Include="Geometry\LMapObject.cs" />
     <Compile Include="Geometry\LRasterObject.cs" />
+    <Compile Include="LLayerView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="LLayerView.Designer.cs">
+      <DependentUpon>LLayerView.cs</DependentUpon>
+    </Compile>
     <Compile Include="LUnitTest.cs" />
     <Compile Include="Geometry\LVectorObject.cs" />
     <Compile Include="LWindow.cs">
@@ -106,16 +112,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\Cross.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\PanUp.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\ZoomIn.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\ZoomOut.ico" />
+    <Folder Include="Resources\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

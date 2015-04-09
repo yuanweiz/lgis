@@ -61,7 +61,9 @@ namespace Lgis
         Color trackingColor = Color.DarkGreen;
 
         float boundaryWidth = 1.0f;
-        float trackingWidth = 1.0f;
+        float trackingWidth = 1.2f;
+        float vertexSize = 7.0f;
+        
 
         Pen boundaryPen
         {
@@ -75,13 +77,25 @@ namespace Lgis
         {
             get { return new SolidBrush(fillingColor); }
         }
+        SolidBrush trackingBrush
+        {
+            get { return new SolidBrush(trackingColor); }
+        }
+        SolidBrush vertexBrush
+        {
+            get { return new SolidBrush(trackingColor); }
+        }
 
 
         //Cursors
-        Cursor csrCross = new Cursor(typeof(LWindow), "Resources.Cross.ico");
-        Cursor csrZoomIn = new Cursor(typeof(LWindow), "Resources.ZoomIn.ico");
-        Cursor csrZoomOut = new Cursor(typeof(LWindow), "Resources.ZoomOut.ico");
-        Cursor csrPanUp = new Cursor(typeof(LWindow), "Resources.PanUp.ico");
+//        Cursor csrCross = new Cursor(typeof(LWindow), "Resources.Cross.ico");
+//        Cursor csrZoomIn = new Cursor(typeof(LWindow), "Resources.ZoomIn.ico");
+//        Cursor csrZoomOut = new Cursor(typeof(LWindow), "Resources.ZoomOut.ico");
+//        Cursor csrPanUp = new Cursor(typeof(LWindow), "Resources.PanUp.ico");
+        Cursor csrCross = Cursors.Default;
+        Cursor csrZoomIn = Cursors.Default;
+        Cursor csrZoomOut = Cursors.Default;
+        Cursor csrPanUp = Cursors.Default;
 
         //mouse
         Point mouseLocation;
@@ -224,15 +238,23 @@ namespace Lgis
 
         void DrawEditingPolygon(Graphics g)
         {
+            
             int Count = editingPolygon.Count;
             if (Count == 0)
                 return;
             Point[] pts = new Point[Count];
             for (int i = 0; i < Count; ++i)
                 pts[i] = ToScreenCoordinate(editingPolygon[i]); 
+            //Draw Vertex
+            foreach (Point i in pts){
+                RectangleF rect = new RectangleF(i.X - vertexSize / 2, i.Y - vertexSize / 2,
+                    vertexSize, vertexSize);
+                g.FillRectangle(vertexBrush, rect);
+            }
+
+            //Draw Edges
             if (editingPolygon.Count > 1)
             {
-                //Point[] pts = editingPolygon.ToArray();
                 g.DrawLines(trackingPen, pts);
             }
             g.DrawLine(trackingPen, pts[0], mouseLocation);
