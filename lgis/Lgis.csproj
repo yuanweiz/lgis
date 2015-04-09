@@ -85,6 +85,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="LLayerView.resx">
+      <DependentUpon>LLayerView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="LWindow.resx">
       <DependentUpon>LWindow.cs</DependentUpon>
     </EmbeddedResource>

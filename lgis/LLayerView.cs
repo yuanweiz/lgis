@@ -11,9 +11,17 @@ namespace Lgis
 {
     public partial class LLayerView : UserControl
     {
+        #region Properties
+        public LLayerGroup Layers = new LLayerGroup();
+        #endregion
         public LLayerView()
         {
             InitializeComponent();
+        }
+
+        private void LLayerView_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

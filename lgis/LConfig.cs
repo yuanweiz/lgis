@@ -7,7 +7,6 @@ namespace Lgis
 {
     static class LConfig
     {
-        static readonly string Version = "0.01";
     }
     public class LLayerConfig
     {

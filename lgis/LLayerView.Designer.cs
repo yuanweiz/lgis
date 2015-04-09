@@ -28,10 +28,30 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
+            this.trvLayers = new System.Windows.Forms.TreeView();
+            this.SuspendLayout();
+            // 
+            // trvLayers
+            // 
+            this.trvLayers.Location = new System.Drawing.Point(0, 12);
+            this.trvLayers.Name = "trvLayers";
+            this.trvLayers.Size = new System.Drawing.Size(175, 267);
+            this.trvLayers.TabIndex = 0;
+            // 
+            // LLayerView
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.trvLayers);
+            this.Name = "LLayerView";
+            this.Size = new System.Drawing.Size(189, 295);
+            this.Load += new System.EventHandler(this.LLayerView_Load);
+            this.ResumeLayout(false);
+
         }
 
         #endregion
+
+        private System.Windows.Forms.TreeView trvLayers;
     }
 }

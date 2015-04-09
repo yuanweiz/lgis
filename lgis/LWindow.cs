@@ -46,14 +46,13 @@ namespace Lgis
 
         StatusType status = StatusType.Pan;
 
-        //Editing Target
-
+        //Tracking Geometry Objects
         //List<Point> editingPolygon = new List<Point>();
         //List<Point> editingPolyline = new List<Point>();
         //Point editingPoint = new Point();
-        LPolygon editingPolygon = new LPolygon();
-        List<Point> editingPolyline = new List<Point>();
-        Point editingPoint = new Point();
+        LPolygon trackingPolygon = new LPolygon();
+        LPolyline trackingPolyline = new LPolyline();
+        LPoint trackingPoint = new LPoint();
 
         //Symbol Settings
         Color fillingColor = Color.FromArgb(239, 228, 176);
@@ -63,6 +62,9 @@ namespace Lgis
         float boundaryWidth = 1.0f;
         float trackingWidth = 1.2f;
         float vertexSize = 7.0f;
+
+        float zoomInRatio = 1.25f;
+        float zoomOutRatio = .8f;
         
 
         Pen boundaryPen
@@ -88,6 +90,7 @@ namespace Lgis
 
 
         //Cursors
+        //TODO: fatal error with resources' code generating
 //        Cursor csrCross = new Cursor(typeof(LWindow), "Resources.Cross.ico");
 //        Cursor csrZoomIn = new Cursor(typeof(LWindow), "Resources.ZoomIn.ico");
 //        Cursor csrZoomOut = new Cursor(typeof(LWindow), "Resources.ZoomOut.ico");
@@ -117,13 +120,15 @@ namespace Lgis
         //Zoom
         public void ZoomIn()
         {
-            Scale *= 1.25;
+            //Scale *= zoomInRatio;
+            status = StatusType.ZoomIn;
             Cursor = csrZoomIn;
             Refresh();
         }
         public void ZoomOut()
         {
-            Scale *= .8;
+            //Scale *= zoomOutRatio;
+            status = StatusType.ZoomOut;
             Cursor = csrZoomOut;
             Refresh();
         }
@@ -148,7 +153,7 @@ namespace Lgis
             switch (editingType)
             {
                 case EditingType.Polygon:
-                    editingPolygon = new LPolygon();
+                    trackingPolygon = new LPolygon();
                     break;
             }
             Refresh();
@@ -157,7 +162,7 @@ namespace Lgis
 
         #endregion
 
-        #region Drawing Functions
+        #region Mapviewing Related Methods
 
         public void AlterCenter(int screendx, int screendy)
         {
@@ -168,6 +173,8 @@ namespace Lgis
         public void DrawLayer (LLayerGroup lg){
             Layers = lg;
         }
+
+        //Zoom to layer/layergroup , overrided
 
         public void ZoomToLayer()
         {
@@ -188,6 +195,7 @@ namespace Lgis
             Scale *= .95;
 
         }
+
         public void ZoomToLayer( LLayerGroup l)
         {
             double ch = Height;
@@ -207,6 +215,34 @@ namespace Lgis
             Scale *= .95;
         }
 
+        public void ZoomToLayer(LLayer l)
+        {
+            LLayerGroup lg = new LLayerGroup();
+            lg.Add(l);
+            ZoomToLayer(lg);
+        }
+
+        public void ZoomByCenter(Point p)
+        {
+            LPoint lp = ToGeographicCoordinate(p);
+            double dx, dy;
+            dx = lp.X - Center.X;
+            dy = lp.Y - Center.Y;
+            if (status == StatusType.ZoomIn)
+            {
+                dx *= zoomOutRatio;
+                Scale /= zoomOutRatio;
+            }
+            else
+            {
+                dx *= zoomInRatio;
+                Scale /= zoomInRatio;
+            }
+            Center.X = lp.X - dx;
+            Center.Y = lp.Y - dy;
+
+        }
+        // Coordinate Convertion methods
         public LPoint ToGeographicCoordinate(Point p) 
         {
             double X = p.X, Y = p.Y;
@@ -216,6 +252,16 @@ namespace Lgis
             return new LPoint(newX, newY);
         }
 
+        Point ToScreenCoordinate(LPoint p)
+        {
+            double X = p.X, Y = p.Y;
+            double newX, newY;
+            newX = (X - Center.X) * Scale + Width / 2;
+            newY = (-Y + Center.Y) * Scale + Height / 2;
+            return new Point((int)newX, (int)newY);
+        }
+
+        // Drawing methods
         void Draw(Graphics g, LLayerGroup lg)
         {
             LMapObject o ;
@@ -234,31 +280,6 @@ namespace Lgis
                         throw new Exception("ObjectType can't be Drawn: ObjectType:"+o.ObjectType.ToString());
                 }
             }
-        }
-
-        void DrawEditingPolygon(Graphics g)
-        {
-            
-            int Count = editingPolygon.Count;
-            if (Count == 0)
-                return;
-            Point[] pts = new Point[Count];
-            for (int i = 0; i < Count; ++i)
-                pts[i] = ToScreenCoordinate(editingPolygon[i]); 
-            //Draw Vertex
-            foreach (Point i in pts){
-                RectangleF rect = new RectangleF(i.X - vertexSize / 2, i.Y - vertexSize / 2,
-                    vertexSize, vertexSize);
-                g.FillRectangle(vertexBrush, rect);
-            }
-
-            //Draw Edges
-            if (editingPolygon.Count > 1)
-            {
-                g.DrawLines(trackingPen, pts);
-            }
-            g.DrawLine(trackingPen, pts[0], mouseLocation);
-            g.DrawLine(trackingPen, pts[Count-1], mouseLocation);
         }
 
         void Draw(Graphics g, LLayer l)
@@ -303,14 +324,6 @@ namespace Lgis
             }
         }
 
-        Point ToScreenCoordinate(LPoint p)
-        {
-            double X = p.X, Y = p.Y;
-            double newX, newY;
-            newX = (X - Center.X) * Scale + Width / 2;
-            newY = (-Y + Center.Y) * Scale + Height / 2;
-            return new Point((int)newX, (int)newY);
-        }
 
         void DrawPoint(Graphics g, LPoint _p)
         {
@@ -339,7 +352,53 @@ namespace Lgis
             g.DrawPolygon(boundaryPen, pts);
         }
 
+        // Tracking Geometry Object related
+        void DrawTrackingPolygon(Graphics g)
+        {
+            int Count = trackingPolygon.Count;
+            if (Count == 0)
+                return;
+            Point[] pts = new Point[Count];
+            for (int i = 0; i < Count; ++i)
+                pts[i] = ToScreenCoordinate(trackingPolygon[i]); 
+            //Draw Vertex
+            foreach (Point i in pts){
+                RectangleF rect = new RectangleF(i.X - vertexSize / 2, i.Y - vertexSize / 2,
+                    vertexSize, vertexSize);
+                g.FillRectangle(vertexBrush, rect);
+            }
 
+            //Draw Edges
+            if (trackingPolygon.Count > 1)
+            {
+                g.DrawLines(trackingPen, pts);
+            }
+            g.DrawLine(trackingPen, pts[0], mouseLocation);
+            g.DrawLine(trackingPen, pts[Count-1], mouseLocation);
+        }
+
+        void DrawTrackingPolyline(Graphics g)
+        {
+            int Count = trackingPolyline.Count;
+            if (Count == 0)
+                return;
+            Point[] pts = new Point[Count];
+            for (int i = 0; i < Count; ++i)
+                pts[i] = ToScreenCoordinate(trackingPolyline[i]); 
+            //Draw Vertex
+            foreach (Point i in pts){
+                RectangleF rect = new RectangleF(i.X - vertexSize / 2, i.Y - vertexSize / 2,
+                    vertexSize, vertexSize);
+                g.FillRectangle(vertexBrush, rect);
+            }
+
+            //Draw Edges
+            if (trackingPolygon.Count > 1)
+            {
+                g.DrawLines(trackingPen, pts);
+            }
+            g.DrawLine(trackingPen, pts[Count-1], mouseLocation);
+        }
         #endregion
 
         #region Winform-related events
@@ -355,7 +414,7 @@ namespace Lgis
                 switch (status)
                 {
                     case StatusType.Edit:
-                        DrawEditingPolygon(e.Graphics);
+                        DrawTrackingPolygon(e.Graphics);
                         break;
                     default: 
                         break;
@@ -369,16 +428,15 @@ namespace Lgis
             switch (status)
             {
                 case StatusType.ZoomIn:
-                    ZoomIn();
-                    break;
                 case StatusType.ZoomOut:
-                    ZoomOut();
+                    ZoomByCenter(e.Location);
+                    Refresh();
                     break;
                 case StatusType.None:
                     status = StatusType.Pan;
                     break;
                 case StatusType.Edit:
-                    editingPolygon.Add(ToGeographicCoordinate(mouseLocation));
+                    trackingPolygon.Add(ToGeographicCoordinate(mouseLocation));
                     break;
                 default:
                     break;
@@ -390,14 +448,14 @@ namespace Lgis
         {
             switch ( editingType ){
                 case EditingType.Polygon:
-                    if (editingPolygon.Count > 2)
+                    if (trackingPolygon.Count > 2)
                     {
-                        editingLayer.Add(editingPolygon.Copy());
-                        editingPolygon = new LPolygon();
+                        editingLayer.Add(trackingPolygon.Copy());
+                        trackingPolygon = new LPolygon();
                     }
                     else
                     {
-                        editingPolygon = new LPolygon();
+                        trackingPolygon = new LPolygon();
                         Refresh();
                     }
                     break;

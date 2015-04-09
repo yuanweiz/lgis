@@ -5,6 +5,8 @@ using System.Text;
 
 namespace Lgis
 {
+
+    public enum LayerType{ Vector,Raster}
     /// <summary>
     /// 图层数据结构，提供矢量与栅格对象的容器
     /// </summary>
@@ -16,16 +18,13 @@ namespace Lgis
             LayerType= ft;
         }
 
-        /// <summary>
-        /// 隐式将LLayer转换为LLayerGroup，此图层组中只含有一个图层
-        /// </summary>
-        /// <param name="l"></param>
-        /// <returns></returns>
+        /* depricated implicit conversion : dangerous and confusing
         public static implicit operator LLayerGroup (LLayer l){
             LLayerGroup lg = new LLayerGroup();
             lg.Add(l);
             return lg;
         }
+        */
     }
 
     /// <summary>

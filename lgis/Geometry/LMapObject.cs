@@ -9,7 +9,6 @@ namespace Lgis
     /// LMapObject的类型,Vector和Raster是实体对象，Layer与LayerGroup是容器类型
     /// </summary>
     public enum ObjectType { Vector, Raster, Layer,LayerGroup, Unknown };
-    public enum LayerType{ Vector,Raster}
 
     /// <summary>
     /// 矢量要素类的类型
@@ -30,6 +29,7 @@ namespace Lgis
         /// <summary>
         /// Null对象是任何LMapObject对象（包括自身）的默认父对象(Owner)
         /// </summary>
+        public string Name = "NoName";
         public readonly ObjectType ObjectType=ObjectType.Unknown;
         public LMapObject Owner { get; internal set; }
         public LEnvelope Envelope { get; internal set; }
