@@ -11,6 +11,7 @@ namespace Lgis
     public class LLayerGroup : LMapObject
     {
         List<LMapObject> Children = new List<LMapObject>();
+        public bool Visible = true;
         public LLayerGroup()
             : base(ObjectType.LayerGroup)
         {

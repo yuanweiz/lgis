@@ -106,5 +106,32 @@ namespace Lgis
         {
         }
 
+        public LLayerGroup TestLayerView()
+        {
+            LLayerGroup lg = new LLayerGroup();
+            LLayerGroup lg2 = new LLayerGroup();
+            LLayerGroup lg3 = new LLayerGroup();
+            LVectorLayer l1, l2, l3, l4;
+            l1 = new LVectorLayer();
+            l2 = new LVectorLayer();
+            l3 = new LVectorLayer();
+            l4 = new LVectorLayer();
+            lg.Add(l1);
+            lg2.Add(l2);
+            lg2.Add(l3);
+            lg.Add(lg2);
+            lg.Add(lg3);
+            lg3.Add(l4);
+            //names
+            lg.Name = "Root Node";
+            lg2.Name = "LayerGroup 2";
+            lg3.Name = "LayerGroup 3";
+            l1.Name = "Layer 1";
+            l2.Name = "Layer 2";
+            l3.Name = "Layer 3";
+            l4.Name = "Layer 4";
+            return lg;
+        }
+
     }
 }

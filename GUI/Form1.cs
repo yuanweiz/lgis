@@ -13,14 +13,18 @@ namespace GUI
     {
         Point mouseLocation = new Point(0,0);
         LVectorLayer vl = new LVectorLayer();
+        LUnitTest ut = new LUnitTest();
         //bool mouseDragging;
         public Form1()
         {
             InitializeComponent();
             btnStopEditing.Enabled = false;
-            lWindow1.Layers.Add(vl) ;
-            lWindow1.editingLayer = vl;
-            lWindow1.Invalidate();
+            //lWindow1.Layers.Add(vl) ;
+            //lWindow1.editingLayer = vl;
+            lWindow1.Layers=ut.TestLayerView();
+            lWindow1.Refresh();
+            lLayerView1.Layers = lWindow1.Layers;
+            lLayerView1.Refresh();
         }
 
         private void btnZoomIn_Click(object sender, EventArgs e)
@@ -80,6 +84,32 @@ namespace GUI
         }
 
         private void lblCoordinate_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            //lWindow1.Layers = new LLayerGroup();
+            //vl = new LVectorLayer();
+            lWindow1.Refresh();
+        }
+
+        private void btnSetting_Click(object sender, EventArgs e)
+        {
+            FrmSetting frmSetting = new FrmSetting();
+            if (frmSetting.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
+            {
+            }
+            frmSetting.Dispose();
+        }
+
+        private void lLayerView1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Form1_Load_1(object sender, EventArgs e)
         {
 
         }

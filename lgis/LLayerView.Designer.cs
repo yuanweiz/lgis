@@ -33,10 +33,12 @@
             // 
             // trvLayers
             // 
+            this.trvLayers.CheckBoxes = true;
             this.trvLayers.Location = new System.Drawing.Point(0, 12);
             this.trvLayers.Name = "trvLayers";
             this.trvLayers.Size = new System.Drawing.Size(175, 267);
             this.trvLayers.TabIndex = 0;
+            this.trvLayers.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.trvLayers_AfterSelect);
             // 
             // LLayerView
             // 
@@ -46,6 +48,7 @@
             this.Name = "LLayerView";
             this.Size = new System.Drawing.Size(189, 295);
             this.Load += new System.EventHandler(this.LLayerView_Load);
+            this.Paint += new System.Windows.Forms.PaintEventHandler(this.LLayerView_Paint);
             this.ResumeLayout(false);
 
         }

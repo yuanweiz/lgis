@@ -28,15 +28,18 @@
         /// </summary>
         private void InitializeComponent()
         {
-            Lgis.LLayerGroup lLayerGroup120 = new Lgis.LLayerGroup();
+            Lgis.LLayerGroup lLayerGroup1 = new Lgis.LLayerGroup();
             this.btnZoomIn = new System.Windows.Forms.Button();
             this.btnZoomOut = new System.Windows.Forms.Button();
             this.btnZoomToLayer = new System.Windows.Forms.Button();
             this.btnStartEditing = new System.Windows.Forms.Button();
             this.btnStopEditing = new System.Windows.Forms.Button();
-            this.lWindow1 = new Lgis.LWindow();
             this.lblCoordinate = new System.Windows.Forms.Label();
             this.lblScale = new System.Windows.Forms.Label();
+            this.btnClear = new System.Windows.Forms.Button();
+            this.btnSetting = new System.Windows.Forms.Button();
+            this.lLayerView1 = new Lgis.LLayerView();
+            this.lWindow1 = new Lgis.LWindow();
             this.SuspendLayout();
             // 
             // btnZoomIn
@@ -89,18 +92,6 @@
             this.btnStopEditing.UseVisualStyleBackColor = true;
             this.btnStopEditing.Click += new System.EventHandler(this.btnStopEditing_Click);
             // 
-            // lWindow1
-            // 
-            this.lWindow1.BackColor = System.Drawing.Color.White;
-            this.lWindow1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lWindow1.Layers = lLayerGroup120;
-            this.lWindow1.Location = new System.Drawing.Point(14, 12);
-            this.lWindow1.Name = "lWindow1";
-            this.lWindow1.Scale = 1D;
-            this.lWindow1.Size = new System.Drawing.Size(445, 359);
-            this.lWindow1.TabIndex = 8;
-            this.lWindow1.Load += new System.EventHandler(this.lWindow1_Load);
-            // 
             // lblCoordinate
             // 
             this.lblCoordinate.AutoSize = true;
@@ -123,11 +114,55 @@
             this.lblScale.Click += new System.EventHandler(this.lblScale_Click);
             this.lblScale.Paint += new System.Windows.Forms.PaintEventHandler(this.lblScale_Paint);
             // 
+            // btnClear
+            // 
+            this.btnClear.Location = new System.Drawing.Point(515, 267);
+            this.btnClear.Name = "btnClear";
+            this.btnClear.Size = new System.Drawing.Size(75, 23);
+            this.btnClear.TabIndex = 9;
+            this.btnClear.Text = "Clear";
+            this.btnClear.UseVisualStyleBackColor = true;
+            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
+            // 
+            // btnSetting
+            // 
+            this.btnSetting.Location = new System.Drawing.Point(515, 306);
+            this.btnSetting.Name = "btnSetting";
+            this.btnSetting.Size = new System.Drawing.Size(75, 23);
+            this.btnSetting.TabIndex = 10;
+            this.btnSetting.Text = "Settings";
+            this.btnSetting.UseVisualStyleBackColor = true;
+            this.btnSetting.Click += new System.EventHandler(this.btnSetting_Click);
+            // 
+            // lLayerView1
+            // 
+            this.lLayerView1.Location = new System.Drawing.Point(12, 24);
+            this.lLayerView1.Name = "lLayerView1";
+            this.lLayerView1.Size = new System.Drawing.Size(189, 295);
+            this.lLayerView1.TabIndex = 11;
+            this.lLayerView1.Load += new System.EventHandler(this.lLayerView1_Load);
+            // 
+            // lWindow1
+            // 
+            this.lWindow1.BackColor = System.Drawing.Color.White;
+            this.lWindow1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lWindow1.Cursor = System.Windows.Forms.Cursors.Default;
+            this.lWindow1.Layers = lLayerGroup1;
+            this.lWindow1.Location = new System.Drawing.Point(211, 12);
+            this.lWindow1.Name = "lWindow1";
+            this.lWindow1.Scale = 1D;
+            this.lWindow1.Size = new System.Drawing.Size(298, 359);
+            this.lWindow1.TabIndex = 8;
+            this.lWindow1.Load += new System.EventHandler(this.lWindow1_Load);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(621, 413);
+            this.Controls.Add(this.lLayerView1);
+            this.Controls.Add(this.btnSetting);
+            this.Controls.Add(this.btnClear);
             this.Controls.Add(this.lWindow1);
             this.Controls.Add(this.btnStopEditing);
             this.Controls.Add(this.btnStartEditing);
@@ -139,6 +174,7 @@
             this.DoubleBuffered = true;
             this.Name = "Form1";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.Form1_Load_1);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -154,6 +190,9 @@
         private Lgis.LWindow lWindow1;
         private System.Windows.Forms.Label lblCoordinate;
         private System.Windows.Forms.Label lblScale;
+        private System.Windows.Forms.Button btnClear;
+        private System.Windows.Forms.Button btnSetting;
+        private Lgis.LLayerView lLayerView1;
     }
 }
 

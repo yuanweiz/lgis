@@ -13,9 +13,16 @@ namespace Lgis
     public class LLayer: LMapObject
     {
         public readonly LayerType LayerType;
-        public bool Visible{get;set;}
+        public bool Visible = true;
         protected LLayer (LayerType ft):base(ObjectType.Layer){
             LayerType= ft;
+        }
+
+        public LLayerGroup AsLayerGroup()
+        {
+            LLayerGroup g = new LLayerGroup();
+            g.Add(this);
+            return g;
         }
 
         /* depricated implicit conversion : dangerous and confusing
@@ -49,7 +56,7 @@ namespace Lgis
             set { VectorObjects[idx] = value; }
         }
         public int Count { get { return VectorObjects.Count; } }
-
+        
         #endregion
 
         #region 方法

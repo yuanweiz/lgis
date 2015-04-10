@@ -55,7 +55,7 @@ namespace Lgis
         LPoint trackingPoint = new LPoint();
 
         //Symbol Settings
-        Color fillingColor = Color.FromArgb(239, 228, 176);
+        Color fillColor = Color.FromArgb(239, 228, 176);
         Color boundaryColor = Color.Black;
         Color trackingColor = Color.DarkGreen;
 
@@ -77,7 +77,7 @@ namespace Lgis
         }
         SolidBrush fillingBrush
         {
-            get { return new SolidBrush(fillingColor); }
+            get { return new SolidBrush(fillColor); }
         }
         SolidBrush trackingBrush
         {
@@ -115,22 +115,6 @@ namespace Lgis
         {
             InitializeComponent();
             Cursor = csrPanUp;
-        }
-
-        //Zoom
-        public void ZoomIn()
-        {
-            //Scale *= zoomInRatio;
-            status = StatusType.ZoomIn;
-            Cursor = csrZoomIn;
-            Refresh();
-        }
-        public void ZoomOut()
-        {
-            //Scale *= zoomOutRatio;
-            status = StatusType.ZoomOut;
-            Cursor = csrZoomOut;
-            Refresh();
         }
 
         //Pan
@@ -242,6 +226,24 @@ namespace Lgis
             Center.Y = lp.Y - dy;
 
         }
+
+        //State Machine Related
+        public void ZoomIn()
+        {
+            //Scale *= zoomInRatio;
+            status = StatusType.ZoomIn;
+            Cursor = csrZoomIn;
+            Refresh();
+        }
+
+        public void ZoomOut()
+        {
+            //Scale *= zoomOutRatio;
+            status = StatusType.ZoomOut;
+            Cursor = csrZoomOut;
+            Refresh();
+        }
+
         // Coordinate Convertion methods
         public LPoint ToGeographicCoordinate(Point p) 
         {
@@ -323,7 +325,6 @@ namespace Lgis
                     break;
             }
         }
-
 
         void DrawPoint(Graphics g, LPoint _p)
         {
