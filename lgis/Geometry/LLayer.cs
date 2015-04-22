@@ -32,6 +32,11 @@ namespace Lgis
             return lg;
         }
         */
+        public static explicit operator LLayerGroup (LLayer l){
+            LLayerGroup lg = new LLayerGroup();
+            lg.Add(l);
+            return lg;
+        }
     }
 
     /// <summary>
@@ -40,7 +45,7 @@ namespace Lgis
     public class LVectorLayer : LLayer
     {
         #region 私有字段
-        Lgis.FeatureType FeatureType{get;set;}
+        Lgis.GeometryType FeatureType{get;set;}
         List<LVectorObject> VectorObjects = new List<LVectorObject>();
         #endregion
 

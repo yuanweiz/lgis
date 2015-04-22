@@ -13,7 +13,7 @@ namespace Lgis
     /// <summary>
     /// 矢量要素类的类型
     /// </summary>
-    public enum FeatureType { Point, Polygon, Polyline, PolyPolyline, PolyPolygon, Polypoint,Rectangle,Unknown };
+    public enum GeometryType { Point, Polygon, Polyline, PolyPolyline, PolyPolygon, Polypoint,Rectangle,Unknown };
 
     /// <summary>
     /// 提供了图层与要素类的基类
@@ -78,9 +78,9 @@ namespace Lgis
     /// </summary>
     public class LVectorObject : LMapObject
     {
-        public FeatureType FeatureType { get; protected set; }
-        public LVectorObject() : base(ObjectType.Vector) { FeatureType = Lgis.FeatureType.Unknown; }
-        public LVectorObject(FeatureType t) : base(ObjectType.Vector) { FeatureType = t; }
+        public GeometryType GeometryType { get; protected set; }
+        public LVectorObject() : base(ObjectType.Vector) { GeometryType = Lgis.GeometryType.Unknown; }
+        public LVectorObject(GeometryType t) : base(ObjectType.Vector) { GeometryType = t; }
     }
 
     /// <summary>
@@ -88,7 +88,7 @@ namespace Lgis
     /// </summary>
     public class LRasterObject : LMapObject
     {
-        public readonly FeatureType FeatureType ;
+        public readonly GeometryType FeatureType ;
         public LRasterObject():base (ObjectType.Raster){}
     }
 

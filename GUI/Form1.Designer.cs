@@ -38,7 +38,7 @@
             this.lblScale = new System.Windows.Forms.Label();
             this.btnClear = new System.Windows.Forms.Button();
             this.btnSetting = new System.Windows.Forms.Button();
-            this.lLayerView1 = new Lgis.LLayerView();
+            this.lLayerView1 = new Lgis.LLayerTreeView();
             this.lWindow1 = new Lgis.LWindow();
             this.SuspendLayout();
             // 
@@ -192,7 +192,7 @@
         private System.Windows.Forms.Label lblScale;
         private System.Windows.Forms.Button btnClear;
         private System.Windows.Forms.Button btnSetting;
-        private Lgis.LLayerView lLayerView1;
+        private Lgis.LLayerTreeView lLayerView1;
     }
 }
 

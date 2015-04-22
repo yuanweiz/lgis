@@ -27,13 +27,13 @@ namespace Lgis
             }
         }
         double _X, _Y;
-        public LPoint(double x = 0, double y = 0) : base(FeatureType.Point)
+        public LPoint(double x = 0, double y = 0) : base(GeometryType.Point)
         {
             X = x;
             Y = y;
             Owner.RefreshEnvelope();
         }
-        public LPoint(LPoint p):base(FeatureType.Point)
+        public LPoint(LPoint p):base(GeometryType.Point)
         {
             X = p.X;
             Y = p.Y;
@@ -56,7 +56,7 @@ namespace Lgis
     public class LPolyPolyline : LVectorObject
     {
         public LPolyPolyline()
-            : base(FeatureType.PolyPolyline)
+            : base(GeometryType.PolyPolyline)
         {
         }
         List<LPolyline> Lines = new List<LPolyline>();
@@ -102,14 +102,40 @@ namespace Lgis
         }
     }
 
+    public class LVector : LVectorObject
+    {
+        public double X, Y;
+        public LVector ( double x,double y){X=x;Y=y;}
+        public static LVector operator + (LVector a,LVector b)
+        {
+            return new LVector (a.X+b.X,a.Y+b.Y);
+        }
+        public static LVector operator - (LVector a,LVector b)
+        {return new LVector ( a.X-b.X,a.Y-b.Y);}
+
+        public static double operator *(LVector a, LVector b)
+        {
+            return a.X * b.X + a.Y * b.Y;
+        }
+    }
+
+    public class LLineseg : LVectorObject
+    {
+        public LPoint A, B;
+        internal override void RefreshEnvelope()
+        {
+            Envelope = A.Envelope + B.Envelope;
+            Owner.RefreshEnvelope();
+        }
+    }
     public class LPolyPoint : LVectorObject
     {
-        public LPolyPoint() : base(FeatureType.Polypoint) { }
-        public LPolyPoint(int capacity) : base(FeatureType.Polypoint) { 
+        public LPolyPoint() : base(GeometryType.Polypoint) { }
+        public LPolyPoint(int capacity) : base(GeometryType.Polypoint) { 
             Points = new List<LPoint>(capacity);
         }
         public LPolyPoint(List<LPoint> points)
-            : base(FeatureType.Polypoint)
+            : base(GeometryType.Polypoint)
         {
             Points = points;
             RefreshEnvelope();
@@ -164,16 +190,16 @@ namespace Lgis
     {
         public LPolyline(): base()
         {
-            FeatureType = FeatureType.Polyline;
+            GeometryType = GeometryType.Polyline;
         }
         public LPolyline(List<LPoint> lp) : base(lp)
         {
-            FeatureType = FeatureType.Polyline;
+            GeometryType = GeometryType.Polyline;
         }
         public LPolyline(int capacity)
             : base(capacity)
         {
-            FeatureType = FeatureType.Polyline;
+            GeometryType = GeometryType.Polyline;
         }
         public new LPolyline Copy()
         {
@@ -183,17 +209,17 @@ namespace Lgis
     public class LPolygon : LPolyPoint {
         public LPolygon():base()
         {
-            FeatureType = FeatureType.Polygon;
+            GeometryType = GeometryType.Polygon;
         }
         public LPolygon(List<LPoint> lp)
             : base(lp)
         {
-            FeatureType = FeatureType.Polygon;
+            GeometryType = GeometryType.Polygon;
         }
         public LPolygon(int capacity)
             : base(capacity)
         {
-            FeatureType = FeatureType.Polygon;
+            GeometryType = GeometryType.Polygon;
         }
         public new LPolygon Copy()
         {
@@ -203,7 +229,7 @@ namespace Lgis
 
     public class LPolyPolygon : LVectorObject
     {
-        public LPolyPolygon() : base(FeatureType.PolyPolygon) { }
+        public LPolyPolygon() : base(GeometryType.PolyPolygon) { }
         List<LPolygon> Polygons = new List<LPolygon>();
         public int Count { get { return Polygons.Count; } }
         public LPolygon this[int idx] {
@@ -249,10 +275,10 @@ namespace Lgis
 
     public class LRectangle : LVectorObject
     {
-        public LRectangle(double _xmin, double _ymin, double _xmax, double _ymax) : base(FeatureType.Rectangle)
+        public LRectangle(double _xmin, double _ymin, double _xmax, double _ymax) : base(GeometryType.Rectangle)
         {
         }
-        public LRectangle(LRectangle r) :base(FeatureType.Rectangle)
+        public LRectangle(LRectangle r) :base(GeometryType.Rectangle)
         {
         }
     }
