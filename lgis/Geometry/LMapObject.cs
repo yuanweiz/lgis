@@ -32,7 +32,12 @@ namespace Lgis
         public string Name = "NoName";
         public readonly ObjectType ObjectType=ObjectType.Unknown;
         public LMapObject Owner { get; internal set; }
-        public LEnvelope Envelope { get; internal set; }
+        public virtual LEnvelope Envelope { 
+            get
+            {
+                return LEnvelope.Null;
+            }
+        }
         public double XMin {get{return Envelope.XMin ;}}
         public double XMax {get{return Envelope.XMax ;}}
         public double YMin {get{return Envelope.YMin ;}}
@@ -46,31 +51,12 @@ namespace Lgis
         /// </summary>
         public LMapObject () {
             Owner = LMapObject.Null;
-            Envelope = LEnvelope.Null;
         }
         public LMapObject (ObjectType t){
             Owner = LMapObject.Null;
-            Envelope = LEnvelope.Null;
             ObjectType = t;
         }
 
-        /// <summary>
-        /// 改变一个MapObject对象的MBR，需要由派生类显式调用
-        /// </summary>
-        internal virtual void RefreshEnvelope()
-        {
-            //由于Null对象没有MBR，不需要实现此方法
-            //其他任何LMapObject派生类均需要提供实现
-            //要求的实现形式为
-            //
-            //public override void RefreshEnvelope(){
-            //    // implementation here
-            //    _Owner.RefreshEnvelope();
-            //}
-            
-            if (this != LMapObject.Null)
-                throw new NotImplementedException("RefreshEnvelope() not implemented");
-        }
     }
 
     /// <summary>

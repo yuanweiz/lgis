@@ -61,6 +61,17 @@ namespace Lgis
             set { VectorObjects[idx] = value; }
         }
         public int Count { get { return VectorObjects.Count; } }
+
+        public override LEnvelope Envelope
+        {
+            get
+            {
+                LEnvelope l = LEnvelope.Null;
+                foreach (LVectorObject vo in VectorObjects)
+                    l += vo.Envelope;
+                return l;
+            }
+        }
         
         #endregion
 
@@ -73,22 +84,11 @@ namespace Lgis
         {
             vo.Owner = this;
             VectorObjects.Add(vo);
-            RefreshEnvelope();
         }
         public void RemoveAt(int idx)
         {
             VectorObjects[idx].Owner = LMapObject.Null;
             VectorObjects.RemoveAt(idx);
-            RefreshEnvelope();
-        }
-        internal override void RefreshEnvelope()
-        {
-            Envelope = LEnvelope.Null;
-            foreach (LVectorObject vo in VectorObjects)
-            {
-                Envelope += vo.Envelope;
-            }
-            Owner.RefreshEnvelope();
         }
         #endregion
 

@@ -29,7 +29,7 @@ namespace Lgis
             txtSQL.Text = "select * from student;";
         }
         public void Connect(){
-            string connectStr = "Server=127.0.0.1;Port=5432;User Id=joe;Password=secret;Database=joedata;";
+            //string connectStr = "Server=127.0.0.1;Port=5432;User Id=joe;Password=secret;Database=joedata;";
 
         }
 

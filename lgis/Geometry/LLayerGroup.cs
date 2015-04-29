@@ -42,7 +42,6 @@ namespace Lgis
                 throw new Exception("ObjectType not match layergroup");
             o.Owner = this;
             Children.Add(o);
-            RefreshEnvelope();
         }
 
         /// <summary>
@@ -53,17 +52,17 @@ namespace Lgis
         {
             Children[idx].Owner = LMapObject.Null;
             Children.RemoveAt(idx);
-            RefreshEnvelope();
+        }
+        public override LEnvelope Envelope
+        {
+            get
+            {
+                LEnvelope l = LEnvelope.Null;
+                foreach (LLayer layer in Children)
+                    l += layer.Envelope;
+                return l;
+            }
         }
 
-        internal override void RefreshEnvelope()
-        {
-            Envelope = LEnvelope.Null;
-            foreach (LMapObject o in Children)
-            {
-                Envelope += o.Envelope;
-            }
-            Owner.RefreshEnvelope();
-        }
     }
 }

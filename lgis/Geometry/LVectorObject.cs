@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using System.Text;
 using System.Drawing;
@@ -10,57 +11,79 @@ namespace Lgis
     {
         public double X
         {
-            get { return _X;}
-            set { 
-                _X = value;
-                Envelope = new LEnvelope(_X, _Y, _X, _Y);
-                Owner.RefreshEnvelope();
-            }
+            get;
+            set;
         }
         public double Y
         {
-            get { return _Y;}
-            set { 
-                _Y = value;
-                Envelope = new LEnvelope(_X, _Y, _X, _Y);
-                Owner.RefreshEnvelope();
+            get;
+            set;
+        }
+        public override LEnvelope Envelope
+        {
+            get
+            {
+                return new LEnvelope(X, X, Y, Y);
             }
         }
-        double _X, _Y;
         public LPoint(double x = 0, double y = 0) : base(GeometryType.Point)
         {
             X = x;
             Y = y;
-            Owner.RefreshEnvelope();
         }
         public LPoint(LPoint p):base(GeometryType.Point)
         {
             X = p.X;
             Y = p.Y;
-            Owner.RefreshEnvelope();
         }
         public override string ToString()
         {
             string s="";
-            s += "(" + _X.ToString() + "," + _Y.ToString() + ")";
+            s += "(" + X.ToString() + "," + Y.ToString() + ")";
             return s;
         }
         public static implicit operator Point(LPoint p){
             return new Point((int)p.X, (int)p.Y);
+        }
+        public static LLineseg operator +(LPoint A, LPoint B)
+        {
+            return new LLineseg(A, B);
+        }
+        public static LVector operator -(LPoint A, LPoint B)
+        {
+            return new LVector(B.X - A.X, B.Y - A.Y);
         }
         public LPoint Copy()
         {
             return new LPoint(this);
         }
     }
+
     public class LPolyPolyline : LVectorObject
     {
+        #region Enumerable Properties
+
+        public LPolyline[] Vertices {
+            get { return Lines.ToArray(); }
+        }
+
+        #endregion
         public LPolyPolyline()
             : base(GeometryType.PolyPolyline)
         {
         }
         List<LPolyline> Lines = new List<LPolyline>();
         public int Count { get { return Lines.Count; } }
+        public override LEnvelope Envelope
+        {
+            get
+            {
+                LEnvelope l = LEnvelope.Null;
+                for ( int i =0;i< Count;++i)
+                    l += Lines[i].Envelope;
+                return l;
+            }
+        }
         public LPolyline this[int idx] {
             get
             {
@@ -74,22 +97,11 @@ namespace Lgis
         public void Add (LPolyline pl){
             Lines.Add(pl);
             pl.Owner = this;
-            RefreshEnvelope();
         }
         public void RemoveAt(int idx)
         {
             Lines[idx].Owner = LMapObject.Null;
             Lines.RemoveAt(idx);
-            RefreshEnvelope();
-        }
-        internal override void RefreshEnvelope()
-        {
-            Envelope = LEnvelope.Null;
-            foreach (LPolyline pl in Lines)
-            {
-                Envelope += pl.Envelope;
-            }
-            Owner.RefreshEnvelope();
         }
         public override string ToString()
         {
@@ -105,29 +117,46 @@ namespace Lgis
     public class LVector : LVectorObject
     {
         public double X, Y;
-        public LVector ( double x,double y){X=x;Y=y;}
+        public LVector ( double x=0,double y=0){X=x;Y=y;}
         public static LVector operator + (LVector a,LVector b)
         {
             return new LVector (a.X+b.X,a.Y+b.Y);
         }
         public static LVector operator - (LVector a,LVector b)
         {return new LVector ( a.X-b.X,a.Y-b.Y);}
-
+        public static LVector operator * (LVector a , double k)
+        { 
+            return new LVector(a.X * k, a.Y * k); 
+        }
         public static double operator *(LVector a, LVector b)
         {
             return a.X * b.X + a.Y * b.Y;
         }
+        public double Norm()
+        {
+            return Math.Sqrt(X * X + Y * Y);
+        }
+
     }
 
     public class LLineseg : LVectorObject
     {
-        public LPoint A, B;
-        internal override void RefreshEnvelope()
+        public LLineseg() { }
+        public LLineseg(LPoint A, LPoint B)
         {
-            Envelope = A.Envelope + B.Envelope;
-            Owner.RefreshEnvelope();
+            this.A = A;
+            this.B = B;
+        }
+        public LPoint A, B;
+        public override LEnvelope Envelope
+        {
+            get
+            {
+                return A.Envelope + B.Envelope;
+            }
         }
     }
+
     public class LPolyPoint : LVectorObject
     {
         public LPolyPoint() : base(GeometryType.Polypoint) { }
@@ -138,7 +167,16 @@ namespace Lgis
             : base(GeometryType.Polypoint)
         {
             Points = points;
-            RefreshEnvelope();
+        }
+        public override LEnvelope Envelope
+        {
+            get
+            {
+                LEnvelope l = LEnvelope.Null;
+                for (int i = 0; i < Count; ++i)
+                    l += Points[i].Envelope;
+                return l;
+            }
         }
         public List<LPoint> Points = new List<LPoint>();
         public int Count { get { return Points.Count; } }
@@ -151,13 +189,11 @@ namespace Lgis
         {
             p.Owner = this;
             Points.Add(p);
-            RefreshEnvelope();
         }
         public void RemoveAt(int idx)
         {
             Points[idx].Owner = LMapObject.Null;
             Points.RemoveAt(idx);
-            RefreshEnvelope();
         }
         public LPolyPoint Copy(){
             LPolyPoint newpp = new LPolyPoint(Count);
@@ -175,15 +211,6 @@ namespace Lgis
             return new LPolyline(Points);
         }
 
-        internal override void RefreshEnvelope()
-        {
-            Envelope = LEnvelope.Null;
-            foreach (LPoint p in Points)
-            {
-                Envelope += p.Envelope;
-            }
-            Owner.RefreshEnvelope();
-        }
     }
 
     public class LPolyline : LPolyPoint
@@ -206,6 +233,7 @@ namespace Lgis
             return base.Copy().ToLPolyline();
         }
     }
+
     public class LPolygon : LPolyPoint {
         public LPolygon():base()
         {
@@ -245,22 +273,11 @@ namespace Lgis
         public void Add (LPolygon p){
             p.Owner = this;
             Polygons.Add(p);
-            RefreshEnvelope();
         }
         public void RemoveAt(int idx)
         {
             Polygons[idx].Owner = LMapObject.Null;
             Polygons.RemoveAt(idx);
-            RefreshEnvelope();
-        }
-        internal override void RefreshEnvelope()
-        {
-            Envelope = LEnvelope.Null;
-            foreach (LPolygon p in Polygons)
-            {
-                Envelope += p.Envelope;
-            }
-            Owner.RefreshEnvelope();
         }
         public override string ToString()
         {

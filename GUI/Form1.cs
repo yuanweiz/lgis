@@ -24,7 +24,14 @@ namespace GUI
             lWindow1.Layers=ut.TestLayerView();
             lWindow1.Refresh();
             lLayerView1.Layers = lWindow1.Layers;
+            LPolyPolyline ppl = new LPolyPolyline();
+            LPolyline pl = new LPolyline();
+            pl.Add(new LPoint(1, 2));
+            pl.Add(new LPoint(3, 4));
+            ppl.Add(pl);
+            ppl.Add(pl.Copy());
             lLayerView1.Refresh();
+            Console.ReadLine();
         }
 
         private void btnZoomIn_Click(object sender, EventArgs e)
