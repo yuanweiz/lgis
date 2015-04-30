@@ -62,11 +62,13 @@ namespace Lgis
     /// <summary>
     /// 矢量要素类的基类
     /// </summary>
-    public class LVectorObject : LMapObject
+    public class LVectorObject : LMapObject 
     {
         public GeometryType GeometryType { get; protected set; }
         public LVectorObject() : base(ObjectType.Vector) { GeometryType = Lgis.GeometryType.Unknown; }
         public LVectorObject(GeometryType t) : base(ObjectType.Vector) { GeometryType = t; }
+        public virtual IEnumerable<LPoint> Vertices { get {  yield break; } }
+        public virtual IEnumerable<LLineseg> Edges { get {  yield break; } }
     }
 
     /// <summary>

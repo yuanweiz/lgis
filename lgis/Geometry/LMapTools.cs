@@ -7,12 +7,15 @@ namespace Lgis
 {
     public static class LMapTools
     {
+        public enum SelectMode { Partly, Fully };
+
         #region internal var
         //static double tolerance = 5.0f;
         static double eps = 1e-5;
         #endregion
 
-        #region private methods concerning topology
+        #region methods concerning topology
+        #region Private
         static bool EnvelopeIntersect(LEnvelope a,LEnvelope b)
         {
             if (a.XMax < b.XMin ||
@@ -52,19 +55,39 @@ namespace Lgis
             else return false;
         }
 
-        //TODO:
         static bool PointInPolygon(LPoint p, LPolygon plg)
-        {
+        {   //TODO:
+            /*****************************
+             * some special circumstances should be taken into account
+             *                   
+             *                    /\ 
+             *                   /  \                 / E
+             *                  /    \        C  D  / 
+             *    /------------/  A   \-------\  //
+             *   /                      B      \/ 
+             *  /                               F
+             * /
+            when judging whether A is inside polygon, counting B/C twice
+             * should be avoided, a posible solution is ignore all horizonal 
+             * lines (e.g. lineseg BC)
+            * Another problems occurs when A.Y=D.Y, then in lineseg DF and DE
+             * point D will be counted twice, a solution is 
+             * 
+            */
+
             if (!PointInEnvelope(p, plg.Envelope))
                 return false;
             bool up1, up2;
             LPoint A, B;
             int cnt=0;
             A = plg[plg.Count - 1];
-            up1 = (A.Y > p.Y);
-            for (int i = 0; i < plg.Count; ++i,A=B,up1=up2)
-            {
-                B = plg[i];
+            up1 = (A.Y > p.Y); 
+            foreach (LLineseg ls in plg.Edges) { 
+                A = ls.A; B = ls.B;
+                // as explained above
+                if (A.Y == B.Y)
+                    continue;
+                up1 = (A.Y > p.Y);
                 up2 = (B.Y > p.Y);
                 if (up1 == up2)
                     continue;
@@ -87,10 +110,9 @@ namespace Lgis
 
         static bool PointOnPolyline(LPoint p, LPolyline pll, double tolerance)
         {
-            bool flag = true;
-            for (int i = 0; i < pll.Count - 1; ++i)
+            bool flag = false;
+            foreach (LLineseg ls in pll.Edges)
             {
-                LLineseg ls = new LLineseg(pll[i], pll[i + 1]);
                 flag = flag && PointOnLineseg(p, ls, tolerance);
                 if (flag)
                     return true;
@@ -128,6 +150,7 @@ namespace Lgis
         }
         static bool PolygonPartlyWithinEnvelope(LPolygon plg, LEnvelope e)
         {
+
             LLineseg ls;
             for (int i = 0; i < plg.Count-1;++i)
             {
@@ -150,7 +173,6 @@ namespace Lgis
         }
         static bool LinesegPartlyWithinEnvelope(LLineseg ls, LEnvelope e)
         {
-            const double eps = 1E-10;
             const int up = 8, down = 4, left = 1, right = 2;
             LEnvelope mbr = ls.Envelope;
             int posA = PosCode(ls.A, e);
@@ -223,11 +245,47 @@ namespace Lgis
             return lr & ud;
 
         }
+        #endregion
+
+        #region public
+        public static bool FullyWithinEnvelope(LVectorObject vo, LEnvelope e)
+        {
+            return EnvelopeWithinRegion(vo.Envelope, e);
+        }
+
+        public static bool PartlyWithinEnvelope(LVectorObject vo, LEnvelope e)
+        {
+            switch (vo.GeometryType)
+            {
+                case GeometryType.Point:
+                    return EnvelopeWithinRegion(vo.Envelope, e);
+                case GeometryType.Polygon:
+                    return PolygonPartlyWithinEnvelope((LPolygon)vo, e);
+                case GeometryType.Polypoint:
+                    foreach (LPoint p in vo.Vertices)
+                    {
+                        if (PointInEnvelope(p, e))
+                            return true;
+                    }
+                    return false;
+                case GeometryType.Polyline:
+                case GeometryType.PolyPolyline:
+                    foreach (LLineseg ls in vo.Edges)
+                    {
+                        if (LinesegPartlyWithinEnvelope(ls, e))
+                            return true;
+                    }
+                    return false;
+                default: return false;
+            }
+        }
 
         #endregion
 
-        #region Methods concerning linear transformation
-        static Matrix3D GetRotateMatrix(double angle_degree, LPoint center)
+        #endregion
+
+        #region Public methods concerning linear transformation
+        public static Matrix3D GetRotateMatrix(double angle_degree, LPoint center)
         {
             double angle = angle_degree * Math.PI / 180.0;
             double cos = Math.Cos(angle), sin = Math.Sin(angle);
@@ -238,7 +296,54 @@ namespace Lgis
             rot[1, 2] = yc - sin * xc - cos * yc;
             return rot;
         }
+
+        public static void LinearTransform(LVectorLayer l ,Matrix3D rot)
+        {
+            switch (l.LayerType)
+            {
+                case LayerType.Raster:
+                    break;
+                case LayerType.Vector:
+                    foreach (LVectorObject vo in (LVectorLayer)l)
+                        LinearTransform(vo, rot);
+                    break;
+            }
+        }
+
+        //FIXME:bad implementation
+        public static void LinearTransform(LVectorObject vo , Matrix3D rot){
+            LPoint newp;
+            foreach (LPoint p in vo.Vertices)
+            {
+                newp = rot * p;
+                p.X = newp.X;
+                p.Y = newp.Y;
+            }
+        }
+
         #endregion
 
+        #region public method concerning selection
+
+        //TODO:
+        public static IEnumerable<LVectorObject> SelectByRegion(LVectorLayer l, LEnvelope e ,SelectMode mode)
+        {
+            switch (mode)
+            {
+                default:
+                case SelectMode.Partly:
+                    return from vectorobject in l
+                           where FullyWithinEnvelope((LPoint)vectorobject, e)
+                           select vectorobject;
+                case SelectMode.Fully:
+                    return from vectorobject in l
+                           where PartlyWithinEnvelope((LPoint)vectorobject, e)
+                           select vectorobject;
+            }
+        }
+        #endregion
+
+        #region methods concerning editing
+        #endregion
     }
 }

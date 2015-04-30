@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Collections;
 
 namespace Lgis
 {
@@ -10,7 +11,7 @@ namespace Lgis
     /// <summary>
     /// 图层数据结构，提供矢量与栅格对象的容器
     /// </summary>
-    public class LLayer: LMapObject
+    public class LLayer: LMapObject 
     {
         public readonly LayerType LayerType;
         public bool Visible = true;
@@ -42,8 +43,18 @@ namespace Lgis
     /// <summary>
     /// 矢量图层，是LVectorObject的容器
     /// </summary>
-    public class LVectorLayer : LLayer
+    public class LVectorLayer : LLayer, IEnumerable<LVectorObject>
     {
+        public IEnumerator<LVectorObject> GetEnumerator()
+        {
+            for (int i = 0; i < Count; ++i)
+                yield return this[i];
+        }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
         #region 私有字段
         Lgis.GeometryType FeatureType{get;set;}
         List<LVectorObject> VectorObjects = new List<LVectorObject>();

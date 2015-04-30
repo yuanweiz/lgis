@@ -40,6 +40,7 @@
             this.btnSetting = new System.Windows.Forms.Button();
             this.lLayerView1 = new Lgis.LLayerTreeView();
             this.lWindow1 = new Lgis.LWindow();
+            this.btnRotate = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnZoomIn
@@ -155,11 +156,22 @@
             this.lWindow1.TabIndex = 8;
             this.lWindow1.Load += new System.EventHandler(this.lWindow1_Load);
             // 
+            // btnRotate
+            // 
+            this.btnRotate.Location = new System.Drawing.Point(515, 348);
+            this.btnRotate.Name = "btnRotate";
+            this.btnRotate.Size = new System.Drawing.Size(75, 23);
+            this.btnRotate.TabIndex = 12;
+            this.btnRotate.Text = "Rotate";
+            this.btnRotate.UseVisualStyleBackColor = true;
+            this.btnRotate.Click += new System.EventHandler(this.btnRotate_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(621, 413);
+            this.Controls.Add(this.btnRotate);
             this.Controls.Add(this.lLayerView1);
             this.Controls.Add(this.btnSetting);
             this.Controls.Add(this.btnClear);
@@ -193,6 +205,7 @@
         private System.Windows.Forms.Button btnClear;
         private System.Windows.Forms.Button btnSetting;
         private Lgis.LLayerTreeView lLayerView1;
+        private System.Windows.Forms.Button btnRotate;
     }
 }
 

@@ -6,32 +6,33 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Reflection;
 using Lgis;
 namespace GUI
 {
     public partial class Form1 : Form
     {
         Point mouseLocation = new Point(0,0);
-        LVectorLayer vl = new LVectorLayer();
         LUnitTest ut = new LUnitTest();
+        LVectorLayer vl = new LVectorLayer();
         //bool mouseDragging;
         public Form1()
         {
             InitializeComponent();
+            lLayerView1.Enabled = false;
             btnStopEditing.Enabled = false;
-            //lWindow1.Layers.Add(vl) ;
-            //lWindow1.editingLayer = vl;
-            lWindow1.Layers=ut.TestLayerView();
-            lWindow1.Refresh();
-            lLayerView1.Layers = lWindow1.Layers;
+            //lWindow1.Layers=ut.TestLayerView();
+            lWindow1.Layers.Add(vl) ;
+            lWindow1.editingLayer = vl;
+
             LPolyPolyline ppl = new LPolyPolyline();
             LPolyline pl = new LPolyline();
             pl.Add(new LPoint(1, 2));
-            pl.Add(new LPoint(3, 4));
+            pl.Add(new LPoint(3, 6));
+            pl.Add(new LPoint(5, 6));
             ppl.Add(pl);
             ppl.Add(pl.Copy());
-            lLayerView1.Refresh();
-            Console.ReadLine();
+            vl.Add(ppl);
         }
 
         private void btnZoomIn_Click(object sender, EventArgs e)
@@ -119,6 +120,14 @@ namespace GUI
         private void Form1_Load_1(object sender, EventArgs e)
         {
 
+        }
+
+        private void btnRotate_Click(object sender, EventArgs e)
+        {
+            Matrix3D rot = LMapTools.GetRotateMatrix(30.0, new LPoint());
+            LMapTools.LinearTransform(lWindow1.editingLayer, rot);
+            bool yes = (lWindow1.editingLayer == vl);
+            lWindow1.Refresh();
         }
 
     }

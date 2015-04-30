@@ -63,8 +63,24 @@ namespace Lgis
     {
         #region Enumerable Properties
 
-        public LPolyline[] Vertices {
-            get { return Lines.ToArray(); }
+        public override IEnumerable<LPoint> Vertices
+        {
+            get
+            {
+                foreach (LPolyline pl in Polylines)
+                    foreach (LPoint p in pl.Vertices)
+                        yield return p;
+            }
+        }
+
+        public override IEnumerable<LLineseg> Edges
+        {
+            get
+            {
+                foreach (LPolyline pl in Polylines)
+                    foreach (LLineseg ls in pl.Edges)
+                        yield return ls;
+            }
         }
 
         #endregion
@@ -72,41 +88,47 @@ namespace Lgis
             : base(GeometryType.PolyPolyline)
         {
         }
-        List<LPolyline> Lines = new List<LPolyline>();
-        public int Count { get { return Lines.Count; } }
+
+        List<LPolyline> Polylines = new List<LPolyline>();
+
+        public int Count { get { return Polylines.Count; } }
+
         public override LEnvelope Envelope
         {
             get
             {
                 LEnvelope l = LEnvelope.Null;
                 for ( int i =0;i< Count;++i)
-                    l += Lines[i].Envelope;
+                    l += Polylines[i].Envelope;
                 return l;
             }
         }
+
         public LPolyline this[int idx] {
             get
             {
-                return Lines[idx];
+                return Polylines[idx];
             }
             set
             {
-                Lines[idx] = value;
+                Polylines[idx] = value;
             }
         }
+
         public void Add (LPolyline pl){
-            Lines.Add(pl);
+            Polylines.Add(pl);
             pl.Owner = this;
         }
         public void RemoveAt(int idx)
         {
-            Lines[idx].Owner = LMapObject.Null;
-            Lines.RemoveAt(idx);
+            Polylines[idx].Owner = LMapObject.Null;
+            Polylines.RemoveAt(idx);
         }
+
         public override string ToString()
         {
             string s = "in the polypolyline:\n";
-            foreach (LPolyline l in Lines ){
+            foreach (LPolyline l in Polylines ){
                 s += l.ToString();
                 s += "\n";
             }
@@ -117,21 +139,27 @@ namespace Lgis
     public class LVector : LVectorObject
     {
         public double X, Y;
+
         public LVector ( double x=0,double y=0){X=x;Y=y;}
+
         public static LVector operator + (LVector a,LVector b)
         {
             return new LVector (a.X+b.X,a.Y+b.Y);
         }
+
         public static LVector operator - (LVector a,LVector b)
         {return new LVector ( a.X-b.X,a.Y-b.Y);}
+
         public static LVector operator * (LVector a , double k)
         { 
             return new LVector(a.X * k, a.Y * k); 
         }
+
         public static double operator *(LVector a, LVector b)
         {
             return a.X * b.X + a.Y * b.Y;
         }
+
         public double Norm()
         {
             return Math.Sqrt(X * X + Y * Y);
@@ -141,6 +169,15 @@ namespace Lgis
 
     public class LLineseg : LVectorObject
     {
+        public override IEnumerable<LPoint> Vertices
+        {
+            get
+            {
+                yield return A;
+                yield return B;
+            }
+        }
+
         public LLineseg() { }
         public LLineseg(LPoint A, LPoint B)
         {
@@ -159,6 +196,18 @@ namespace Lgis
 
     public class LPolyPoint : LVectorObject
     {
+        #region Enumerable interfaces
+
+        public override IEnumerable<LPoint> Vertices
+        {
+            get
+            {
+                for (int i = 0; i < Count; ++i)
+                    yield return Points[i];
+            }
+        }
+
+        #endregion
         public LPolyPoint() : base(GeometryType.Polypoint) { }
         public LPolyPoint(int capacity) : base(GeometryType.Polypoint) { 
             Points = new List<LPoint>(capacity);
@@ -178,7 +227,8 @@ namespace Lgis
                 return l;
             }
         }
-        public List<LPoint> Points = new List<LPoint>();
+
+        protected List<LPoint> Points = new List<LPoint>();
         public int Count { get { return Points.Count; } }
         public LPoint this[int idx]
         {
@@ -215,6 +265,19 @@ namespace Lgis
 
     public class LPolyline : LPolyPoint
     {
+
+        #region enumerable properties
+
+        public override IEnumerable<LLineseg> Edges
+        {
+            get
+            {
+                for (int i = 0; i < Count - 1; ++i)
+                    yield return new LLineseg(this[i], this[i + 1]);
+            }
+        }
+
+        #endregion
         public LPolyline(): base()
         {
             GeometryType = GeometryType.Polyline;
@@ -234,7 +297,27 @@ namespace Lgis
         }
     }
 
-    public class LPolygon : LPolyPoint {
+    public class LPolygon : LPolyPoint
+    {
+        #region enumerable properties
+
+        public override IEnumerable<LLineseg> Edges
+        {
+            get
+            {
+                if (Count < 2)
+                    yield break;
+                LPoint A;
+                A = Points[Count - 1];
+                for (int i = 0; i < Count -1; ++i)
+                {
+                    yield return new LLineseg(this[i], this[i+1]);
+                }
+                yield return new LLineseg(this[0], A);
+            }
+        }
+
+        #endregion
         public LPolygon():base()
         {
             GeometryType = GeometryType.Polygon;
@@ -257,7 +340,35 @@ namespace Lgis
 
     public class LPolyPolygon : LVectorObject
     {
+        #region enumerable properties
+
+        public override IEnumerable<LPoint> Vertices
+        {
+            get
+            {
+                foreach (LPolygon plg in Polygons)
+                {
+                    foreach (LPoint p in plg.Vertices)
+                        yield return p;
+                }
+            }
+        }
+
+        public override IEnumerable<LLineseg> Edges
+        {
+            get {
+                foreach (LPolygon plg in Polygons)
+                {
+                    foreach (LLineseg ls in plg.Edges)
+                        yield return ls;
+                }
+            }
+        }
+
+        #endregion
+
         public LPolyPolygon() : base(GeometryType.PolyPolygon) { }
+        
         List<LPolygon> Polygons = new List<LPolygon>();
         public int Count { get { return Polygons.Count; } }
         public LPolygon this[int idx] {

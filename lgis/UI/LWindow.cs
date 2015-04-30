@@ -411,15 +411,17 @@ namespace Lgis
 
         private void LWindow_Paint(object sender, PaintEventArgs e)
         {
-                Draw(e.Graphics, Layers);
-                switch (status)
-                {
-                    case StatusType.Edit:
-                        DrawTrackingPolygon(e.Graphics);
-                        break;
-                    default: 
-                        break;
-                }
+            if (Layers == null)
+                return;
+            Draw(e.Graphics, Layers);
+            switch (status)
+            {
+                case StatusType.Edit:
+                    DrawTrackingPolygon(e.Graphics);
+                    break;
+                default:
+                    break;
+            }
         }
         private void LWindow_MouseDown(object sender, MouseEventArgs e)
         {
@@ -449,6 +451,8 @@ namespace Lgis
         {
             switch ( editingType ){
                 case EditingType.Polygon:
+                    if (editingLayer == null)
+                        return;
                     if (trackingPolygon.Count > 2)
                     {
                         editingLayer.Add(trackingPolygon.Copy());
