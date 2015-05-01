@@ -273,9 +273,13 @@ namespace Lgis
                 switch (o.ObjectType)
                 {
                     case ObjectType.LayerGroup:
+                        if (((LLayerGroup)o).Visible == false)
+                            return;
                         Draw(g, (LLayerGroup)o);
                         break;
                     case ObjectType.Layer:
+                        if (((LLayer)o).Visible == false)
+                            return;
                         Draw(g, (LLayer)o);
                         break;
                     default:

@@ -48,11 +48,12 @@ namespace Lgis
 
         private void trvLayers_AfterSelect(object sender, TreeViewEventArgs e)
         {
-
         }
 
         private void LLayerView_Paint(object sender, PaintEventArgs e)
         {
+            if (Layers == null)
+                return;
             trvLayers.Nodes.Clear();
             trvLayers.Nodes.Add(Layers.Name);
             trvLayers.Nodes[0].Checked = Layers.Visible;
@@ -63,11 +64,11 @@ namespace Lgis
 
         private void trvLayers_AfterCheck(object sender, TreeViewEventArgs e)
         {
-            //bool Visible = e.Node.Checked;
-            
-            //e.Node.Checked =  Visible ;
-            //if (e.Node.Tag!=null)
-            //((LLayerGroup)e.Node.Tag).Visible = !((LLayerGroup)e.Node.Tag).Visible;
+            if (e.Action != TreeViewAction.ByMouse)
+                return;
+            bool Visible = e.Node.Checked;
+            if (e.Node.Tag != null)
+                ((LLayerGroup)e.Node.Tag).Visible = Visible;
         }
     }
 }

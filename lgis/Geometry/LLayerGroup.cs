@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using System.Text;
 
@@ -8,8 +9,45 @@ namespace Lgis
     /// <summary>
     /// 图层组树结构
     /// </summary>
-    public class LLayerGroup : LMapObject
+    public class LLayerGroup : LMapObject ,IEnumerable<LLayer>
     {
+        #region Enumerable properties
+
+        //XXX: the hard way, leading to a waste of memory and time
+        static List<LLayer> _enumlayers = new List<LLayer>();
+        static void dfs(LLayerGroup lg)
+        {
+            for (int i = 0; i < lg.Count;++i )
+            {
+                LMapObject mo = lg[i];
+                switch (mo.ObjectType)
+                {
+                    case ObjectType.Layer:
+                        _enumlayers.Add((LLayer)mo);
+                        break;
+                    default:
+                        dfs((LLayerGroup)mo);
+                        break;
+                }
+            }
+        }
+
+        
+        public IEnumerator<LLayer> GetEnumerator()
+        {
+            _enumlayers.Clear();
+            dfs(this);
+            foreach (LLayer l in _enumlayers)
+                yield return l;
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        #endregion
+
         List<LMapObject> Children = new List<LMapObject>();
         public bool Visible = true;
         public LLayerGroup()
@@ -21,6 +59,7 @@ namespace Lgis
         {
             get { return Children.Count; }
         }
+
 
         /// <summary>
         /// 返回第idx个元素，可能是LLayerGroup或LLayer
@@ -58,7 +97,7 @@ namespace Lgis
             get
             {
                 LEnvelope l = LEnvelope.Null;
-                foreach (LLayer layer in Children)
+                foreach (LLayer layer in this)
                     l += layer.Envelope;
                 return l;
             }

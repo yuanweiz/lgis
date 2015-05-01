@@ -19,9 +19,8 @@ namespace GUI
         public Form1()
         {
             InitializeComponent();
-            lLayerView1.Enabled = false;
             btnStopEditing.Enabled = false;
-            //lWindow1.Layers=ut.TestLayerView();
+            lWindow1.Layers=ut.TestLayerView();
             lWindow1.Layers.Add(vl) ;
             lWindow1.editingLayer = vl;
 
@@ -33,6 +32,8 @@ namespace GUI
             ppl.Add(pl);
             ppl.Add(pl.Copy());
             vl.Add(ppl);
+            lLayerView1.Layers = lWindow1.Layers;
+            lLayerView1.Refresh();
         }
 
         private void btnZoomIn_Click(object sender, EventArgs e)
@@ -126,7 +127,6 @@ namespace GUI
         {
             Matrix3D rot = LMapTools.GetRotateMatrix(30.0, new LPoint());
             LMapTools.LinearTransform(lWindow1.editingLayer, rot);
-            bool yes = (lWindow1.editingLayer == vl);
             lWindow1.Refresh();
         }
 
