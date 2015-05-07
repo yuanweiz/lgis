@@ -12,7 +12,12 @@ namespace Lgis
     public partial class LLayerTreeView : UserControl
     {
         #region Properties
-        public LLayerGroup Layers = new LLayerGroup();
+        private LLayerGroup _Layers = new LLayerGroup();
+        public LLayerGroup Layers
+        {
+            get { return _Layers; }
+            set { _Layers = value; RefreshItems(); }
+        }
         #endregion
         public LLayerTreeView()
         {
@@ -52,6 +57,10 @@ namespace Lgis
 
         private void LLayerView_Paint(object sender, PaintEventArgs e)
         {
+        }
+
+        public void RefreshItems()
+        {
             if (Layers == null)
                 return;
             trvLayers.Nodes.Clear();
@@ -68,7 +77,13 @@ namespace Lgis
                 return;
             bool Visible = e.Node.Checked;
             if (e.Node.Tag != null)
-                ((LLayerGroup)e.Node.Tag).Visible = Visible;
+            {
+                LMapObject mo = ((LMapObject)e.Node.Tag);
+                if (mo.ObjectType == ObjectType.LayerGroup)
+                    ((LLayerGroup)mo).Visible = Visible;
+                else
+                    ((LLayer)mo).Visible = Visible;
+            }
         }
     }
 }

@@ -11,21 +11,32 @@ namespace Lgis
 {
     public partial class LLayerComboBox : UserControl
     {
-        public LLayerGroup Layers = new LLayerGroup();
+        LLayerGroup _Layers = new LLayerGroup();
+        public LLayerGroup Layers { get { return _Layers; }
+            set 
+            {
+                _Layers = value;
+                RefreshComboBoxItem();
+            }
+        }
         public LLayerComboBox()
         {
             InitializeComponent();
         }
+
         public static string Encode(LLayerGroup lg)
         {
-            layerstr = "";
-            dfs(lg, "");
-            layerstr = layerstr.Substring(0, layerstr.Length - 1);
+            string layerstr = "";
+            dfs(ref layerstr , lg, "");
+            if (layerstr.Length > 0)
+                layerstr = layerstr.Substring(0, layerstr.Length - 1);
             return layerstr;
         }
-        static string layerstr;
-        private static void dfs(LLayerGroup lg, string prefix)
+
+        private static void dfs(ref string layerstr,LLayerGroup lg, string prefix)
         {
+            if (lg == null)
+                return;
             for (int i = 0; i < lg.Count; ++i)
             {
                 if (lg[i].ObjectType == ObjectType.Layer)
@@ -33,9 +44,10 @@ namespace Lgis
                     layerstr += (prefix + "/"+lg[i].Name + ";");
                 }
                 else
-                    dfs((LLayerGroup)lg[i], prefix +"/"+ lg[i].Name);
+                    dfs(ref layerstr , (LLayerGroup)lg[i], prefix +"/"+ lg[i].Name);
             }
         }
+
         private void LLayerComboBox_Load(object sender, EventArgs e)
         {
 
@@ -46,12 +58,16 @@ namespace Lgis
 
         }
 
+        
         private void LLayerComboBox_Paint(object sender, PaintEventArgs e)
         {
-            Encode(Layers);
+        }
+
+        public void RefreshComboBoxItem()
+        {
             comboBox1.BeginUpdate();
             comboBox1.Items.Clear();
-            foreach (string layername in layerstr.Split(';'))
+            foreach (string layername in Encode(Layers).Split(';'))
                 comboBox1.Items.Add(layername);
             comboBox1.EndUpdate();
         }
