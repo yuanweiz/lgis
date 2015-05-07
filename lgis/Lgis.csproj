@@ -46,6 +46,10 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.SQLite, Version=1.0.96.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\System.Data.SQLite.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
@@ -55,17 +59,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GeoDatabase\LGeoDatabase.cs" />
     <Compile Include="Geometry\Linalg.cs" />
     <Compile Include="Geometry\LMapTools.cs" />
     <Compile Include="Geometry\LSymbol.cs" />
     <Compile Include="LConfig.cs" />
     <Compile Include="LException.cs" />
-    <Compile Include="LGeoDatabase.cs" />
     <Compile Include="Geometry\LLayerGroup.cs" />
     <Compile Include="Geometry\LLayer.cs" />
     <Compile Include="Geometry\LMapObject.cs" />
     <Compile Include="Geometry\LRasterObject.cs" />
-    <Compile Include="LProjectedCoordinateSystem.cs" />
+    <Compile Include="Geographic\LCoordinateSystem.cs" />
+    <Compile Include="UI\LLayerComboBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\LLayerComboBox.Designer.cs">
+      <DependentUpon>LLayerComboBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\LLayerTreeView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -88,6 +98,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="UI\LLayerComboBox.resx">
+      <DependentUpon>LLayerComboBox.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\LLayerTreeView.resx">
       <DependentUpon>LLayerTreeView.cs</DependentUpon>
     </EmbeddedResource>
@@ -119,7 +132,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Geographic\" />
     <Folder Include="Resources\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

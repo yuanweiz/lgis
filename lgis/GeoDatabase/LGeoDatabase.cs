@@ -11,103 +11,131 @@ namespace Lgis
 {
     public class LGeoDatabase
     {
+        #region properties and private fields
+        SQLiteConnection conn ; // once constructed, the connection remains open
+        SQLiteCommand cmd  ;
+        SQLiteDataReader dr;
+        SQLiteDataAdapter da;
+        string filename;
+        string connectStr;
+        public string Description
+        {
+            get
+            {
+                return GetMetadata("description");
+            }
+            set
+            {
+                ResetMetadata("description", value);
+            }
+        }
 
-        #region methods
-        public LGeoDatabase(string filename) {
-            conn = new SQLiteConnection();
-            cmd = new SQLiteCommand(conn);
-            bool fileExists = File.Exists(filename);
-            if (!fileExists)
-                CreateDatabase(filename);
+        public LLayerGroup Layers = new LLayerGroup();
+
+        //if a column with key doesn't exist , this method will create one 
+        private void ResetMetadata(string key, string value)
+        {
             try
             {
+                cmd.Transaction = conn.BeginTransaction();
+                cmd.CommandText = "delete from [metadata] where key = \"" + key + "\";" +
+                    "insert into [metadata] values(\"description\",\"" + value + "\" );";
+                cmd.ExecuteNonQuery();
+                cmd.Transaction.Commit();
+            }
+            catch (SQLiteException e)
+            {
+                cmd.Transaction.Rollback();
+                throw e;
+            }
+        }
+        private string GetMetadata(string key )
+        {
+            string s;
+            try
+            {
+                cmd.Transaction = conn.BeginTransaction();
+                cmd.CommandText = "select value from metadata where key=\"" + key+"\";";
+                s= (string)cmd.ExecuteScalar();
+                cmd.Transaction.Commit();
+                return s;
+            }
+            catch (SQLiteException e)
+            {
+                cmd.Transaction.Rollback();
+                throw e;
+            }
+        }
+        #endregion
+
+        #region methods
+        public LGeoDatabase(string filename , bool overwrite = false) {
+            this.filename = filename;
+            conn = new SQLiteConnection();
+            cmd = new SQLiteCommand(conn);
+            bool newfile =( !File.Exists(filename) || overwrite);
+            try
+            {
+                if (newfile)
+                    SQLiteConnection.CreateFile(filename);
                 connectStr = @"Data Source=" + filename;
                 conn.ConnectionString = connectStr;
                 conn.Open();
+                if (newfile)
+                    InitDbTables();
             }
-            catch (IOException ex)
+            catch (Exception ex)
             {
                 System.Windows.Forms.MessageBox.Show(ex.ToString());
             }
-            if (!fileExists)
-                InitDbTables();
+            //for new dbfile , init
         }
-        public void OpenDatabase(string filename){}
-        public void SaveDatabase(string filename){}
+
+        public void OpenDatabase(string filename,bool overwrite = false){}
+
+        //even if the file already exists, overwrite it 
+        public void SaveDatabase(string filename){
+            
+        }
+        //TODO
+        private void RestoreLayer (string layerstr){
+            LLayerGroup pwd, oldpwd;
+            pwd = oldpwd = Layers;
+            string[] layernames = layerstr.Split(';');
+            foreach (string layername in layernames)
+            {
+
+            }
+        }
+
         /// <summary>
         /// This method will overwrite the file to an empty 0-byte database
         /// </summary>
         /// <param name="filename"></param>
-        public static void CreateDatabase(string filename) {
-            SQLiteConnection.CreateFile(filename);
-            
-        }
         void InitDbTables( )
         {
-            //SQLiteCommandBuilder cb = new SQLiteCommandBuilder();
-            cmd = new SQLiteCommand(conn);
             try
             {
                 cmd.Transaction = conn.BeginTransaction();
                 cmd.CommandText =
-                    @" create table _ras ( name varchar, type varchar );
-                create table _vec (name varchar, type varchar );";
+                    " create table [layers] ( name varchar, type varchar );" +
+                "create table [metadata] (key varchar, value varchar );";
                 cmd.ExecuteNonQuery();
                 cmd.Transaction.Commit();
+                ResetMetadata("Description", "default");
             }
-            catch (Exception e){
-                MessageBox.Show(e.ToString());
+            catch (SQLiteException e)
+            {
                 cmd.Transaction.Rollback();
+                throw new SQLiteException("In InitDbTables() method");
             }
         }
-
-        public void AddVectorObject(LVectorObject vo)
-        {
-            SQLiteCommandBuilder cmdBuilder = new SQLiteCommandBuilder();
-            if (vo.Name == null || vo.Name == "")
-            {
-                throw new IOException("No name is specified");
-            }
-            cmd.Transaction = conn.BeginTransaction();
-            switch (vo.FeatureType)
-            {
-                case FeatureType.Polygon:
-                    cmd.CommandText = @"insert into [_vec] values('" + vo.Name + "','polygon');" +
-                        "create table [polygon_" + vo.Name + "](Data BLOB);";
-                    break;
-                case FeatureType.Point:
-                    break;
-                case FeatureType.Polyline:
-                    break;
-                default:
-                    throw new IOException("not supported by LGeoDatabase");
-            }
-            try
-            {
-                cmd.ExecuteNonQuery();
-                cmd.Transaction.Commit();
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.ToString());
-                cmd.Transaction.Rollback();
-            }
-        }
-
         public void Close()
         {
             conn.Close();
         }
         #endregion
 
-        #region properties and private fields
-        SQLiteConnection conn ;
-        SQLiteCommand cmd  ;
-        SQLiteDataReader dr;
-        SQLiteDataAdapter da;
-        string connectStr;
-
-        #endregion
 
         #region debug
 

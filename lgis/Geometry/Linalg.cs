@@ -57,5 +57,35 @@ namespace Lgis
             return ret;
         }
     }
+    public class LVector : LVectorObject
+    {
+        public double X, Y;
+
+        public LVector ( double x=0,double y=0){X=x;Y=y;}
+
+        public static LVector operator + (LVector a,LVector b)
+        {
+            return new LVector (a.X+b.X,a.Y+b.Y);
+        }
+
+        public static LVector operator - (LVector a,LVector b)
+        {return new LVector ( a.X-b.X,a.Y-b.Y);}
+
+        public static LVector operator * (LVector a , double k)
+        { 
+            return new LVector(a.X * k, a.Y * k); 
+        }
+
+        public static double operator *(LVector a, LVector b)
+        {
+            return a.X * b.X + a.Y * b.Y;
+        }
+
+        public double Norm()
+        {
+            return Math.Sqrt(X * X + Y * Y);
+        }
+
+    }
 
 }

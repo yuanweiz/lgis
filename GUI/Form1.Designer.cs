@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            Lgis.LLayerGroup lLayerGroup1 = new Lgis.LLayerGroup();
+            Lgis.LLayerGroup lLayerGroup2 = new Lgis.LLayerGroup();
             this.btnZoomIn = new System.Windows.Forms.Button();
             this.btnZoomOut = new System.Windows.Forms.Button();
             this.btnZoomToLayer = new System.Windows.Forms.Button();
@@ -38,9 +38,10 @@
             this.lblScale = new System.Windows.Forms.Label();
             this.btnClear = new System.Windows.Forms.Button();
             this.btnSetting = new System.Windows.Forms.Button();
+            this.btnRotate = new System.Windows.Forms.Button();
             this.lLayerView1 = new Lgis.LLayerTreeView();
             this.lWindow1 = new Lgis.LWindow();
-            this.btnRotate = new System.Windows.Forms.Button();
+            this.lLayerComboBox1 = new Lgis.LLayerComboBox();
             this.SuspendLayout();
             // 
             // btnZoomIn
@@ -135,6 +136,16 @@
             this.btnSetting.UseVisualStyleBackColor = true;
             this.btnSetting.Click += new System.EventHandler(this.btnSetting_Click);
             // 
+            // btnRotate
+            // 
+            this.btnRotate.Location = new System.Drawing.Point(515, 348);
+            this.btnRotate.Name = "btnRotate";
+            this.btnRotate.Size = new System.Drawing.Size(75, 23);
+            this.btnRotate.TabIndex = 12;
+            this.btnRotate.Text = "Rotate";
+            this.btnRotate.UseVisualStyleBackColor = true;
+            this.btnRotate.Click += new System.EventHandler(this.btnRotate_Click);
+            // 
             // lLayerView1
             // 
             this.lLayerView1.Location = new System.Drawing.Point(12, 24);
@@ -148,7 +159,7 @@
             this.lWindow1.BackColor = System.Drawing.Color.White;
             this.lWindow1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lWindow1.Cursor = System.Windows.Forms.Cursors.Default;
-            this.lWindow1.Layers = lLayerGroup1;
+            this.lWindow1.Layers = lLayerGroup2;
             this.lWindow1.Location = new System.Drawing.Point(211, 12);
             this.lWindow1.Name = "lWindow1";
             this.lWindow1.Scale = 1D;
@@ -156,21 +167,20 @@
             this.lWindow1.TabIndex = 8;
             this.lWindow1.Load += new System.EventHandler(this.lWindow1_Load);
             // 
-            // btnRotate
+            // lLayerComboBox1
             // 
-            this.btnRotate.Location = new System.Drawing.Point(515, 348);
-            this.btnRotate.Name = "btnRotate";
-            this.btnRotate.Size = new System.Drawing.Size(75, 23);
-            this.btnRotate.TabIndex = 12;
-            this.btnRotate.Text = "Rotate";
-            this.btnRotate.UseVisualStyleBackColor = true;
-            this.btnRotate.Click += new System.EventHandler(this.btnRotate_Click);
+            this.lLayerComboBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lLayerComboBox1.Location = new System.Drawing.Point(32, 341);
+            this.lLayerComboBox1.Name = "lLayerComboBox1";
+            this.lLayerComboBox1.Size = new System.Drawing.Size(150, 30);
+            this.lLayerComboBox1.TabIndex = 13;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(621, 413);
+            this.Controls.Add(this.lLayerComboBox1);
             this.Controls.Add(this.btnRotate);
             this.Controls.Add(this.lLayerView1);
             this.Controls.Add(this.btnSetting);
@@ -206,6 +216,7 @@
         private System.Windows.Forms.Button btnSetting;
         private Lgis.LLayerTreeView lLayerView1;
         private System.Windows.Forms.Button btnRotate;
+        private Lgis.LLayerComboBox lLayerComboBox1;
     }
 }
 

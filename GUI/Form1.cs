@@ -34,6 +34,8 @@ namespace GUI
             vl.Add(ppl);
             lLayerView1.Layers = lWindow1.Layers;
             lLayerView1.Refresh();
+            lLayerComboBox1.Layers = lWindow1.Layers;
+            lLayerComboBox1.Refresh();
         }
 
         private void btnZoomIn_Click(object sender, EventArgs e)
