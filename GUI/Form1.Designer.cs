@@ -19,6 +19,8 @@
             }
             base.Dispose(disposing);
         }
+        
+        
 
         #region Windows 窗体设计器生成的代码
 
@@ -28,7 +30,9 @@
         /// </summary>
         private void InitializeComponent()
         {
+            Lgis.LLayerGroup lLayerGroup1 = new Lgis.LLayerGroup();
             Lgis.LLayerGroup lLayerGroup2 = new Lgis.LLayerGroup();
+            Lgis.LLayerGroup lLayerGroup3 = new Lgis.LLayerGroup();
             this.btnZoomIn = new System.Windows.Forms.Button();
             this.btnZoomOut = new System.Windows.Forms.Button();
             this.btnZoomToLayer = new System.Windows.Forms.Button();
@@ -39,9 +43,9 @@
             this.btnClear = new System.Windows.Forms.Button();
             this.btnSetting = new System.Windows.Forms.Button();
             this.btnRotate = new System.Windows.Forms.Button();
+            this.lLayerComboBox1 = new Lgis.LLayerComboBox();
             this.lLayerView1 = new Lgis.LLayerTreeView();
             this.lWindow1 = new Lgis.LWindow();
-            this.lLayerComboBox1 = new Lgis.LLayerComboBox();
             this.SuspendLayout();
             // 
             // btnZoomIn
@@ -146,34 +150,37 @@
             this.btnRotate.UseVisualStyleBackColor = true;
             this.btnRotate.Click += new System.EventHandler(this.btnRotate_Click);
             // 
+            // lLayerComboBox1
+            // 
+            this.lLayerComboBox1.Layers = lLayerGroup1;
+            this.lLayerComboBox1.Location = new System.Drawing.Point(32, 341);
+            this.lLayerComboBox1.Name = "lLayerComboBox1";
+            this.lLayerComboBox1.Size = new System.Drawing.Size(143, 37);
+            this.lLayerComboBox1.TabIndex = 13;
+            this.lLayerComboBox1.SelectedItemChanged += new Lgis.LLayerComboBox.SelectedItemChangedHandler(this.lLayerComboBox1_SelectedItemChanged);
+            // 
             // lLayerView1
             // 
+            this.lLayerView1.Layers = lLayerGroup2;
             this.lLayerView1.Location = new System.Drawing.Point(12, 24);
             this.lLayerView1.Name = "lLayerView1";
             this.lLayerView1.Size = new System.Drawing.Size(189, 295);
             this.lLayerView1.TabIndex = 11;
             this.lLayerView1.Load += new System.EventHandler(this.lLayerView1_Load);
+            this.lLayerView1.AfterCheck += new Lgis.LLayerTreeView.AfterCheckEventHandler(this.lLayerView1_AfterCheck);
             // 
             // lWindow1
             // 
             this.lWindow1.BackColor = System.Drawing.Color.White;
             this.lWindow1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lWindow1.Cursor = System.Windows.Forms.Cursors.Default;
-            this.lWindow1.Layers = lLayerGroup2;
+            this.lWindow1.Layers = lLayerGroup3;
             this.lWindow1.Location = new System.Drawing.Point(211, 12);
             this.lWindow1.Name = "lWindow1";
             this.lWindow1.Scale = 1D;
             this.lWindow1.Size = new System.Drawing.Size(298, 359);
             this.lWindow1.TabIndex = 8;
             this.lWindow1.Load += new System.EventHandler(this.lWindow1_Load);
-            // 
-            // lLayerComboBox1
-            // 
-            this.lLayerComboBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lLayerComboBox1.Location = new System.Drawing.Point(32, 341);
-            this.lLayerComboBox1.Name = "lLayerComboBox1";
-            this.lLayerComboBox1.Size = new System.Drawing.Size(150, 30);
-            this.lLayerComboBox1.TabIndex = 13;
             // 
             // Form1
             // 
@@ -200,6 +207,11 @@
             this.ResumeLayout(false);
             this.PerformLayout();
 
+        }
+
+        void AfterCheck(object sender, System.Windows.Forms.TreeViewEventArgs e)
+        {
+            throw new System.NotImplementedException();
         }
 
         #endregion

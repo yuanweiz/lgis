@@ -127,7 +127,7 @@ namespace Lgis
             catch (SQLiteException e)
             {
                 cmd.Transaction.Rollback();
-                throw new SQLiteException("In InitDbTables() method");
+                throw new SQLiteException("In InitDbTables() method:"+e.ToString());
             }
         }
         public void Close()

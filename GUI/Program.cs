@@ -25,8 +25,7 @@ namespace GUI
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());
             LLayerGroup lg = ut.TestLayerView();
-            string s = LLayerComboBox.Encode(lg);
-            Console.WriteLine(s);
+            //string s = LLayerComboBox.Encode(lg);
         }
     }
 }

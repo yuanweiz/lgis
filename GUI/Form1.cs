@@ -1,4 +1,5 @@
-﻿using System;
+﻿#define DEBUG
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -25,13 +26,21 @@ namespace GUI
             lWindow1.editingLayer = vl;
 
             LPolyPolyline ppl = new LPolyPolyline();
+            LPolyline pl2 = new LPolyline();
             LPolyline pl = new LPolyline();
+            LVectorLayer vl2 = new LVectorLayer();
             pl.Add(new LPoint(1, 2));
             pl.Add(new LPoint(3, 6));
             pl.Add(new LPoint(5, 6));
             ppl.Add(pl);
-            ppl.Add(pl.Copy());
+            //ppl.Add(pl2=pl.Copy());
+            pl2 = pl.Copy();
+            pl2[0].X = -1;
+            pl2[2].Y = 10;
+            vl2.Add(pl2);
+            vl2.Name = "vl2";
             vl.Add(ppl);
+            lWindow1.Layers.Add(vl2);
             lLayerView1.Layers = lWindow1.Layers;
             lLayerView1.Refresh();
             lLayerComboBox1.Layers = lWindow1.Layers;
@@ -53,6 +62,7 @@ namespace GUI
             lWindow1.ZoomToLayer();
             lblScale.Refresh();
             lWindow1.Refresh();
+            Console.WriteLine(lWindow1.Layers.Info());
         }
 
         private void lblScale_Click(object sender, EventArgs e)
@@ -129,6 +139,19 @@ namespace GUI
         {
             Matrix3D rot = LMapTools.GetRotateMatrix(30.0, new LPoint());
             LMapTools.LinearTransform(lWindow1.editingLayer, rot);
+            lWindow1.Refresh();
+        }
+
+        private void lLayerComboBox1_SelectedItemChanged(object sender, SelectedItemChangedEventArgs e)
+        {
+            Console.WriteLine(e.Layer.Name);
+            //FIXME:Still some compatity problems
+            if (e.Layer.LayerType == LayerType.Vector)
+                lWindow1.editingLayer = (LVectorLayer)e.Layer;
+        }
+
+        private void lLayerView1_AfterCheck(object sender, TreeViewEventArgs e)
+        {
             lWindow1.Refresh();
         }
 

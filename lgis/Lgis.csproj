@@ -61,33 +61,34 @@
   <ItemGroup>
     <Compile Include="GeoDatabase\LGeoDatabase.cs" />
     <Compile Include="Geometry\Linalg.cs" />
-    <Compile Include="Geometry\LMapTools.cs" />
-    <Compile Include="Geometry\LSymbol.cs" />
-    <Compile Include="LConfig.cs" />
-    <Compile Include="LException.cs" />
-    <Compile Include="Geometry\LLayerGroup.cs" />
-    <Compile Include="Geometry\LLayer.cs" />
-    <Compile Include="Geometry\LMapObject.cs" />
-    <Compile Include="Geometry\LRasterObject.cs" />
+    <Compile Include="LEnvelope.cs" />
+    <Compile Include="UserControl\LMapTools.cs" />
+    <Compile Include="Renderer\LSymbol.cs" />
+    <Compile Include="Misc\LConfig.cs" />
+    <Compile Include="Misc\LException.cs" />
+    <Compile Include="LayerTree\LLayerGroup.cs" />
+    <Compile Include="LayerTree\LLayer.cs" />
+    <Compile Include="LMapObject.cs" />
+    <Compile Include="Raster\LRasterObject.cs" />
     <Compile Include="Geographic\LCoordinateSystem.cs" />
-    <Compile Include="UI\LLayerComboBox.cs">
+    <Compile Include="UserControl\LLayerComboBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\LLayerComboBox.Designer.cs">
+    <Compile Include="UserControl\LLayerComboBox.Designer.cs">
       <DependentUpon>LLayerComboBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\LLayerTreeView.cs">
+    <Compile Include="UserControl\LLayerTreeView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\LLayerTreeView.Designer.cs">
+    <Compile Include="UserControl\LLayerTreeView.Designer.cs">
       <DependentUpon>LLayerTreeView.cs</DependentUpon>
     </Compile>
-    <Compile Include="LUnitTest.cs" />
+    <Compile Include="Misc\LUnitTest.cs" />
     <Compile Include="Geometry\LVectorObject.cs" />
-    <Compile Include="UI\LWindow.cs">
+    <Compile Include="UserControl\LWindow.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\LWindow.Designer.cs">
+    <Compile Include="UserControl\LWindow.Designer.cs">
       <DependentUpon>LWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="MainForm.cs">
@@ -98,13 +99,13 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="UI\LLayerComboBox.resx">
+    <EmbeddedResource Include="UserControl\LLayerComboBox.resx">
       <DependentUpon>LLayerComboBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\LLayerTreeView.resx">
+    <EmbeddedResource Include="UserControl\LLayerTreeView.resx">
       <DependentUpon>LLayerTreeView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\LWindow.resx">
+    <EmbeddedResource Include="UserControl\LWindow.resx">
       <DependentUpon>LWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">

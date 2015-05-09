@@ -7,6 +7,19 @@ using System.Drawing;
 
 namespace Lgis
 {
+
+    /// <summary>
+    /// 矢量要素类的基类
+    /// </summary>
+    public class LVectorObject : LMapObject 
+    {
+        public GeometryType GeometryType { get; protected set; }
+        public LVectorObject() : base(ObjectType.Vector) { GeometryType = Lgis.GeometryType.Unknown; }
+        public LVectorObject(GeometryType t) : base(ObjectType.Vector) { GeometryType = t; }
+        public virtual IEnumerable<LPoint> Vertices { get {  yield break; } }
+        public virtual IEnumerable<LLineseg> Edges { get {  yield break; } }
+    }
+
     public class LPoint:LVectorObject
     {
         public double X
@@ -23,7 +36,8 @@ namespace Lgis
         {
             get
             {
-                return new LEnvelope(X, X, Y, Y);
+                //return new LEnvelope(X, X, Y, Y);
+                return new LEnvelope(X, Y, X, Y);
             }
         }
         public LPoint(double x = 0, double y = 0) : base(GeometryType.Point)
@@ -36,7 +50,7 @@ namespace Lgis
             X = p.X;
             Y = p.Y;
         }
-        public override string ToString()
+        public override string Info()
         {
             string s="";
             s += "(" + X.ToString() + "," + Y.ToString() + ")";
@@ -103,6 +117,15 @@ namespace Lgis
                 return l;
             }
         }
+        public override string Info()
+        {
+            string s = "Polypolyline:\n";
+            foreach (LPolyline pl in Polylines)
+            {
+                s = s + pl.Info() + "\n";
+            }
+            return s;
+        }
 
         public LPolyline this[int idx] {
             get
@@ -162,6 +185,11 @@ namespace Lgis
                 return A.Envelope + B.Envelope;
             }
         }
+        public override string Info()
+        {
+            string s = "Lineseg:\n" + A.Info() + " " + B.Info();
+            return s;
+        }
     }
 
     public class LPolyPoint : LVectorObject
@@ -192,8 +220,10 @@ namespace Lgis
             get
             {
                 LEnvelope l = LEnvelope.Null;
-                for (int i = 0; i < Count; ++i)
-                    l += Points[i].Envelope;
+                foreach (LPoint p in this.Vertices)
+                {
+                    l += p.Envelope;
+                }
                 return l;
             }
         }
@@ -231,6 +261,16 @@ namespace Lgis
             return new LPolyline(Points);
         }
 
+        public override string Info()
+        {
+            string s = "PolyPoint:\n";
+            foreach (LPoint p in this.Vertices)
+            {
+                s = s + p.Info() + "\n";
+            }
+            return s;
+        }
+
     }
 
     public class LPolyline : LPolyPoint
@@ -264,6 +304,14 @@ namespace Lgis
         public new LPolyline Copy()
         {
             return base.Copy().ToLPolyline();
+        }
+
+        public override string Info()
+        {
+            string s = "Polyline:\n";
+            foreach (LPoint p in this.Vertices)
+                s = s + p.Info() + "\n";
+            return s;
         }
     }
 
@@ -305,6 +353,14 @@ namespace Lgis
         public new LPolygon Copy()
         {
             return base.Copy().ToLPolygon();
+        }
+        public override string Info()
+        {
+            string s="Polygon:\n";
+            foreach (LPoint p in this.Vertices){
+                s = s + p.Info() + "\n";
+            }
+            return s;
         }
     }
 
@@ -366,6 +422,14 @@ namespace Lgis
             foreach (LPolygon p in Polygons ){
                 s += p.ToString();
                 s += "\n";
+            }
+            return s;
+        }
+        public override string Info()
+        {
+            string s = "Polypolygon:\n";
+            foreach (LPolygon plg in Polygons){
+                s = s + plg.Info() + "\n";
             }
             return s;
         }
