@@ -29,7 +29,21 @@ namespace Lgis
         /// <summary>
         /// Null对象是任何LMapObject对象（包括自身）的默认父对象(Owner)
         /// </summary>
-        public string Name = "NoName";
+        
+        //[0-9][A-Za-z][_] are legal characters
+        public string _Name = "NoName";
+        public string Name
+        {
+            get { return _Name; }
+            set
+            {
+                string pattern = @"[0-9A-Za-z_]";
+                if (System.Text.RegularExpressions.Regex.IsMatch(value, pattern))
+                    _Name = value;
+                else
+                    throw new Exception("Illegal name: only [0-9A-Za-z_]are allowed");
+            }
+        }
         public readonly ObjectType ObjectType=ObjectType.Unknown;
         public LMapObject Owner { get; internal set; }
         public virtual LEnvelope Envelope { 

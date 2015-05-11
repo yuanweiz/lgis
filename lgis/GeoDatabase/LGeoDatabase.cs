@@ -97,17 +97,146 @@ namespace Lgis
         public void SaveDatabase(string filename){
             
         }
-        //TODO
-        private void RestoreLayer (string layerstr){
-            LLayerGroup pwd, oldpwd;
-            pwd = oldpwd = Layers;
-            string[] layernames = layerstr.Split(';');
-            foreach (string layername in layernames)
-            {
 
+        //FIXME:ugly coding style
+        public static string LayerInfo (LLayerGroup Layers)
+        {
+            string layerinfo = "";
+            dfs(ref layerinfo, "/g" + Layers.Name , Layers);
+            //dfs(ref layerinfo, "", Layers);
+            if (layerinfo.Length > 0)
+                layerinfo = layerinfo.Substring(0, layerinfo.Length - 1);
+            return layerinfo;
+        }
+        private static void dfs(ref string layerinfo,string prefix, LLayerGroup lg)
+        {
+            if (lg==null)return;
+            //show parent node first
+            layerinfo = layerinfo + prefix + "\n";
+            for (int i = 0; i < lg.Count; ++i)
+            {
+                if (lg[i].ObjectType == ObjectType.Layer)
+                {
+                    LayerType type = ((LLayer)lg[i]).LayerType;
+                    if (type == LayerType.Raster)
+                        layerinfo = layerinfo + prefix + "/r" + lg[i].Name + "\n";
+                    else if (type == LayerType.Vector)
+                        layerinfo = layerinfo + prefix + "/v" + lg[i].Name + "\n";
+                }
+                else
+                {
+                    dfs(ref layerinfo,
+                        prefix + "/g" + lg[i].Name ,
+                        (LLayerGroup)lg[i]);
+                }
             }
         }
 
+        static int Mycount(string s, char c)
+        {
+            int cnt=0;
+            foreach (char ch in s)
+                if (c == ch) cnt++;
+            return cnt;
+        }
+        static LLayerGroup Insert(LLayerGroup lg, string item)
+        {
+            int i;
+            LMapObject mo =new LMapObject();
+            for (i = item.Length - 1; i >= 0; --i)
+                if (item[i] == '/') break;
+            string basename = item.Substring(i+1);
+            bool isgroup = false;
+            switch (basename[0])
+            {
+                case 'g':
+                    mo = new LLayerGroup();
+                    isgroup = true;
+                    break;
+                case 'v':
+                    mo = new LVectorLayer();
+                    break;
+                case 'r':
+                    mo = new LRasterObject();
+                    break;
+                default:
+                    throw new Exception("unrecognized layertype");
+            }
+            mo.Name = basename.Substring(1);
+            lg.Add(mo);
+            if (isgroup)
+                return (LLayerGroup)mo;
+            else return null;
+        }
+        public static LLayerGroup RebuildLayerTree(string layerinfo)
+        {
+            /********************************************8
+             * there should be at least one layergroup /root
+             * suppose one layer item is as below
+             * /root/a/b/c
+             * if the program goes right, inside stack should be 
+             * root, a, b ; current == c, parent == b
+            *****************************************
+             *in algorithm designing, I should follow some rules,
+             * for instance, in this function, I assume :
+             * before each loop begins, the current, parent, stack
+             * should match the status of LAST iteration
+             * 
+             * */
+            LLayerGroup root = new LLayerGroup();
+            Stack<LLayerGroup> stack = new Stack<LLayerGroup>();
+            LLayerGroup parent;
+            //define root as depth=1; /root/layer1 as depth=2, etc
+            int lastdepth = 1;
+            string[] items = layerinfo.Split('\n');
+            string item = items[0];
+            LLayerGroup current;
+            root.Name = item.Substring(2);
+
+            //init 
+            parent = null;
+            current = root;
+            //stack.Push(root);
+            for (int i = 1; i < items.Length; ++i)
+            {
+                item = items[i];
+                int depth = Mycount(items[i], '/');
+                // /a/b and /a/c are in the same level
+                if (depth == lastdepth)
+                    //parent node remains unchanged
+                    current = Insert(parent, item);
+
+                /***************************
+                 /a/b -> /a/b/c
+                  | |       | |
+                  p c       p c p:parent, c:current
+                 * **************************/
+                else if (depth > lastdepth)
+                {
+                    lastdepth = depth;
+                    stack.Push(parent);
+                    //FIXME:Really correct?
+                    parent = current;
+                    current = Insert(parent, item);
+                }
+                /***********************************
+                 /a/b/c -> /a/d
+                    | |     | |
+                 *  p c     p c
+                ****************************/
+                else
+                {
+                    lastdepth = depth;
+                    for (int j = 0; j < lastdepth - depth; ++j)
+                    {
+                        stack.Pop();
+                    }
+                    parent = stack.Peek();
+                    current = Insert(parent, item);
+                }
+            }
+            return root;
+        }
         /// <summary>
         /// This method will overwrite the file to an empty 0-byte database
         /// </summary>

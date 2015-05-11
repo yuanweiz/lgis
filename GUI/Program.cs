@@ -23,9 +23,14 @@ namespace GUI
             LUnitTest ut = new LUnitTest();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            //Application.Run(new Form1());
             LLayerGroup lg = ut.TestLayerView();
             //string s = LLayerComboBox.Encode(lg);
+            string s = LGeoDatabase.LayerInfo(lg);
+            Console.WriteLine(s);
+            LLayerGroup recover = LGeoDatabase.RebuildLayerTree(s);
+            Console.WriteLine(LGeoDatabase.LayerInfo(recover));
+            Console.ReadLine();
         }
     }
 }
