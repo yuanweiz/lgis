@@ -24,13 +24,19 @@ namespace GUI
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             //Application.Run(new Form1());
-            LLayerGroup lg = ut.TestLayerView();
+            //LLayerGroup lg = ut.TestLayerView();
+            //LGeoDatabase db = new LGeoDatabase("D:\\test.db");
+            //db.SaveDatabase("");
+            UInt32 a = 0x12345678;
+            Console.WriteLine(LShapefileReader.ShiftEndian(a));
+
             //string s = LLayerComboBox.Encode(lg);
-            string s = LGeoDatabase.LayerInfo(lg);
-            Console.WriteLine(s);
-            LLayerGroup recover = LGeoDatabase.RebuildLayerTree(s);
-            Console.WriteLine(LGeoDatabase.LayerInfo(recover));
+            //string s = LGeoDatabase.LayerInfo(lg);
+            //Console.WriteLine(s);
+            //LLayerGroup recover = LGeoDatabase.RebuildLayerTree(s);
+            //Console.WriteLine(LGeoDatabase.LayerInfo(recover));
             Console.ReadLine();
+
         }
     }
 }

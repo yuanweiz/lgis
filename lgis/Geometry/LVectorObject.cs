@@ -18,6 +18,16 @@ namespace Lgis
         public LVectorObject(GeometryType t) : base(ObjectType.Vector) { GeometryType = t; }
         public virtual IEnumerable<LPoint> Vertices { get {  yield break; } }
         public virtual IEnumerable<LLineseg> Edges { get {  yield break; } }
+
+        public virtual int BlobSize
+        {
+            get { return -1; }
+        }
+        internal virtual byte[] AsBlob()
+        {
+            byte[] bytes=new byte[0];
+            return bytes;
+        }
     }
 
     public class LPoint:LVectorObject
@@ -70,6 +80,26 @@ namespace Lgis
         public LPoint Copy()
         {
             return new LPoint(this);
+        }
+
+        internal override byte[] AsBlob()
+        {
+            byte[] bytes = new byte[BlobSize];
+            unsafe
+            {
+                fixed (byte* pbyte = bytes)
+                {
+
+                }
+            }
+            return bytes;
+        }
+        public override int BlobSize
+        {
+            get
+            {
+                return 2 * sizeof(double);
+            }
         }
     }
 
@@ -177,6 +207,7 @@ namespace Lgis
             this.A = A;
             this.B = B;
         }
+
         public LPoint A, B;
         public override LEnvelope Envelope
         {

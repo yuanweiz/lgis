@@ -95,10 +95,18 @@ namespace Lgis
 
         //even if the file already exists, overwrite it 
         public void SaveDatabase(string filename){
-            
+            SQLiteParameter param = new SQLiteParameter();
+            LLineseg ls = new LLineseg(new LPoint(1,2),new LPoint(2,3));
+            param.Value = (LMapObject)ls;
+            param.DbType = DbType.Binary;
+            cmd.CommandText = "insert into [metadata] values(\"blob\",(?));";
+            cmd.Parameters.Add(param);
+            cmd.ExecuteNonQuery();
         }
 
-        //FIXME:ugly coding style
+        
+
+        #region Save/Load layertree structure
         public static string LayerInfo (LLayerGroup Layers)
         {
             string layerinfo = "";
@@ -237,6 +245,9 @@ namespace Lgis
             }
             return root;
         }
+
+        #endregion
+
         /// <summary>
         /// This method will overwrite the file to an empty 0-byte database
         /// </summary>
@@ -282,6 +293,7 @@ namespace Lgis
                 MessageBox.Show(e.ToString());
             }
         }
+        
         #endregion
     }
 
