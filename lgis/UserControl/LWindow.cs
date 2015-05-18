@@ -177,7 +177,6 @@ namespace Lgis
 
             // some alignment around the layer
             Scale *= .95;
-
         }
 
         public void ZoomToLayer( LLayerGroup l)

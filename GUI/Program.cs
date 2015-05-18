@@ -23,13 +23,14 @@ namespace GUI
             LUnitTest ut = new LUnitTest();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new Form1());
+            Application.Run(new Form1());
             //LLayerGroup lg = ut.TestLayerView();
             //LGeoDatabase db = new LGeoDatabase("D:\\test.db");
             //db.SaveDatabase("");
 
             string shapefile=@"C:\Program Files\ESRI\MapObjects2\Samples\Data\USA\STATES.SHP";
-            LShapefileReader sr = new LShapefileReader(shapefile);
+            //LShapefileReader sr = new LShapefileReader(shapefile);
+            
             //string s = LLayerComboBox.Encode(lg);
             //string s = LGeoDatabase.LayerInfo(lg);
             //Console.WriteLine(s);

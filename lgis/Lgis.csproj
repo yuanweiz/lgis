@@ -63,6 +63,9 @@
     <Compile Include="GeoDatabase\LGeoDatabase.cs" />
     <Compile Include="GeoDatabase\LShapefileReader.cs" />
     <Compile Include="Geometry\Linalg.cs" />
+    <Compile Include="Geometry\LPoint.cs" />
+    <Compile Include="Geometry\LPolygon.cs" />
+    <Compile Include="Geometry\LPolyline.cs" />
     <Compile Include="LEnvelope.cs" />
     <Compile Include="UserControl\LMapTools.cs" />
     <Compile Include="Renderer\LSymbol.cs" />

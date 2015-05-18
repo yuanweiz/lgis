@@ -33,6 +33,9 @@ namespace GUI
             pl.Add(new LPoint(3, 6));
             pl.Add(new LPoint(5, 6));
             ppl.Add(pl);
+            
+            LShapefileReader sr = new LShapefileReader(@"C:\Program Files\ESRI\MapObjects2\Samples\Data\USA\STATES.SHP");
+            lWindow1.Layers.Add(sr.Layer);
             //ppl.Add(pl2=pl.Copy());
             pl2 = pl.Copy();
             pl2[0].X = -1;
@@ -60,7 +63,6 @@ namespace GUI
         private void btnZoomToLayer_Click(object sender, EventArgs e)
         {
             lWindow1.ZoomToLayer();
-            lblScale.Refresh();
             lWindow1.Refresh();
             Console.WriteLine(lWindow1.Layers.Info());
         }
@@ -68,16 +70,6 @@ namespace GUI
         private void lblScale_Click(object sender, EventArgs e)
         {
 
-        }
-
-        private void lblScale_Paint(object sender, PaintEventArgs e)
-        {
-            lblScale.Text = "Scale:" + lWindow1.Scale.ToString();
-        }
-
-        private void lblCoordinate_Paint(object sender, PaintEventArgs e)
-        {
-            lblCoordinate.Text = "(X,Y)=" + lWindow1.ToGeographicCoordinate(mouseLocation).ToString();
         }
 
         private void btnStartEditting_Click(object sender, EventArgs e)

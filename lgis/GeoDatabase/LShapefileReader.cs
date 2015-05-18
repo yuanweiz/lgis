@@ -59,7 +59,10 @@ namespace Lgis
                     int uid = ShiftEndian(shpReader.ReadInt32());
                     shpReader.BaseStream.Seek(4L, SeekOrigin.Current);// length, unused
                     //getblob
-                    LVectorObject vo = ToLVectorObject(shpReader.ReadBytes(recordLength));
+                    byte[] blob = shpReader.ReadBytes(recordLength);
+                    LVectorObject vo;
+                    vo = ToLVectorObject(blob);
+                    //FIXME:unnecesary?
                     Layer.Add(vo);
                 }
             }
@@ -72,19 +75,39 @@ namespace Lgis
         LVectorObject ToLVectorObject(byte[] blob)
         {
             BinaryReader blobReader = new BinaryReader(new MemoryStream(blob));
-            LVectorObject vo;
             switch (GeometryType)
             {
                 case  Lgis.GeometryType.Polygon:
-                    vo = new LPolygon();
-                    break;
+                    LPolyPolygon polypolygon = new LPolyPolygon();
+                    LPolygon polygon;
+                    LPoint point;
+                    blobReader.BaseStream.Seek(36L, SeekOrigin.Begin);
+                    int nParts = blobReader.ReadInt32();
+                    int nPoints = blobReader.ReadInt32();
+                    int[] parts = new int[nParts + 1];
+                    for (int i = 0; i < nParts; ++i)
+                        parts[i] = blobReader.ReadInt32();
+                    parts[nParts] = nPoints;
+                    for (int i = 0; i < nParts; ++i)
+                    {
+                        polygon = new LPolygon();
+                        for (int j = parts[i]; j < parts[i+1]; ++j)
+                        {
+                            byte[] pointBlob;
+                            pointBlob = blobReader.ReadBytes(2 * sizeof(double));
+                            point = new LPoint(pointBlob);
+                            polygon.Add(point);
+                        }
+                        polypolygon.Add(polygon);
+                    }
+                    return polypolygon;
                 default:
                     throw new Exception("NotImplemented");
             }
-            return vo;
         }
 
-        public static UInt32 ShiftEndian(UInt32 i){
+        public static UInt32 ShiftEndian(UInt32 i)
+        {
             return ((i << 24) & 0xff000000) |
                 ((i << 8) & 0x00ff0000) |
                 ((i >> 8) & 0x0000ff00) |
@@ -93,9 +116,9 @@ namespace Lgis
         public static Int32 ShiftEndian(Int32 i)
         {
             UInt32 code = ShiftEndian((UInt32)i);
-            return (Int32 )code;
+            return (Int32)code;
         }
-        
+
     }
 }
 /*

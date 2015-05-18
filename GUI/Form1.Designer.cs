@@ -38,8 +38,6 @@
             this.btnZoomToLayer = new System.Windows.Forms.Button();
             this.btnStartEditing = new System.Windows.Forms.Button();
             this.btnStopEditing = new System.Windows.Forms.Button();
-            this.lblCoordinate = new System.Windows.Forms.Label();
-            this.lblScale = new System.Windows.Forms.Label();
             this.btnClear = new System.Windows.Forms.Button();
             this.btnSetting = new System.Windows.Forms.Button();
             this.btnRotate = new System.Windows.Forms.Button();
@@ -50,7 +48,7 @@
             // 
             // btnZoomIn
             // 
-            this.btnZoomIn.Location = new System.Drawing.Point(515, 24);
+            this.btnZoomIn.Location = new System.Drawing.Point(696, 24);
             this.btnZoomIn.Name = "btnZoomIn";
             this.btnZoomIn.Size = new System.Drawing.Size(75, 23);
             this.btnZoomIn.TabIndex = 1;
@@ -60,7 +58,7 @@
             // 
             // btnZoomOut
             // 
-            this.btnZoomOut.Location = new System.Drawing.Point(515, 63);
+            this.btnZoomOut.Location = new System.Drawing.Point(696, 63);
             this.btnZoomOut.Name = "btnZoomOut";
             this.btnZoomOut.Size = new System.Drawing.Size(75, 23);
             this.btnZoomOut.TabIndex = 2;
@@ -70,7 +68,7 @@
             // 
             // btnZoomToLayer
             // 
-            this.btnZoomToLayer.Location = new System.Drawing.Point(515, 107);
+            this.btnZoomToLayer.Location = new System.Drawing.Point(696, 107);
             this.btnZoomToLayer.Name = "btnZoomToLayer";
             this.btnZoomToLayer.Size = new System.Drawing.Size(75, 34);
             this.btnZoomToLayer.TabIndex = 3;
@@ -80,7 +78,7 @@
             // 
             // btnStartEditing
             // 
-            this.btnStartEditing.Location = new System.Drawing.Point(515, 160);
+            this.btnStartEditing.Location = new System.Drawing.Point(696, 160);
             this.btnStartEditing.Name = "btnStartEditing";
             this.btnStartEditing.Size = new System.Drawing.Size(75, 36);
             this.btnStartEditing.TabIndex = 6;
@@ -90,7 +88,7 @@
             // 
             // btnStopEditing
             // 
-            this.btnStopEditing.Location = new System.Drawing.Point(515, 211);
+            this.btnStopEditing.Location = new System.Drawing.Point(696, 211);
             this.btnStopEditing.Name = "btnStopEditing";
             this.btnStopEditing.Size = new System.Drawing.Size(75, 38);
             this.btnStopEditing.TabIndex = 7;
@@ -98,31 +96,9 @@
             this.btnStopEditing.UseVisualStyleBackColor = true;
             this.btnStopEditing.Click += new System.EventHandler(this.btnStopEditing_Click);
             // 
-            // lblCoordinate
-            // 
-            this.lblCoordinate.AutoSize = true;
-            this.lblCoordinate.Location = new System.Drawing.Point(157, 400);
-            this.lblCoordinate.Name = "lblCoordinate";
-            this.lblCoordinate.Size = new System.Drawing.Size(41, 12);
-            this.lblCoordinate.TabIndex = 5;
-            this.lblCoordinate.Text = "label1";
-            this.lblCoordinate.Click += new System.EventHandler(this.lblCoordinate_Click);
-            this.lblCoordinate.Paint += new System.Windows.Forms.PaintEventHandler(this.lblCoordinate_Paint);
-            // 
-            // lblScale
-            // 
-            this.lblScale.AutoSize = true;
-            this.lblScale.Location = new System.Drawing.Point(12, 400);
-            this.lblScale.Name = "lblScale";
-            this.lblScale.Size = new System.Drawing.Size(41, 12);
-            this.lblScale.TabIndex = 4;
-            this.lblScale.Text = "Scale:";
-            this.lblScale.Click += new System.EventHandler(this.lblScale_Click);
-            this.lblScale.Paint += new System.Windows.Forms.PaintEventHandler(this.lblScale_Paint);
-            // 
             // btnClear
             // 
-            this.btnClear.Location = new System.Drawing.Point(515, 267);
+            this.btnClear.Location = new System.Drawing.Point(696, 267);
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(75, 23);
             this.btnClear.TabIndex = 9;
@@ -132,7 +108,7 @@
             // 
             // btnSetting
             // 
-            this.btnSetting.Location = new System.Drawing.Point(515, 306);
+            this.btnSetting.Location = new System.Drawing.Point(696, 306);
             this.btnSetting.Name = "btnSetting";
             this.btnSetting.Size = new System.Drawing.Size(75, 23);
             this.btnSetting.TabIndex = 10;
@@ -142,7 +118,7 @@
             // 
             // btnRotate
             // 
-            this.btnRotate.Location = new System.Drawing.Point(515, 348);
+            this.btnRotate.Location = new System.Drawing.Point(696, 348);
             this.btnRotate.Name = "btnRotate";
             this.btnRotate.Size = new System.Drawing.Size(75, 23);
             this.btnRotate.TabIndex = 12;
@@ -152,33 +128,37 @@
             // 
             // lLayerComboBox1
             // 
+            this.lLayerComboBox1.LabelText = "Active Layer";
+            lLayerGroup1.Name = "NoName";
             this.lLayerComboBox1.Layers = lLayerGroup1;
-            this.lLayerComboBox1.Location = new System.Drawing.Point(32, 341);
+            this.lLayerComboBox1.Location = new System.Drawing.Point(14, 526);
             this.lLayerComboBox1.Name = "lLayerComboBox1";
-            this.lLayerComboBox1.Size = new System.Drawing.Size(143, 37);
+            this.lLayerComboBox1.Size = new System.Drawing.Size(188, 48);
             this.lLayerComboBox1.TabIndex = 13;
             this.lLayerComboBox1.SelectedItemChanged += new Lgis.LLayerComboBox.SelectedItemChangedHandler(this.lLayerComboBox1_SelectedItemChanged);
             // 
             // lLayerView1
             // 
+            lLayerGroup2.Name = "NoName";
             this.lLayerView1.Layers = lLayerGroup2;
             this.lLayerView1.Location = new System.Drawing.Point(12, 24);
             this.lLayerView1.Name = "lLayerView1";
-            this.lLayerView1.Size = new System.Drawing.Size(189, 295);
+            this.lLayerView1.Size = new System.Drawing.Size(189, 496);
             this.lLayerView1.TabIndex = 11;
-            this.lLayerView1.Load += new System.EventHandler(this.lLayerView1_Load);
             this.lLayerView1.AfterCheck += new Lgis.LLayerTreeView.AfterCheckEventHandler(this.lLayerView1_AfterCheck);
+            this.lLayerView1.Load += new System.EventHandler(this.lLayerView1_Load);
             // 
             // lWindow1
             // 
             this.lWindow1.BackColor = System.Drawing.Color.White;
             this.lWindow1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lWindow1.Cursor = System.Windows.Forms.Cursors.Default;
+            lLayerGroup3.Name = "NoName";
             this.lWindow1.Layers = lLayerGroup3;
-            this.lWindow1.Location = new System.Drawing.Point(211, 12);
+            this.lWindow1.Location = new System.Drawing.Point(207, 12);
             this.lWindow1.Name = "lWindow1";
             this.lWindow1.Scale = 1D;
-            this.lWindow1.Size = new System.Drawing.Size(298, 359);
+            this.lWindow1.Size = new System.Drawing.Size(483, 521);
             this.lWindow1.TabIndex = 8;
             this.lWindow1.Load += new System.EventHandler(this.lWindow1_Load);
             // 
@@ -186,7 +166,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(621, 413);
+            this.ClientSize = new System.Drawing.Size(774, 586);
             this.Controls.Add(this.lLayerComboBox1);
             this.Controls.Add(this.btnRotate);
             this.Controls.Add(this.lLayerView1);
@@ -195,8 +175,6 @@
             this.Controls.Add(this.lWindow1);
             this.Controls.Add(this.btnStopEditing);
             this.Controls.Add(this.btnStartEditing);
-            this.Controls.Add(this.lblCoordinate);
-            this.Controls.Add(this.lblScale);
             this.Controls.Add(this.btnZoomToLayer);
             this.Controls.Add(this.btnZoomOut);
             this.Controls.Add(this.btnZoomIn);
@@ -205,7 +183,6 @@
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load_1);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -222,8 +199,6 @@
         private System.Windows.Forms.Button btnStartEditing;
         private System.Windows.Forms.Button btnStopEditing;
         private Lgis.LWindow lWindow1;
-        private System.Windows.Forms.Label lblCoordinate;
-        private System.Windows.Forms.Label lblScale;
         private System.Windows.Forms.Button btnClear;
         private System.Windows.Forms.Button btnSetting;
         private Lgis.LLayerTreeView lLayerView1;
