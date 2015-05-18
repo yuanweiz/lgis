@@ -8,4 +8,8 @@ namespace Lgis
     class LOutOfRangeException : Exception 
     {
     }
+    class LIOException : System.IO.IOException
+    {
+        public LIOException(string s) : base(s) { }
+    }
 }

@@ -13,7 +13,16 @@ namespace Lgis
     /// <summary>
     /// 矢量要素类的类型
     /// </summary>
-    public enum GeometryType { Point, Polygon, Polyline, PolyPolyline, PolyPolygon, Polypoint,Rectangle,Unknown };
+    public enum GeometryType { 
+        Null = 0,
+        Point = 1, 
+        Polyline =3, 
+        Polygon = 5, 
+        Polypoint = 8,
+        PolyPolyline, 
+        PolyPolygon, 
+        Rectangle,
+        Unknown };
 
     /// <summary>
     /// 提供了图层与要素类的基类

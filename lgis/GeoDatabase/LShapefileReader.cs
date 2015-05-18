@@ -1,26 +1,104 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Data;
 
 namespace Lgis
 {
     public class LShapefileReader
     {
+        
+        string filename;
+        public LVectorLayer Layer = new LVectorLayer();
+        BinaryReader shpReader,shxReader;
+        public readonly GeometryType GeometryType;
+        int length;
+        delegate string strmap(string s);
+        strmap BaseName = s => s.Substring(0, s.LastIndexOf('.'));
+        public LShapefileReader(string filename)
+        {
+            this.filename = filename;
+            try
+            {
+                FileInfo fileInfo = new FileInfo(filename);
+                int nrecord;
+                string Basename = BaseName(fileInfo.FullName);
+                if (!File.Exists(Basename + ".shx") || !File.Exists(Basename + ".dbf"))
+                    throw new LIOException("No .shx or .dbf found");
+                
+                Console.WriteLine(Basename);
+                length = (int)fileInfo.Length;
+                shpReader = new BinaryReader(
+                    new FileStream(filename, FileMode.Open,FileAccess.Read));
+                shxReader = new BinaryReader(
+                    new FileStream(Basename+".shx",FileMode.Open,FileAccess.Read));
+                fileInfo = new FileInfo(Basename + ".shx");
+                nrecord = ((int)fileInfo.Length - 100) / 8;
+                shxReader.BaseStream.Seek(24L, SeekOrigin.Begin);
+                int code = shpReader.ReadInt32();
+                shpReader.BaseStream.Seek(32L, SeekOrigin.Begin);
+                int type = shpReader.ReadInt32();
+                if (Enum.IsDefined(typeof(GeometryType), type))
+                    GeometryType = (GeometryType)type;
+                else
+                {
+                    GeometryType = GeometryType.Unknown;
+                    throw new LIOException("Unknown Shapefile format");
+                }
+                Console.WriteLine(ShiftEndian(code));
+                Console.WriteLine(nrecord);
+                //Ready to read record header
+                shxReader.BaseStream.Seek(100L, SeekOrigin.Begin);
+                shpReader.BaseStream.Seek(100L, SeekOrigin.Begin);
+                for (int i = 0; i < nrecord; ++i)
+                {
+                    int offset = ShiftEndian(shxReader.ReadInt32());
+                    int recordLength = ShiftEndian(shxReader.ReadInt32()) * 2; // ESRI shp uses 16-bit DWORD as size unit
+                    int uid = ShiftEndian(shpReader.ReadInt32());
+                    shpReader.BaseStream.Seek(4L, SeekOrigin.Current);// length, unused
+                    //getblob
+                    LVectorObject vo = ToLVectorObject(shpReader.ReadBytes(recordLength));
+                    Layer.Add(vo);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+
+        LVectorObject ToLVectorObject(byte[] blob)
+        {
+            BinaryReader blobReader = new BinaryReader(new MemoryStream(blob));
+            LVectorObject vo;
+            switch (GeometryType)
+            {
+                case  Lgis.GeometryType.Polygon:
+                    vo = new LPolygon();
+                    break;
+                default:
+                    throw new Exception("NotImplemented");
+            }
+            return vo;
+        }
+
         public static UInt32 ShiftEndian(UInt32 i){
             return ((i << 24) & 0xff000000) |
                 ((i << 8) & 0x00ff0000) |
                 ((i >> 8) & 0x0000ff00) |
                 ((i >> 24) & 0x000000ff);
         }
+        public static Int32 ShiftEndian(Int32 i)
+        {
+            UInt32 code = ShiftEndian((UInt32)i);
+            return (Int32 )code;
+        }
+        
     }
 }
 /*
- *public uint BigtoLittle32(uint A)
-{
-	return ((((uint)(A) & 0xff000000) >> 24) | (((uint)(A) & 0x00ff0000) >> 8) | (((uint)(A) & 0x0000ff00) << 8) | (((uint)(A) & 0x000000ff) << 24));
-}
-
 public List<GayData.GayGeometryObject.GayPoint> readpoint(BinaryReader br)
 {
 	GayData.GayGeometryObject.GayPoint p = new GayData.GayGeometryObject.GayPoint();
@@ -116,9 +194,6 @@ public List<GayData.GayGeometryObject.GayMultiPoint> readmultiPoint(BinaryReader
 	return multipoints;
 
 }
-长弓牧影  15:44:49
-
-	长弓牧影  15:44:53
 public List<GayData.GayGeometryObject.GayPolyline> readpolyline(BinaryReader br)
 {
 	uint n;

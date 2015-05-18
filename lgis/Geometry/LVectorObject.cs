@@ -82,25 +82,6 @@ namespace Lgis
             return new LPoint(this);
         }
 
-        internal override byte[] AsBlob()
-        {
-            byte[] bytes = new byte[BlobSize];
-            unsafe
-            {
-                fixed (byte* pbyte = bytes)
-                {
-
-                }
-            }
-            return bytes;
-        }
-        public override int BlobSize
-        {
-            get
-            {
-                return 2 * sizeof(double);
-            }
-        }
     }
 
     public class LPolyPolyline : LVectorObject
