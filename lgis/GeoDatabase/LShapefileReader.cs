@@ -24,17 +24,18 @@ namespace Lgis
             {
                 FileInfo fileInfo = new FileInfo(filename);
                 int nrecord;
-                string Basename = BaseName(fileInfo.FullName);
-                if (!File.Exists(Basename + ".shx") || !File.Exists(Basename + ".dbf"))
+                string basename = BaseName(fileInfo.FullName);
+                Layer.Name = BaseName(fileInfo.Name);
+                if (!File.Exists(basename + ".shx") || !File.Exists(basename + ".dbf"))
                     throw new LIOException("No .shx or .dbf found");
                 
-                Console.WriteLine(Basename);
+                Console.WriteLine(basename);
                 length = (int)fileInfo.Length;
                 shpReader = new BinaryReader(
                     new FileStream(filename, FileMode.Open,FileAccess.Read));
                 shxReader = new BinaryReader(
-                    new FileStream(Basename+".shx",FileMode.Open,FileAccess.Read));
-                fileInfo = new FileInfo(Basename + ".shx");
+                    new FileStream(basename+".shx",FileMode.Open,FileAccess.Read));
+                fileInfo = new FileInfo(basename + ".shx");
                 nrecord = ((int)fileInfo.Length - 100) / 8;
                 shxReader.BaseStream.Seek(24L, SeekOrigin.Begin);
                 int code = shpReader.ReadInt32();
@@ -78,6 +79,7 @@ namespace Lgis
             switch (GeometryType)
             {
                 case  Lgis.GeometryType.Polygon:
+                case Lgis.GeometryType.PolyPolygon:
                     LPolyPolygon polypolygon = new LPolyPolygon();
                     LPolygon polygon;
                     LPoint point;
@@ -101,6 +103,43 @@ namespace Lgis
                         polypolygon.Add(polygon);
                     }
                     return polypolygon;
+                case Lgis.GeometryType.Polyline:
+                case Lgis.GeometryType.PolyPolyline:
+                    LPolyPolygon polypolyline = new LPolyPolygon();
+                    LPolygon polyline;
+                    //LPoint point;
+                    blobReader.BaseStream.Seek(36L, SeekOrigin.Begin);
+                     nParts = blobReader.ReadInt32();
+                     nPoints = blobReader.ReadInt32();
+                     parts = new int[nParts + 1];
+                    for (int i = 0; i < nParts; ++i)
+                        parts[i] = blobReader.ReadInt32();
+                    parts[nParts] = nPoints;
+                    for (int i = 0; i < nParts; ++i)
+                    {
+                        polyline = new LPolygon();
+                        for (int j = parts[i]; j < parts[i+1]; ++j)
+                        {
+                            byte[] pointBlob;
+                            pointBlob = blobReader.ReadBytes(2 * sizeof(double));
+                            point = new LPoint(pointBlob);
+                            polyline.Add(point);
+                        }
+                        polypolyline.Add(polyline);
+                    }
+                    return polypolyline;
+                case Lgis.GeometryType.Polypoint:
+                    LPolyPoint polypoint = new LPolyPoint();
+                    blobReader.BaseStream.Seek(36L, SeekOrigin.Begin);
+                    nPoints = blobReader.ReadInt32();
+                    for (int i = 0; i < nPoints; ++i)
+                    {
+                        polypoint.Add( new LPoint(blobReader.ReadBytes(sizeof(double) * 2)));
+                    }
+                    return polypoint;
+                case Lgis.GeometryType.Point:
+                    blobReader.BaseStream.Seek(4L, SeekOrigin.Begin);
+                    return new LPoint(blobReader.ReadBytes(2*sizeof(double)));
                 default:
                     throw new Exception("NotImplemented");
             }

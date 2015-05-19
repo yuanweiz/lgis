@@ -124,6 +124,16 @@ namespace Lgis
             }
             return s;
         }
+        public override LEnvelope Envelope
+        {
+            get
+            {
+                LEnvelope envelope = LEnvelope.Null;
+                foreach (LPoint p in this.Vertices)
+                    envelope += p.Envelope;
+                return envelope;
+            }
+        }
     }
 
 }

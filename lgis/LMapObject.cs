@@ -16,11 +16,11 @@ namespace Lgis
     public enum GeometryType { 
         Null = 0,
         Point = 1, 
-        Polyline =3, 
-        Polygon = 5, 
+        PolyPolyline = 3, 
+        PolyPolygon = 5, 
         Polypoint = 8,
-        PolyPolyline, 
-        PolyPolygon, 
+        Polyline, 
+        Polygon, 
         Rectangle,
         Unknown };
 

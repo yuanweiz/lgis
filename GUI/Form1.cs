@@ -36,6 +36,10 @@ namespace GUI
             
             LShapefileReader sr = new LShapefileReader(@"C:\Program Files\ESRI\MapObjects2\Samples\Data\USA\STATES.SHP");
             lWindow1.Layers.Add(sr.Layer);
+            sr = new LShapefileReader(@"C:\Program Files\ESRI\MapObjects2\Samples\Data\USA\USHIGH.SHP");
+            lWindow1.Layers.Add(sr.Layer);
+            sr = new LShapefileReader(@"C:\Program Files\ESRI\MapObjects2\Samples\Data\USA\CAPITALS.SHP");
+            lWindow1.Layers.Add(sr.Layer);
             //ppl.Add(pl2=pl.Copy());
             pl2 = pl.Copy();
             pl2[0].X = -1;
@@ -64,7 +68,6 @@ namespace GUI
         {
             lWindow1.ZoomToLayer();
             lWindow1.Refresh();
-            Console.WriteLine(lWindow1.Layers.Info());
         }
 
         private void lblScale_Click(object sender, EventArgs e)

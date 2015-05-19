@@ -28,7 +28,7 @@ namespace GUI
             //LGeoDatabase db = new LGeoDatabase("D:\\test.db");
             //db.SaveDatabase("");
 
-            string shapefile=@"C:\Program Files\ESRI\MapObjects2\Samples\Data\USA\STATES.SHP";
+            //string shapefile=@"C:\Program Files\ESRI\MapObjects2\Samples\Data\USA\STATES.SHP";
             //LShapefileReader sr = new LShapefileReader(shapefile);
             
             //string s = LLayerComboBox.Encode(lg);
