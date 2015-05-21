@@ -6,26 +6,6 @@ using System.Text;
 namespace Lgis
 {
     /// <summary>
-    /// LMapObject的类型,Vector和Raster是实体对象，Layer与LayerGroup是容器类型
-    /// </summary>
-    public enum ObjectType { Vector, Raster, Layer,LayerGroup, Unknown };
-
-    /// <summary>
-    /// 矢量要素类的类型
-    /// </summary>
-    public enum GeometryType { 
-        Null = 0,
-        Point = 1, 
-        PolyPolyline = 3, 
-        PolyPolygon = 5, 
-        Polypoint = 8,
-        Polyline, 
-        Polygon, 
-        Rectangle,
-        Unknown 
-    };
-
-    /// <summary>
     /// 提供了图层与要素类的基类
     /// </summary>
     public class LMapObject

@@ -8,13 +8,18 @@ namespace Lgis
 {
     public abstract class LRenderer
     {
-        virtual public void Render (Graphics g){
-            throw new LNotImplementedException("Can't render this kind of symbol");
-        }
+
     }
     public class LSimpleRenderer : LRenderer
     {
+    }
+    public class LPointRenderer : LRenderer
+    {
+        public LPointSymbol Symbol;
+        public void Render(Graphics g, PointF p)
+        {
 
+        }
     }
 
 }

@@ -6,26 +6,6 @@ using System.Drawing;
 
 namespace Lgis
 {
-
-    public enum SymbolType { Line, Polygon, Point };
-    public enum SymbolStyle
-    {
-        Unknown,
-
-        //Line
-        SolidLine,
-        DashLine,
-        DotLine,
-
-        //Point marker
-        ImageMarker,
-        CircleMarker,
-
-        //Polygon
-        TransparentFill,
-        SolidColorFill
-    }
-    
     public abstract class LSymbol
     {
         public readonly SymbolType Type;
@@ -83,5 +63,9 @@ namespace Lgis
         {
             
         }
+    }
+    public class LPolygonSymbol : LSymbol
+    {
+        public LPolygonSymbol() : base(SymbolType.Polygon) { }
     }
 }

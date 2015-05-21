@@ -31,6 +31,7 @@ namespace Lgis
     }
 
 
+
     public class LLineseg : LVectorObject
     {
         public override IEnumerable<LPoint> Vertices

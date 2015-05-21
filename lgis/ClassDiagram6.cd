@@ -59,7 +59,7 @@
   <Class Name="Lgis.LVectorObject" Collapsed="true">
     <Position X="10.75" Y="1.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AQAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAA=</HashCode>
+      <HashCode>QQAAgAAAAAAAAAAAAAAAAAAAAAAAAAAIEAAAAAAAAAA=</HashCode>
       <FileName>Geometry\LVectorObject.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -67,14 +67,14 @@
     <Position X="11.75" Y="3.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAACAQAEAAAAAAgBAAAAAAAAAAEAAYAA=</HashCode>
-      <FileName>Geometry\LVectorObject.cs</FileName>
+      <FileName>Geometry\LPoint.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Lgis.LPolyPolyline" Collapsed="true">
     <Position X="16.25" Y="3.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAIAgAAAAAAAAACECAACAAQAAAAAAAAAGAAAAEAAAAA=</HashCode>
-      <FileName>Geometry\LVectorObject.cs</FileName>
+      <FileName>Geometry\LPolyline.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Lgis.LLineseg" Collapsed="true">
@@ -88,28 +88,28 @@
     <Position X="4" Y="3.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAIAAAAAAAAAgACACAAAAAQABgAAAAAAGAAAAEEAAAA=</HashCode>
-      <FileName>Geometry\LVectorObject.cs</FileName>
+      <FileName>Geometry\LPoint.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Lgis.LPolyline" Collapsed="true">
     <Position X="2.75" Y="4.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAgAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAEAAAAA=</HashCode>
-      <FileName>Geometry\LVectorObject.cs</FileName>
+      <FileName>Geometry\LPolyline.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Lgis.LPolygon" Collapsed="true">
     <Position X="5" Y="4.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAgAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAEAAAAA=</HashCode>
-      <FileName>Geometry\LVectorObject.cs</FileName>
+      <FileName>Geometry\LPolygon.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Lgis.LPolyPolygon" Collapsed="true">
     <Position X="9.5" Y="3.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAIAgAAAAAAAAAAECAAAAAQAAAAAAAABGAAAAEAAAAA=</HashCode>
-      <FileName>Geometry\LVectorObject.cs</FileName>
+      <HashCode>AAIAgAAAAAAAAACECAAAAAQAAAAAAAABGAAAAEAAAAA=</HashCode>
+      <FileName>Geometry\LPolygon.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Lgis.LRectangle" Collapsed="true">
@@ -129,7 +129,7 @@
   <Class Name="Lgis.LVectorLayer" Collapsed="true">
     <Position X="23" Y="3.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>ACIAAAAAAAAAABCQCAAAAAQAQAAAAAAACAAAAEAAAAA=</HashCode>
+      <HashCode>ACIAAAAAAAAAABCQCAAAAAQAQAAAAAAACACAAEAAAAA=</HashCode>
       <FileName>LayerTree\LLayer.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -154,13 +154,6 @@
     <TypeIdentifier>
       <HashCode>AAAAAACABAAAAACAACAAKEQQAAQAAAAAAIIAAEAAAAA=</HashCode>
       <FileName>LMapObject.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Lgis.MainForm" Collapsed="true">
-    <Position X="27.25" Y="3.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>BEBAABAABCAAAAAAAACAEOACoCAAAACAgMAAIAAAAAA=</HashCode>
-      <FileName>MainForm.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Lgis.LConfig" Collapsed="true">
@@ -236,7 +229,7 @@
   <Class Name="Lgis.LWindow" Collapsed="true">
     <Position X="32.5" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>BBQIAAICG6EhEgEwABKAAIEDEgDAAAqMKEBAECAogBg=</HashCode>
+      <HashCode>BAQIAAICG6EhEgEgABKAAIEDEgDAAAiMCABAACAoABg=</HashCode>
       <FileName>UserControl\LWindow.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -252,46 +245,144 @@
       <HashCode>AAAAAAAAAAAAAAAAAAAAIAAAAAABAAAAAAAAAAAAAAA=</HashCode>
     </TypeIdentifier>
   </Class>
-  <Class Name="Lgis.Geometry.LSymbol" Collapsed="true">
-    <Position X="29" Y="2.5" Width="1.5" />
+  <Class Name="Lgis.LShapefileReader" Collapsed="true">
+    <Position X="23.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAABAJAAAAAAAAAAEAAAAAAAAAAAAAEAAAAQAQAAAA=</HashCode>
+      <FileName>GeoDatabase\LShapefileReader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Lgis.LPointLayer" Collapsed="true">
+    <Position X="20.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>LayerTree\LLayer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Lgis.LLineLayer" Collapsed="true">
+    <Position X="22.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>LayerTree\LLayer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Lgis.LPolygonLayer" Collapsed="true">
+    <Position X="17.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>LayerTree\LLayer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Lgis.LIOException" Collapsed="true">
+    <Position X="16.75" Y="5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Misc\LException.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Lgis.LMathDomainException" Collapsed="true">
+    <Position X="18.5" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Misc\LException.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Lgis.LNotImplementedException" Collapsed="true">
+    <Position X="20.25" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Misc\LException.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Lgis.LTypeMismatchException" Collapsed="true">
+    <Position X="18.5" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Misc\LException.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Lgis.LRenderer" Collapsed="true">
+    <Position X="5.5" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Renderer\LRenderer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Lgis.LSimpleRenderer" Collapsed="true">
+    <Position X="5.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Renderer\LRenderer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Lgis.LSymbol" Collapsed="true">
+    <Position X="8.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAEAAAgAAAAAAAAAAAAAAAAAAIBQAAAAAAAAA=</HashCode>
+      <FileName>Renderer\LSymbol.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Lgis.LLineSymbol" Collapsed="true">
+    <Position X="7.5" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>Renderer\LSymbol.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Lgis.LPointSymbol" Collapsed="true">
+    <Position X="9.75" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAEAAAAAAAAAAEAAAAAAAgDAAAAAAIgAABA=</HashCode>
       <FileName>Renderer\LSymbol.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Enum Name="Lgis.LinearUnit" Collapsed="true">
     <Position X="30.75" Y="5.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAgAAAAABCAAA=</HashCode>
-      <FileName>Geographic\LCoordinateSystem.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAgAAAAAACABA=</HashCode>
+      <FileName>Misc\LEnums.cs</FileName>
     </TypeIdentifier>
   </Enum>
   <Enum Name="Lgis.AngularUnit" Collapsed="true">
     <Position X="25.5" Y="5.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAABA=</HashCode>
-      <FileName>Geographic\LCoordinateSystem.cs</FileName>
-    </TypeIdentifier>
-  </Enum>
-  <Enum Name="Lgis.LayerType" Collapsed="true">
-    <Position X="29" Y="5.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAEAAAAAAAAA=</HashCode>
-      <FileName>LayerTree\LLayer.cs</FileName>
+      <FileName>Misc\LEnums.cs</FileName>
     </TypeIdentifier>
   </Enum>
   <Enum Name="Lgis.ObjectType" Collapsed="true">
     <Position X="32.5" Y="5.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAABAAAAAAAIAAAAAAAEAEAAAAAAABA=</HashCode>
-      <FileName>LMapObject.cs</FileName>
+      <FileName>Misc\LEnums.cs</FileName>
     </TypeIdentifier>
   </Enum>
   <Enum Name="Lgis.GeometryType" Collapsed="true">
     <Position X="27.25" Y="5.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAEAQAAgIAAAAACAAAAAAAgAAAAAAAAAAAAADA=</HashCode>
-      <FileName>LMapObject.cs</FileName>
+      <HashCode>AAAAAAAEAQAAgIAAAAACAAAAAAAgAAAAAAIAAAAAADA=</HashCode>
+      <FileName>Misc\LEnums.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Lgis.LayerType" Collapsed="true">
+    <Position X="29" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAEAAAAQAABA=</HashCode>
+      <FileName>Misc\LEnums.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Lgis.SymbolType" Collapsed="true">
+    <Position X="31" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAABACA=</HashCode>
+      <FileName>Misc\LEnums.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Lgis.SymbolStyle" Collapsed="true">
+    <Position X="29" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAQAAAQAAAEAAAAIAAAAAAIAAAAAAAACAAAAAABA=</HashCode>
+      <FileName>Misc\LEnums.cs</FileName>
     </TypeIdentifier>
   </Enum>
   <Font Name="Microsoft YaHei" Size="9" />

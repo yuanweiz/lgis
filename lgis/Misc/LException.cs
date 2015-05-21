@@ -20,4 +20,8 @@ namespace Lgis
     {
         public LNotImplementedException(string s) : base(s) { }
     }
+    public class LTypeMismatchException : Exception
+    {
+        public LTypeMismatchException(string s) : base(s) { }
+    }
 }

@@ -7,7 +7,6 @@ using System.Collections;
 namespace Lgis
 {
 
-    public enum LayerType{ Vector,Raster}
     /// <summary>
     /// 图层数据结构，提供矢量与栅格对象的容器
     /// </summary>
@@ -15,6 +14,7 @@ namespace Lgis
     {
         public readonly LayerType LayerType;
         public bool Visible = true;
+
         protected LLayer (LayerType ft):base(ObjectType.Layer){
             LayerType= ft;
         }
@@ -49,8 +49,10 @@ namespace Lgis
         }
 
         #region 私有字段
-        Lgis.GeometryType FeatureType{get;set;}
-        List<LVectorObject> VectorObjects = new List<LVectorObject>();
+
+        protected List<LVectorObject> VectorObjects = new List<LVectorObject>();
+        public readonly FeatureType FeatureType;
+        
         #endregion
 
         #region 属性
@@ -66,6 +68,8 @@ namespace Lgis
         }
         public int Count { get { return VectorObjects.Count; } }
 
+        public LRenderer Renderer = new LSimpleRenderer();
+
         public override LEnvelope Envelope
         {
             get
@@ -80,11 +84,12 @@ namespace Lgis
         #endregion
 
         #region 方法
-        public LVectorLayer()
+        public LVectorLayer(FeatureType featureType = Lgis.FeatureType.Unknown)
             : base(LayerType.Vector)
         {
+            FeatureType = featureType;
         }
-        public void Add(LVectorObject vo)
+        public virtual void Add(LVectorObject vo)
         {
             vo.Owner = this;
             VectorObjects.Add(vo);
@@ -104,11 +109,64 @@ namespace Lgis
                 s = s + vo.Info() + "\n";
             }
             return s;
-
         }
         #endregion
-
     }
 
-    
+    public class LPointLayer : LVectorLayer
+    {
+        public LPointLayer():base (FeatureType.Point)
+        {
+        }
+        public override void Add(LVectorObject vo)
+        {
+            switch (vo.GeometryType)
+            {
+                case GeometryType.Point:
+                case GeometryType.Polypoint:
+                    vo.Owner = this;
+                    VectorObjects.Add(vo);
+                    break;
+                default:
+                    //FIXME:Exception handle here?
+                    throw new LTypeMismatchException("Only Points are allowed");
+            }
+        }
+    }
+
+    public class LLineLayer : LVectorLayer
+    {
+        public LLineLayer ():base (FeatureType.Line){}
+        public override void Add(LVectorObject vo)
+        {
+            switch (vo.GeometryType)
+            {
+                case GeometryType.Polyline:
+                case GeometryType.PolyPolyline:
+                    vo.Owner = this;
+                    VectorObjects.Add(vo);
+                    break;
+                default:
+                    throw new LTypeMismatchException("Only lines are allowed");
+            }
+        }
+    }
+
+    public class LPolygonLayer : LVectorLayer
+    {
+        public LPolygonLayer() : base(FeatureType.Polygon) { }
+        public override void Add(LVectorObject vo)
+        {
+            switch (vo.GeometryType)
+            {
+                case GeometryType.Polygon:
+                case GeometryType.PolyPolygon:
+                    vo.Owner = this;
+                    VectorObjects.Add(vo);
+                    break;
+                default:
+                    throw new LTypeMismatchException("Only polygons are allowed");
+            }
+        }
+    }
 }

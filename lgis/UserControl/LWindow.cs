@@ -405,6 +405,7 @@ namespace Lgis
         }
         #endregion
 
+
         #region Winform-related events
 
         private void LWindow_Load(object sender, EventArgs e)

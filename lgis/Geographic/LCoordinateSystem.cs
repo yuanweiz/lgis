@@ -5,8 +5,6 @@ using System.Text;
 
 namespace Lgis
 {
-    public enum LinearUnit { Meter,Degree,Foot,Unknown};
-    public enum AngularUnit { Degree,Unknown}
     public class LProjectedCoordinateSystem
     {
         #region preset projectedCSs
