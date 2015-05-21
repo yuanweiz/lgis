@@ -22,7 +22,8 @@ namespace Lgis
         Polyline, 
         Polygon, 
         Rectangle,
-        Unknown };
+        Unknown 
+    };
 
     /// <summary>
     /// 提供了图层与要素类的基类
