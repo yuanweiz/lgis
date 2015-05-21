@@ -67,6 +67,7 @@
     <Compile Include="Geometry\LPolygon.cs" />
     <Compile Include="Geometry\LPolyline.cs" />
     <Compile Include="LEnvelope.cs" />
+    <Compile Include="Renderer\LRenderer.cs" />
     <Compile Include="UserControl\LMapTools.cs" />
     <Compile Include="Renderer\LSymbol.cs" />
     <Compile Include="Misc\LConfig.cs" />
@@ -96,12 +97,6 @@
     <Compile Include="UserControl\LWindow.Designer.cs">
       <DependentUpon>LWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="MainForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MainForm.Designer.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="UserControl\LLayerComboBox.resx">
@@ -112,9 +107,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UserControl\LWindow.resx">
       <DependentUpon>LWindow.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="MainForm.resx">
-      <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

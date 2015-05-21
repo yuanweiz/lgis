@@ -12,4 +12,12 @@ namespace Lgis
     {
         public LIOException(string s) : base(s) { }
     }
+    public class LMathDomainException : Exception
+    {
+        public LMathDomainException(string s) : base(s) { }
+    }
+    public class LNotImplementedException : Exception
+    {
+        public LNotImplementedException(string s) : base(s) { }
+    }
 }
