@@ -68,7 +68,7 @@ namespace Lgis
         }
         public int Count { get { return VectorObjects.Count; } }
 
-        public LRenderer Renderer = new LSimpleRenderer();
+        //public LRenderer Renderer = new LSimpleRenderer();
 
         public override LEnvelope Envelope
         {
@@ -115,8 +115,35 @@ namespace Lgis
 
     public class LPointLayer : LVectorLayer
     {
+        public LPointRenderer Renderer = new LPointRenderer();
+
+        public IEnumerable<LPoint> Points
+        {
+            get {
+                List<LPoint> _points = new List<LPoint>();
+                _points.Clear();
+                foreach (LVectorObject vo in this)
+                {
+                    if (vo.GeometryType == GeometryType.Point)
+                        _points.Add((LPoint)vo);
+                    else
+                        foreach (LPoint p in ((LPolyPoint)vo).Vertices)
+                            _points.Add(p);
+                }
+                foreach (LPoint p in _points)
+                    yield return p;
+            }
+        }
+
         public LPointLayer():base (FeatureType.Point)
         {
+            //default is 1mm
+            LPointSymbol Symbol = new LPointSymbol();
+            Renderer.Symbol = Symbol;
+            Symbol.LinearUnit = LinearUnit.Meter;
+            Symbol.Diameter = 0.003;
+            Symbol.OutLineWidth = 0.001;
+            Symbol.Style = SymbolStyle.CircleMarker;
         }
         public override void Add(LVectorObject vo)
         {
@@ -134,8 +161,35 @@ namespace Lgis
         }
     }
 
-    public class LLineLayer : LVectorLayer
+    public class LLineLayer : LVectorLayer 
     {
+        //LLineSymbol Symbol = new LLineSymbol();
+        public IEnumerable<LPolyline> Lines
+        {
+            get {
+                List<LPolyline> lst = new List<LPolyline>();
+                foreach (LVectorObject line in this)
+                {
+                    switch (line.GeometryType)
+                    {
+                        case GeometryType.Polyline:
+                            lst.Add((LPolyline)line);
+                            break;
+                        default:
+                            foreach (LPolyline pll in (LPolyPolyline)line)
+                                lst.Add(pll);
+                            break;
+                    }
+                }
+                foreach (LPolyline line in lst)
+                {
+                    yield return line;
+                }
+
+            }
+        }
+        
+        public LLineRenderer Renderer = new LLineRenderer ();
         public LLineLayer ():base (FeatureType.Line){}
         public override void Add(LVectorObject vo)
         {
@@ -154,6 +208,27 @@ namespace Lgis
 
     public class LPolygonLayer : LVectorLayer
     {
+        //Default is simple renderer
+        public IEnumerable<LPolygon> Polygons
+        {
+            get
+            {
+                List<LVectorObject> lst= new List<LVectorObject>();
+                foreach (LVectorObject vo in this)
+                {
+                    if (vo.GeometryType == GeometryType.Polygon)
+                        lst.Add(vo);
+                    else
+                        foreach (LPolygon plg in (LPolyPolygon)vo)
+                        {
+                            lst.Add(plg);
+                        }
+                }
+                foreach (LVectorObject vo in lst)
+                    yield return (LPolygon)vo;
+            }
+        }
+        public LPolygonRenderer Renderer= new LSimplePolygonRenderer();
         public LPolygonLayer() : base(FeatureType.Polygon) { }
         public override void Add(LVectorObject vo)
         {

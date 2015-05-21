@@ -6,9 +6,19 @@ using System.Text;
 namespace Lgis
 {
 
-    public class LPolyPolyline : LVectorObject
+    public class LPolyPolyline : LVectorObject, IEnumerable<LPolyline>
     {
         #region Enumerable Properties
+        
+        public IEnumerator<LPolyline> GetEnumerator()
+        {
+            for (int i = 0; i < Count; ++i)
+                yield return this[i];
+        }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
 
         public override IEnumerable<LPoint> Vertices
         {

@@ -55,9 +55,18 @@ namespace Lgis
         }
     }
 
-    public class LPolyPolygon : LVectorObject
+    public class LPolyPolygon : LVectorObject, IEnumerable<LPolygon>
     {
         #region enumerable properties
+        public IEnumerator<LPolygon> GetEnumerator()
+        {
+            for (int i = 0; i < Count; ++i)
+                yield return this[i];
+        }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
 
         public override IEnumerable<LPoint> Vertices
         {

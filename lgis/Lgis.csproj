@@ -67,6 +67,7 @@
     <Compile Include="Geometry\LPolygon.cs" />
     <Compile Include="Geometry\LPolyline.cs" />
     <Compile Include="LEnvelope.cs" />
+    <Compile Include="LMathTools.cs" />
     <Compile Include="Misc\LEnums.cs" />
     <Compile Include="Renderer\LRenderer.cs" />
     <Compile Include="UserControl\LMapTools.cs" />

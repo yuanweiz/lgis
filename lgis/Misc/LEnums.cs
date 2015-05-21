@@ -28,7 +28,14 @@ namespace Lgis
     //the type of LVectorLayer
     public enum LayerType{ Vector,Raster ,Network,Unknown}
     public enum FeatureType { Polygon, Line, Point,Unknown };
-    public enum LinearUnit { Meter,Degree,Foot,Unknown};
+    public enum LinearUnit { 
+        Meter = 0,
+        Degree = 1,
+        Foot = 2,
+        Mile = 3,
+        Unknown = 4,
+        KiloMiter = 5
+    };
     public enum AngularUnit { Degree,Unknown}
 
 
@@ -41,6 +48,7 @@ namespace Lgis
         SolidLine,
         DashLine,
         DotLine,
+        DashDotLine,
 
         //Point marker
         ImageMarker,

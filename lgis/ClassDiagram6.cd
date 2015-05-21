@@ -73,9 +73,10 @@
   <Class Name="Lgis.LPolyPolyline" Collapsed="true">
     <Position X="16.25" Y="3.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAIAgAAAAAAAAACECAACAAQAAAAAAAAAGAAAAEAAAAA=</HashCode>
+      <HashCode>ACIAgAAAAAAAABCECAACAAQAAAAAAAAAGAAAAEAAAAA=</HashCode>
       <FileName>Geometry\LPolyline.cs</FileName>
     </TypeIdentifier>
+    <Lollipop Position="0.2" />
   </Class>
   <Class Name="Lgis.LLineseg" Collapsed="true">
     <Position X="18.5" Y="3.25" Width="1.5" />
@@ -108,9 +109,10 @@
   <Class Name="Lgis.LPolyPolygon" Collapsed="true">
     <Position X="9.5" Y="3.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAIAgAAAAAAAAACECAAAAAQAAAAAAAABGAAAAEAAAAA=</HashCode>
+      <HashCode>ACIAgAAAAAAAABCECAAAAAQAAAAAAAABGAAAAEAAAAA=</HashCode>
       <FileName>Geometry\LPolygon.cs</FileName>
     </TypeIdentifier>
+    <Lollipop Position="0.2" />
   </Class>
   <Class Name="Lgis.LRectangle" Collapsed="true">
     <Position X="14" Y="3.25" Width="1.5" />
@@ -129,7 +131,7 @@
   <Class Name="Lgis.LVectorLayer" Collapsed="true">
     <Position X="23" Y="3.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>ACIAAAAAAAAAABCQCAAAAAQAQAAAAAAACACAAEAAAAA=</HashCode>
+      <HashCode>ACIAAAAAAAAAABCQCAAAAAQAQAAAAAAACAAAAEAAAAA=</HashCode>
       <FileName>LayerTree\LLayer.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -229,7 +231,7 @@
   <Class Name="Lgis.LWindow" Collapsed="true">
     <Position X="32.5" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>BAQIAAICG6EhEgEgABKAAIEDEgDAAAiMCABAACAoABg=</HashCode>
+      <HashCode>BBQIAAICG6EhEgEwABKAAIEDEgDAAAqMKEBAECAogBg=</HashCode>
       <FileName>UserControl\LWindow.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -255,21 +257,21 @@
   <Class Name="Lgis.LPointLayer" Collapsed="true">
     <Position X="20.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAIAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAACAAAAAAAA=</HashCode>
       <FileName>LayerTree\LLayer.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Lgis.LLineLayer" Collapsed="true">
     <Position X="22.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAIAAAAAAAAAAAAAAAAAAAAAAAAAAAACAACAAAAAAAA=</HashCode>
       <FileName>LayerTree\LLayer.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Lgis.LPolygonLayer" Collapsed="true">
     <Position X="17.75" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAIAAAAAAAAAAAAAAAAAAAAAAAAAAAABAACAAAAAAAA=</HashCode>
       <FileName>LayerTree\LLayer.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -304,7 +306,7 @@
   <Class Name="Lgis.LRenderer" Collapsed="true">
     <Position X="5.5" Y="2.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Renderer\LRenderer.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -318,28 +320,28 @@
   <Class Name="Lgis.LSymbol" Collapsed="true">
     <Position X="8.75" Y="4.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>EAAAAAAAEAAAgAAAAAAAAAAAAAAAAAAIBQAAAAAAAAA=</HashCode>
+      <HashCode>EAAAAAAAEAAgAAAAAAAAAAAAAAAAAAAIBQAAAAAAAAA=</HashCode>
       <FileName>Renderer\LSymbol.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Lgis.LLineSymbol" Collapsed="true">
     <Position X="7.5" Y="6" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAABAAAgAAAAAA=</HashCode>
       <FileName>Renderer\LSymbol.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Lgis.LPointSymbol" Collapsed="true">
     <Position X="9.75" Y="6" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAABAEAAAAAAAAAAEAAAAAAAgDAAAAAAIgAABA=</HashCode>
+      <HashCode>EAAAAAAABAEAAAAAAAAAAEAAAAAAAgDAAAABAIgAABA=</HashCode>
       <FileName>Renderer\LSymbol.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Enum Name="Lgis.LinearUnit" Collapsed="true">
     <Position X="30.75" Y="5.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAgAAAAAACABA=</HashCode>
+      <HashCode>AAIAAAAAAAAAAAAAAAIAAAAQAAAAAAAAgAAAAAACABA=</HashCode>
       <FileName>Misc\LEnums.cs</FileName>
     </TypeIdentifier>
   </Enum>
@@ -381,7 +383,7 @@
   <Enum Name="Lgis.SymbolStyle" Collapsed="true">
     <Position X="29" Y="4.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AABAAQAAAQAAAEAAAAIAAAAAAIAAAAAAAACAAAAAABA=</HashCode>
+      <HashCode>AABAAQAAAQAAAEAAAAIAAAAAAIABAAAAAACAAAAAABA=</HashCode>
       <FileName>Misc\LEnums.cs</FileName>
     </TypeIdentifier>
   </Enum>

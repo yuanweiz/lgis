@@ -27,7 +27,7 @@ namespace Lgis
                 return new LEnvelope(X, Y, X, Y);
             }
         }
-        public LPoint(byte[] blob)
+        public LPoint(byte[] blob):base (GeometryType.Point)
         {
             unsafe
             {

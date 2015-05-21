@@ -44,6 +44,8 @@ namespace Lgis
 
         #region private fields
 
+        //renderer related
+
         StatusType status = StatusType.Pan;
 
         //Tracking Geometry Objects
@@ -287,73 +289,51 @@ namespace Lgis
             }
         }
 
+
         void Draw(Graphics g, LLayer l)
         {
             switch (l.LayerType)
             {
                 case LayerType.Vector:
                     LVectorLayer vl = (LVectorLayer)l;
-                    for (int j = 0; j < vl.Count; ++j)
+                    switch (vl.FeatureType)
                     {
-                        LVectorObject vo = vl[j];
-                        switch (vo.GeometryType)
-                        {
-                            case GeometryType.Point:
-                                DrawPoint(g, (LPoint)vo);
-                                break;
-                            case GeometryType.Polyline:
-                                DrawLines(g, (LPolyline)vo);
-                                break;
-                            case GeometryType.Polygon:
-                                DrawPolygon(g, (LPolygon)vo);
-                                break;
-                            case GeometryType.Polypoint:
-                                for (int i =0;i< ((LPolyPoint)vo).Count;++i)
-                                    DrawPoint(g, ((LPolyPoint)vo)[i]);
-                                break;
-                            case GeometryType.PolyPolyline:
-                                for (int i =0;i< ((LPolyPolyline)vo).Count;++i)
-                                    DrawLines(g, ((LPolyPolyline)vo)[i]);
-                                break;
-                            case GeometryType.PolyPolygon:
-                                for (int i =0;i< ((LPolyPolygon)vo).Count;++i)
-                                    DrawPolygon(g, ((LPolyPolygon)vo)[i]);
-                                break;
-                            default:
-                                break;
-                        }
+                        case FeatureType.Point:
+                            LPointRenderer pointRenderer = ((LPointLayer)vl).Renderer;
+                            foreach (LPoint p in (LPointLayer)vl)
+                                pointRenderer.Render(g,ToScreenCoordinate(p));
+                            break;
+                        case FeatureType.Line:
+                            LLineRenderer lineRenderer = ((LLineLayer)vl).Renderer;
+                            foreach (LPolyline pll in ((LLineLayer)vl).Lines)
+                            {
+                                PointF[] points = new PointF[pll.Count];
+                                for (int i=0;i< pll.Count;++i){
+                                    points[i] = ToScreenCoordinate(pll[i]);
+                                }
+                                lineRenderer.Render(g,points);
+                            }
+                            break;
+                        case FeatureType.Polygon:
+                            LPolygonRenderer polygonRenderer = ((LPolygonLayer)vl).Renderer;
+                            //polygonRenderer.Render(g, );
+                            foreach (LPolygon plg in ((LPolygonLayer)vl).Polygons)
+                            {
+                                PointF[] points = new PointF[plg.Count];
+                                for (int i=0;i< plg.Count;++i){
+                                    points[i] = ToScreenCoordinate(plg[i]);
+                                }
+                                polygonRenderer.Render(g,points);
+                            }
+                            break;
+                        default:
+                            break;
                     }
+                    
                     break;
-                case LayerType.Raster:
+                default:
                     break;
             }
-        }
-
-        void DrawPoint(Graphics g, LPoint _p)
-        {
-            Point p = ToScreenCoordinate(_p);
-            g.FillEllipse(Brushes.Black, p.X, p.Y, 2, 2);
-        }
-
-        void DrawLines(Graphics g, LPolyline pl)
-        {
-            Point[] pts = new Point[pl.Count];
-            for (int i = 0; i < pl.Count; ++i)
-            {
-                pts[i] = ToScreenCoordinate(pl[i]);
-            }
-            g.DrawLines(boundaryPen, pts);
-        }
-
-        void DrawPolygon(Graphics g, LPolygon pg)
-        {
-            Point[] pts = new Point[pg.Count];
-            for (int i = 0; i < pg.Count; ++i)
-            {
-                pts[i] = ToScreenCoordinate(pg[i]);
-            }
-            g.FillPolygon(fillingBrush, pts);
-            g.DrawPolygon(boundaryPen, pts);
         }
 
         // Tracking Geometry Object related
@@ -496,5 +476,6 @@ namespace Lgis
         }
 
 #endregion
+
     }
 }
