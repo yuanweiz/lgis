@@ -15,13 +15,17 @@ namespace GUI
     {
         Point mouseLocation = new Point(0,0);
         LUnitTest ut = new LUnitTest();
+        LWindow.OperationType OpType
+        {
+            get { return lWindow1.OpType; }
+            set { lWindow1.OpType = value; }
+        }
         //bool mouseDragging;
         public Form1()
         {
             InitializeComponent();
             btnStopEditing.Enabled = false;
             //lWindow1.Layers=ut.TestLayerView();
-            
             LShapefileReader sr = new LShapefileReader(@"C:\Program Files\ESRI\MapObjects2\Samples\Data\USA\STATES.SHP");
             lWindow1.Layers.Add(sr.Layer);
             sr = new LShapefileReader(@"C:\Program Files\ESRI\MapObjects2\Samples\Data\USA\USHIGH.SHP");
@@ -32,20 +36,22 @@ namespace GUI
             lLayerView1.Refresh();
             lLayerComboBox1.Layers = lWindow1.Layers;
             LDataTable table = sr.Layer.DataTable;
-            table.Print();
+            //table.Print();
             lLayerComboBox1.Refresh();
         }
 
         private void btnZoomIn_Click(object sender, EventArgs e)
         {
-            lWindow1.ZoomIn();
+            OpType = LWindow.OperationType.ZoomIn;
         }
-
         private void btnZoomOut_Click(object sender, EventArgs e)
         {
-            lWindow1.ZoomOut();
+            OpType = LWindow.OperationType.ZoomOut;
         }
-
+        private void btnPan_Click(object sender, EventArgs e)
+        {
+            OpType = LWindow.OperationType.Pan;
+        }
         private void btnZoomToLayer_Click(object sender, EventArgs e)
         {
             lWindow1.ZoomToLayer();
@@ -61,14 +67,14 @@ namespace GUI
         {
             btnStopEditing.Enabled = true;
             btnStartEditing.Enabled = false;
-            lWindow1.StartEditing();
+            OpType = LWindow.OperationType.Edit;
         }
 
         private void btnStopEditing_Click(object sender, EventArgs e)
         {
             btnStopEditing.Enabled = false;
             btnStartEditing.Enabled = true;
-            lWindow1.StopEditing();
+            OpType = LWindow.OperationType.None;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -88,9 +94,7 @@ namespace GUI
 
         private void btnClear_Click(object sender, EventArgs e)
         {
-            //lWindow1.Layers = new LLayerGroup();
-            //vl = new LVectorLayer();
-            lWindow1.Refresh();
+            lWindow1.ForceRedraw();
         }
 
         private void btnSetting_Click(object sender, EventArgs e)
@@ -131,6 +135,7 @@ namespace GUI
         {
             lWindow1.Refresh();
         }
+
 
     }
 }

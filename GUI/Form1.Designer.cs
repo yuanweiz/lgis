@@ -44,6 +44,7 @@
             this.lLayerComboBox1 = new Lgis.LLayerComboBox();
             this.lLayerView1 = new Lgis.LLayerTreeView();
             this.lWindow1 = new Lgis.LWindow();
+            this.btnPan = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnZoomIn
@@ -68,7 +69,7 @@
             // 
             // btnZoomToLayer
             // 
-            this.btnZoomToLayer.Location = new System.Drawing.Point(696, 107);
+            this.btnZoomToLayer.Location = new System.Drawing.Point(696, 100);
             this.btnZoomToLayer.Name = "btnZoomToLayer";
             this.btnZoomToLayer.Size = new System.Drawing.Size(75, 34);
             this.btnZoomToLayer.TabIndex = 3;
@@ -78,7 +79,7 @@
             // 
             // btnStartEditing
             // 
-            this.btnStartEditing.Location = new System.Drawing.Point(696, 160);
+            this.btnStartEditing.Location = new System.Drawing.Point(696, 169);
             this.btnStartEditing.Name = "btnStartEditing";
             this.btnStartEditing.Size = new System.Drawing.Size(75, 36);
             this.btnStartEditing.TabIndex = 6;
@@ -162,11 +163,22 @@
             this.lWindow1.TabIndex = 8;
             this.lWindow1.Load += new System.EventHandler(this.lWindow1_Load);
             // 
+            // btnPan
+            // 
+            this.btnPan.Location = new System.Drawing.Point(696, 140);
+            this.btnPan.Name = "btnPan";
+            this.btnPan.Size = new System.Drawing.Size(75, 23);
+            this.btnPan.TabIndex = 14;
+            this.btnPan.Text = "Pan";
+            this.btnPan.UseVisualStyleBackColor = true;
+            this.btnPan.Click += new System.EventHandler(this.btnPan_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(774, 586);
+            this.Controls.Add(this.btnPan);
             this.Controls.Add(this.lLayerComboBox1);
             this.Controls.Add(this.btnRotate);
             this.Controls.Add(this.lLayerView1);
@@ -204,6 +216,7 @@
         private Lgis.LLayerTreeView lLayerView1;
         private System.Windows.Forms.Button btnRotate;
         private Lgis.LLayerComboBox lLayerComboBox1;
+        private System.Windows.Forms.Button btnPan;
     }
 }
 

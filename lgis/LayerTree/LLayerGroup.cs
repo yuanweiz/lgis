@@ -76,9 +76,11 @@ namespace Lgis
         public void Add(LMapObject o){
             if (o.ObjectType != ObjectType.Layer &&
                 o.ObjectType != ObjectType.LayerGroup)
-                throw new Exception("ObjectType not match layergroup");
+                throw new Exception("ObjectType does not match layergroup");
             o.Owner = this;
             Children.Add(o);
+            //FIXME
+            RaiseNewLayerAddedEvent(this, null);
         }
 
         /// <summary>
@@ -107,6 +109,15 @@ namespace Lgis
                 s = s + l.Info() +"";
             return s;
         }
+        public event LNewLayerAddedEventHandler NewLayerAdded;
 
+        void RaiseNewLayerAddedEvent(object sender, LLayer Layer)
+        {
+            if (NewLayerAdded != null)
+                NewLayerAdded(sender, Layer);
+        }
     }
+        #region custom event
+        public delegate void LNewLayerAddedEventHandler (object sender, LLayer layer);
+        #endregion
 }

@@ -67,6 +67,11 @@
       <ProjName>GUI</ProjName>
     </ProjBinary>
   </Binaries>
+  <Reports>
+    <Report>
+      <Path>GUI150522(2).vsp</Path>
+    </Report>
+  </Reports>
   <Launches>
     <ProjBinary>
       <Path>:PB:{2008E016-B12E-410E-88ED-DF690932A275}|GUI\GUI.csproj</Path>

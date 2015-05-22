@@ -9,31 +9,64 @@ using System.Windows.Forms;
 
 namespace Lgis
 {
+    
+    /*******************************************************
+     * Note the origin point of this control, it
+     * takes time to understand
+     * 
+     * O----------------------------->x of System.Drawing.Graphics
+     * |              ^y of LWindow  region
+     * |              |
+     * |              |
+     * |              O--------> x of LWindow region
+     * |            Center( Not always (0,0)  )
+     * |
+     * |
+     * V y of System.Drawing.Graphics
+     * 
+     * **************************************************/
     public partial class LWindow : UserControl
     {
         [ToolboxItem(true)]
-        enum StatusType { Lock, Edit, Pan, None ,ZoomIn,ZoomOut}
-        enum EditingType { Polygon, PolyLine, Point }
-        EditingType editingType = EditingType.Polygon;
 
         #region Public Properties and fields
-
+        public enum OperationType { Lock, Edit, Pan, None ,ZoomIn,ZoomOut}
+        public OperationType OpType;
         public LPoint Center
         {
             get { return _Center; }
+            set
+            {
+                _Center = value;
+                //RaiseCenterAlteredEvent(this,new LCenterAlteredEventArgs(value));
+            }
         }
+
+        //linearunit per pixel
         public new double Scale
         {
             get { return _Scale; }
             set { 
                 _Scale = value;
+                //RaiseScaleChangedEvent(this, new LScaleChangedEventArgs(value));
             }
         }
         public LVectorLayer editingLayer = null;
+
         public LLayerGroup Layers
         {
             get { return _Layers; }
             set { _Layers = value; }
+        }
+
+        public LEnvelope Extent
+        {
+            get
+            {
+                LPoint pmin = ToGeographicCoordinate(new Point( 0, Height));
+                LPoint pmax = ToGeographicCoordinate(new Point( Width, 0 ));
+                return new LEnvelope(pmin.X, pmin.Y, pmax.X, pmax.Y);
+            }
         }
 
         LLayerGroup _Layers = new LLayerGroup();
@@ -46,62 +79,26 @@ namespace Lgis
 
         //renderer related
 
-        StatusType status = StatusType.Pan;
-
-        //Tracking Geometry Objects
-        //List<Point> editingPolygon = new List<Point>();
-        //List<Point> editingPolyline = new List<Point>();
-        //Point editingPoint = new Point();
-        LPolygon trackingPolygon = new LPolygon();
-        LPolyline trackingPolyline = new LPolyline();
-        LPoint trackingPoint = new LPoint();
-
-        //Symbol Settings
-        Color fillColor = Color.FromArgb(239, 228, 176);
-        Color boundaryColor = Color.Black;
-        Color trackingColor = Color.DarkGreen;
-
-        float boundaryWidth = 1.0f;
-        float trackingWidth = 1.2f;
-        float vertexSize = 7.0f;
+        //double buffer supported
+        Bitmap bmpCache; // 
+        LPoint bmpCenter;
+        LEnvelope bmpExtent
+        {
+            get
+            {
+                LVector diff = bmpCenter - Center;
+                LPoint pmin = ToGeographicCoordinate(new Point(-Width , 2*Height));
+                LPoint pmax = ToGeographicCoordinate(new Point(2 * Width, -Height));
+                return new LEnvelope(pmin.X + diff.X,
+                    pmin.Y + diff.Y,
+                    pmax.X + diff.X,
+                    pmax.Y + diff.Y);
+            }
+        }
 
         float zoomInRatio = 1.25f;
         float zoomOutRatio = .8f;
         
-
-        Pen boundaryPen
-        {
-            get { return new Pen(boundaryColor, boundaryWidth); }
-        }
-        Pen trackingPen
-        {
-            get { return new Pen(trackingColor, trackingWidth); }
-        }
-        SolidBrush fillingBrush
-        {
-            get { return new SolidBrush(fillColor); }
-        }
-        SolidBrush trackingBrush
-        {
-            get { return new SolidBrush(trackingColor); }
-        }
-        SolidBrush vertexBrush
-        {
-            get { return new SolidBrush(trackingColor); }
-        }
-
-
-        //Cursors
-        //TODO: fatal error with resources' code generating
-//        Cursor csrCross = new Cursor(typeof(LWindow), "Resources.Cross.ico");
-//        Cursor csrZoomIn = new Cursor(typeof(LWindow), "Resources.ZoomIn.ico");
-//        Cursor csrZoomOut = new Cursor(typeof(LWindow), "Resources.ZoomOut.ico");
-//        Cursor csrPanUp = new Cursor(typeof(LWindow), "Resources.PanUp.ico");
-        Cursor csrCross = Cursors.Default;
-        Cursor csrZoomIn = Cursors.Default;
-        Cursor csrZoomOut = Cursors.Default;
-        Cursor csrPanUp = Cursors.Default;
-
         //mouse
         Point mouseLocation;
 
@@ -116,34 +113,6 @@ namespace Lgis
         public LWindow()
         {
             InitializeComponent();
-            Cursor = csrPanUp;
-        }
-
-        //Pan
-        public void Pan()
-        {
-            status = StatusType.Pan;
-            Cursor = csrPanUp;
-        }
-
-        /// <summary>
-        /// Set status to enable editting
-        /// </summary>
-        public void StartEditing()
-        {
-            status = StatusType.Edit;
-            Cursor = csrCross;
-        }
-        public void StopEditing()
-        {
-            switch (editingType)
-            {
-                case EditingType.Polygon:
-                    trackingPolygon = new LPolygon();
-                    break;
-            }
-            Refresh();
-            Pan();
         }
 
         #endregion
@@ -156,9 +125,6 @@ namespace Lgis
             Center.Y += (double)screendy / Scale;
         }
 
-        public void DrawLayer (LLayerGroup lg){
-            Layers = lg;
-        }
 
         //Zoom to layer/layergroup , overrided
 
@@ -179,6 +145,9 @@ namespace Lgis
 
             // some alignment around the layer
             Scale *= .95;
+
+            RedrawBmpBuffer();
+            Refresh();
         }
 
         public void ZoomToLayer( LLayerGroup l)
@@ -195,7 +164,6 @@ namespace Lgis
                 Scale = cw / lw;
             else
                 Scale = ch / lh;
-
             // some alignment around the layer
             Scale *= .95;
         }
@@ -213,7 +181,7 @@ namespace Lgis
             double dx, dy;
             dx = lp.X - Center.X;
             dy = lp.Y - Center.Y;
-            if (status == StatusType.ZoomIn)
+            if (OpType == OperationType.ZoomIn)
             {
                 dx *= zoomOutRatio;
                 Scale /= zoomOutRatio;
@@ -225,24 +193,6 @@ namespace Lgis
             }
             Center.X = lp.X - dx;
             Center.Y = lp.Y - dy;
-
-        }
-
-        //State Machine Related
-        public void ZoomIn()
-        {
-            //Scale *= zoomInRatio;
-            status = StatusType.ZoomIn;
-            Cursor = csrZoomIn;
-            Refresh();
-        }
-
-        public void ZoomOut()
-        {
-            //Scale *= zoomOutRatio;
-            status = StatusType.ZoomOut;
-            Cursor = csrZoomOut;
-            Refresh();
         }
 
         // Coordinate Convertion methods
@@ -336,76 +286,63 @@ namespace Lgis
             }
         }
 
-        // Tracking Geometry Object related
-        void DrawTrackingPolygon(Graphics g)
-        {
-            int Count = trackingPolygon.Count;
-            if (Count == 0)
-                return;
-            Point[] pts = new Point[Count];
-            for (int i = 0; i < Count; ++i)
-                pts[i] = ToScreenCoordinate(trackingPolygon[i]); 
-            //Draw Vertex
-            foreach (Point i in pts){
-                RectangleF rect = new RectangleF(i.X - vertexSize / 2, i.Y - vertexSize / 2,
-                    vertexSize, vertexSize);
-                g.FillRectangle(vertexBrush, rect);
-            }
-
-            //Draw Edges
-            if (trackingPolygon.Count > 1)
-            {
-                g.DrawLines(trackingPen, pts);
-            }
-            g.DrawLine(trackingPen, pts[0], mouseLocation);
-            g.DrawLine(trackingPen, pts[Count-1], mouseLocation);
-        }
-
-        void DrawTrackingPolyline(Graphics g)
-        {
-            int Count = trackingPolyline.Count;
-            if (Count == 0)
-                return;
-            Point[] pts = new Point[Count];
-            for (int i = 0; i < Count; ++i)
-                pts[i] = ToScreenCoordinate(trackingPolyline[i]); 
-            //Draw Vertex
-            foreach (Point i in pts){
-                RectangleF rect = new RectangleF(i.X - vertexSize / 2, i.Y - vertexSize / 2,
-                    vertexSize, vertexSize);
-                g.FillRectangle(vertexBrush, rect);
-            }
-
-            //Draw Edges
-            if (trackingPolygon.Count > 1)
-            {
-                g.DrawLines(trackingPen, pts);
-            }
-            g.DrawLine(trackingPen, pts[Count-1], mouseLocation);
-        }
-        #endregion
-
 
         #region Winform-related events
 
         private void LWindow_Load(object sender, EventArgs e)
         {
+            //Event 
+            //Warning: event subscribe-publish mechanism causes low efficiency
+            //Now aborted
+            //
+            //CenterAltered += new CenterAlteredEventHandler(LWindow_CenterAltered);
+            //ScaleChanged += new ScaleChangedEventHandler(LWindow_ScaleChanged);
 
+            bmpCache = new Bitmap(3 * Width, 3 * Height);
+            //Force the ExtentWithInBitmap() to return false
+            bmpCenter = new LPoint(double.MaxValue, double.MaxValue);
         }
 
+        /**********************************************
+         * when redraw bmp cache, an important thing 
+         * is to handle the differences between different
+         * coorinate origin point
+         * 
+         * O-------------------->bmpX
+         * |               | Height
+         * |         O------->Lwindow X
+         * |         |
+         * |<-width->|
+         * |         |
+         * |         V  LWindowY
+         * V bmpY
+        */
         private void LWindow_Paint(object sender, PaintEventArgs e)
         {
             if (Layers == null)
                 return;
-            Draw(e.Graphics, Layers);
-            switch (status)
-            {
-                case StatusType.Edit:
-                    DrawTrackingPolygon(e.Graphics);
-                    break;
-                default:
-                    break;
-            }
+            //if out of cache range, redraw it
+            if (false == ExtentWithinBitmap())
+                RedrawBmpBuffer();
+
+            //notice the centers may differ 
+            LVector diff = bmpCenter - Center;
+            float dx = (float)(-Width + -diff.X * Scale);
+            float dy = (float)(-Height + diff.Y * Scale);
+            e.Graphics.DrawImage(bmpCache, dx, dy);
+            
+            //TODO : DrawTrackingLayers()
+        }
+
+        void RedrawBmpBuffer()
+        {
+            bmpCenter = Center.Copy();
+            Graphics grLayers = Graphics.FromImage(bmpCache);
+            //Clear the bitmap cache
+            grLayers.FillRectangle(new SolidBrush(Color.White), 0, 0, 3 * Width, 3 * Height);
+            grLayers.TranslateTransform(Width, Height);
+            Draw(grLayers, Layers);
+            Console.WriteLine("Trigger redraw buffer");
         }
 
         private void LWindow_MouseDown(object sender, MouseEventArgs e)
@@ -413,18 +350,18 @@ namespace Lgis
             mouseLocation = e.Location;
             if (e.Clicks > 1)
                 return;
-            switch (status)
+            switch (OpType)
             {
-                case StatusType.ZoomIn:
-                case StatusType.ZoomOut:
+                case OperationType.ZoomIn:
+                case OperationType.ZoomOut:
                     ZoomByCenter(e.Location);
+                    RedrawBmpBuffer();
                     Refresh();
                     break;
-                case StatusType.None:
-                    status = StatusType.Pan;
+                case OperationType.None:
+                    OpType = OperationType.Pan;
                     break;
-                case StatusType.Edit:
-                    trackingPolygon.Add(ToGeographicCoordinate(mouseLocation));
+                case OperationType.Edit:
                     break;
                 default:
                     break;
@@ -434,40 +371,32 @@ namespace Lgis
 
         private void LWindow_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            switch ( editingType ){
-                case EditingType.Polygon:
-                    if (editingLayer == null)
-                        return;
-                    if (trackingPolygon.Count > 2)
-                    {
-                        editingLayer.Add(trackingPolygon.Copy());
-                        trackingPolygon = new LPolygon();
-                    }
-                    else
-                    {
-                        trackingPolygon = new LPolygon();
-                        Refresh();
-                    }
-                    break;
-                default:
-                    break;
-            }
+        }
+
+        private bool ExtentWithinBitmap()
+        {
+            if (Extent.IsNull() || bmpExtent.IsNull())
+                return false;
+            return (Extent.XMax <= bmpExtent.XMax &&
+                Extent.YMax <= bmpExtent.YMax &&
+                Extent.XMin >= bmpExtent.XMin &&
+                Extent.YMin >= bmpExtent.YMin);
         }
 
         #endregion
 
         private void LWindow_MouseMove(object sender, MouseEventArgs e)
         {
-            switch (status)
+            switch (OpType)
             {
-                case StatusType.Pan:
+                case OperationType.Pan:
                     if (e.Button != MouseButtons.Left)
                         return;
                     AlterCenter(e.Location.X - mouseLocation.X, e.Location.Y - mouseLocation.Y);
                     mouseLocation = e.Location;
-                    Invalidate();
+                    Refresh();
                     break;
-                case StatusType.Edit:
+                case OperationType.Edit:
                     mouseLocation = e.Location;
                     Refresh();
                     break;
@@ -476,7 +405,44 @@ namespace Lgis
             }
         }
 
-#endregion
+        public void ForceRedraw()
+        {
+            if (Layers == null)
+                return;
+            Graphics g = this.CreateGraphics();
+            Draw(g, Layers);
+        }
 
+        #endregion
+        #region custom event
+        public delegate void ScaleChangedEventHandler(object sender,  LScaleChangedEventArgs e);
+        public event ScaleChangedEventHandler ScaleChanged;
+        void RaiseScaleChangedEvent(object sender, LScaleChangedEventArgs e)
+        {
+            if (ScaleChanged != null)
+                ScaleChanged(sender, e);
+        }
+
+        public delegate void CenterAlteredEventHandler(object sender, LCenterAlteredEventArgs e);
+        public event CenterAlteredEventHandler CenterAltered;
+        void RaiseCenterAlteredEvent(object sender,  LCenterAlteredEventArgs e)
+        {
+            if (CenterAltered != null)
+                CenterAltered(sender, e);
+        }
+
+        void LWindow_CenterAltered(object sender, LCenterAlteredEventArgs e)
+        {
+            Refresh();
+        }
+
+        void LWindow_ScaleChanged (object sender, LScaleChangedEventArgs e){
+            RedrawBmpBuffer();
+            Refresh();
+        }
+        #endregion
+
+
+        #endregion
     }
 }

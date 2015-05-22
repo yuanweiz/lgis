@@ -38,7 +38,7 @@
             this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.DoubleBuffered = true;
             this.Name = "LWindow";
-            this.Size = new System.Drawing.Size(289, 236);
+            this.Size = new System.Drawing.Size(289, 240);
             this.Load += new System.EventHandler(this.LWindow_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.LWindow_Paint);
             this.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.LWindow_MouseDoubleClick);

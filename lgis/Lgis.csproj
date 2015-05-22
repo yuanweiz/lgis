@@ -72,6 +72,7 @@
     <Compile Include="LEnvelope.cs" />
     <Compile Include="LMathTools.cs" />
     <Compile Include="Misc\LEnums.cs" />
+    <Compile Include="Misc\LEventArgs.cs" />
     <Compile Include="Renderer\LRenderer.cs" />
     <Compile Include="UserControl\LMapTools.cs" />
     <Compile Include="Renderer\LSymbol.cs" />
