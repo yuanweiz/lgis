@@ -12,7 +12,7 @@ namespace Lgis
         
         string filename;
         public LVectorLayer Layer = new LVectorLayer();
-        BinaryReader shpReader,shxReader;
+        BinaryReader shpReader,shxReader,dbfReader;
         public readonly GeometryType GeometryType;
         int length;
         delegate string strmap(string s);
@@ -34,6 +34,8 @@ namespace Lgis
                     new FileStream(filename, FileMode.Open,FileAccess.Read));
                 shxReader = new BinaryReader(
                     new FileStream(basename+".shx",FileMode.Open,FileAccess.Read));
+                dbfReader = new BinaryReader(
+                    new FileStream(basename+".dbf",FileMode.Open,FileAccess.Read));
                 fileInfo = new FileInfo(basename + ".shx");
                 nrecord = ((int)fileInfo.Length - 100) / 8;
                 shxReader.BaseStream.Seek(24L, SeekOrigin.Begin);
@@ -64,11 +66,12 @@ namespace Lgis
                     default: break;
                 }
                 Layer.Name = BaseName(fileInfo.Name);
-                Console.WriteLine(ShiftEndian(code));
-                Console.WriteLine(nrecord);
                 //Ready to read record header
                 shxReader.BaseStream.Seek(100L, SeekOrigin.Begin);
                 shpReader.BaseStream.Seek(100L, SeekOrigin.Begin);
+                byte version = dbfReader.ReadByte();
+                Console.Write("Version:");
+                Console.WriteLine((int)version);
                 for (int i = 0; i < nrecord; ++i)
                 {
                     int offset = ShiftEndian(shxReader.ReadInt32());

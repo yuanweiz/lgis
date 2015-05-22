@@ -407,6 +407,7 @@ namespace Lgis
                     break;
             }
         }
+
         private void LWindow_MouseDown(object sender, MouseEventArgs e)
         {
             mouseLocation = e.Location;

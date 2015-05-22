@@ -130,6 +130,24 @@ namespace Lgis
             l2.Name = "Layer 2";
             l3.Name = "Layer 3";
             l4.Name = "Layer 4";
+            LVectorLayer vl = new LVectorLayer();
+            lg.Add(vl) ;
+            LPolyPolyline ppl = new LPolyPolyline();
+            LPolyline pl2 = new LPolyline();
+            LPolyline pl = new LPolyline();
+            LVectorLayer vl2 = new LVectorLayer();
+            pl.Add(new LPoint(1, 2));
+            pl.Add(new LPoint(3, 6));
+            pl.Add(new LPoint(5, 6));
+            ppl.Add(pl);
+            //ppl.Add(pl2=pl.Copy());
+            pl2 = pl.Copy();
+            pl2[0].X = -1;
+            pl2[2].Y = 10;
+            vl2.Add(pl2);
+            vl2.Name = "vl2";
+            vl.Add(ppl);
+            //lWindow1.Layers.Add(vl2);
             return lg;
         }
 

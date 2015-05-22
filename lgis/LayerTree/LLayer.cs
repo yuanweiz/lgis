@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -68,6 +69,8 @@ namespace Lgis
         }
         public int Count { get { return VectorObjects.Count; } }
 
+        public LDataTable DataTable { get; private set; }
+
         //public LRenderer Renderer = new LSimpleRenderer();
 
         public override LEnvelope Envelope
@@ -88,16 +91,28 @@ namespace Lgis
             : base(LayerType.Vector)
         {
             FeatureType = featureType;
+            DataTable = new LDataTable();
         }
         public virtual void Add(LVectorObject vo)
         {
             vo.Owner = this;
             VectorObjects.Add(vo);
+            DataRow row = DataTable.NewRow();
+            row["Geometry"] = vo;
+            DataTable.Rows.Add(row);
         }
         public void RemoveAt(int idx)
         {
-            VectorObjects[idx].Owner = LMapObject.Null;
+            LVectorObject delTarget = VectorObjects[idx];
+            delTarget.Owner = LMapObject.Null;
             VectorObjects.RemoveAt(idx);
+            IEnumerable<DataRow> rows = from row in DataTable.AsEnumerable()
+                                        where row["Geometry"] == delTarget
+                                        select row;
+            foreach (DataRow row in rows)
+                row.Delete();
+            //DataTable.Rows.
+            
         }
 
         public override string Info()
@@ -152,7 +167,7 @@ namespace Lgis
                 case GeometryType.Point:
                 case GeometryType.Polypoint:
                     vo.Owner = this;
-                    VectorObjects.Add(vo);
+                    base.Add(vo);
                     break;
                 default:
                     //FIXME:Exception handle here?
@@ -197,8 +212,7 @@ namespace Lgis
             {
                 case GeometryType.Polyline:
                 case GeometryType.PolyPolyline:
-                    vo.Owner = this;
-                    VectorObjects.Add(vo);
+                    base.Add(vo);
                     break;
                 default:
                     throw new LTypeMismatchException("Only lines are allowed");
@@ -236,8 +250,7 @@ namespace Lgis
             {
                 case GeometryType.Polygon:
                 case GeometryType.PolyPolygon:
-                    vo.Owner = this;
-                    VectorObjects.Add(vo);
+                    base.Add(vo);
                     break;
                 default:
                     throw new LTypeMismatchException("Only polygons are allowed");

@@ -297,45 +297,4 @@ namespace Lgis
         #endregion
     }
 
-    public class LGeoRecord
-    {
-        
-    }
-
-    public class LGeoRecordSet  // IEnumerable <LGeoRecord>
-    {
-    }
-
-    public class LWorkSpace
-    {
-    }
 }
-        /*
-        private void btnConnect_Click(object sender, EventArgs e)
-        {
-            string cntstr = "Server="+txtHost.Text+
-                ";Port="+txtPort.Text+
-                ";User Id="+txtUser.Text+
-                ";Password="+txtPasswd.Text+
-                ";Database="+txtDbname.Text;
-            NpgsqlConnection conn = new NpgsqlConnection(cntstr);
-            try
-            {
-                conn.Open();
-                NpgsqlCommand cmd = new NpgsqlCommand(txtSQL.Text, conn);
-                NpgsqlDataReader dr = cmd.ExecuteReader();
-                    string o="";
-                while (dr.Read())
-                {
-                    o += dr[0];
-                }
-                MessageBox.Show(o);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                
-            }
-        }
-
-        */

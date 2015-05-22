@@ -15,24 +15,12 @@ namespace GUI
     {
         Point mouseLocation = new Point(0,0);
         LUnitTest ut = new LUnitTest();
-        LVectorLayer vl = new LVectorLayer();
         //bool mouseDragging;
         public Form1()
         {
             InitializeComponent();
             btnStopEditing.Enabled = false;
-            lWindow1.Layers=ut.TestLayerView();
-            lWindow1.Layers.Add(vl) ;
-            lWindow1.editingLayer = vl;
-
-            LPolyPolyline ppl = new LPolyPolyline();
-            LPolyline pl2 = new LPolyline();
-            LPolyline pl = new LPolyline();
-            LVectorLayer vl2 = new LVectorLayer();
-            pl.Add(new LPoint(1, 2));
-            pl.Add(new LPoint(3, 6));
-            pl.Add(new LPoint(5, 6));
-            ppl.Add(pl);
+            //lWindow1.Layers=ut.TestLayerView();
             
             LShapefileReader sr = new LShapefileReader(@"C:\Program Files\ESRI\MapObjects2\Samples\Data\USA\STATES.SHP");
             lWindow1.Layers.Add(sr.Layer);
@@ -40,17 +28,11 @@ namespace GUI
             lWindow1.Layers.Add(sr.Layer);
             sr = new LShapefileReader(@"C:\Program Files\ESRI\MapObjects2\Samples\Data\USA\CAPITALS.SHP");
             lWindow1.Layers.Add(sr.Layer);
-            //ppl.Add(pl2=pl.Copy());
-            pl2 = pl.Copy();
-            pl2[0].X = -1;
-            pl2[2].Y = 10;
-            vl2.Add(pl2);
-            vl2.Name = "vl2";
-            vl.Add(ppl);
-            lWindow1.Layers.Add(vl2);
             lLayerView1.Layers = lWindow1.Layers;
             lLayerView1.Refresh();
             lLayerComboBox1.Layers = lWindow1.Layers;
+            LDataTable table = sr.Layer.DataTable;
+            table.Print();
             lLayerComboBox1.Refresh();
         }
 
