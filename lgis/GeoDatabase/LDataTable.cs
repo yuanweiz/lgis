@@ -8,10 +8,12 @@ namespace Lgis
 {
     public class LDataTable:DataTable
     {
+        LLayer Layer;
         int maxfid = 0;
-        public LDataTable()
+        public LDataTable(LLayer Layer)
             : base()
         {
+            this.Layer = Layer;
             this.TableNewRow += new DataTableNewRowEventHandler(OnRowAdded);
             Columns.Add(new DataColumn("FID", typeof(int)));
             Columns.Add(new DataColumn("Geometry", typeof(LVectorObject)));
@@ -32,6 +34,5 @@ namespace Lgis
             e.Row["FID"] = maxfid;
             maxfid++;
         }
-
     }
 }

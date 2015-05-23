@@ -51,7 +51,15 @@ namespace Lgis
 
         #region 私有字段
 
-        protected List<LVectorObject> VectorObjects = new List<LVectorObject>();
+        //protected List<LVectorObject> VectorObjects = new List<LVectorObject>();
+        protected IEnumerable<LVectorObject> VectorObjects
+        {
+            get
+            {
+                return from row in DataTable.AsEnumerable()
+                       select (LVectorObject)row["Geometry"];
+            }
+        }
         public readonly FeatureType FeatureType;
         
         #endregion
@@ -64,14 +72,14 @@ namespace Lgis
         /// <returns></returns>
         public LVectorObject this[int idx]
         {
-            get { return VectorObjects[idx]; }
-            set { VectorObjects[idx] = value; }
+            get
+            {
+                return (LVectorObject)DataTable.Rows[idx]["Geometry"];
+            }
         }
-        public int Count { get { return VectorObjects.Count; } }
+        public int Count { get { return DataTable.Rows.Count; } }
 
         public LDataTable DataTable { get; private set; }
-
-        //public LRenderer Renderer = new LSimpleRenderer();
 
         public override LEnvelope Envelope
         {
@@ -91,28 +99,18 @@ namespace Lgis
             : base(LayerType.Vector)
         {
             FeatureType = featureType;
-            DataTable = new LDataTable();
+            DataTable = new LDataTable(this);
         }
         public virtual void Add(LVectorObject vo)
         {
             vo.Owner = this;
-            VectorObjects.Add(vo);
             DataRow row = DataTable.NewRow();
             row["Geometry"] = vo;
             DataTable.Rows.Add(row);
         }
         public void RemoveAt(int idx)
         {
-            LVectorObject delTarget = VectorObjects[idx];
-            delTarget.Owner = LMapObject.Null;
-            VectorObjects.RemoveAt(idx);
-            IEnumerable<DataRow> rows = from row in DataTable.AsEnumerable()
-                                        where row["Geometry"] == delTarget
-                                        select row;
-            foreach (DataRow row in rows)
-                row.Delete();
-            //DataTable.Rows.
-            
+            DataTable.Rows.RemoveAt(idx);
         }
 
         public override string Info()

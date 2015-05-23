@@ -66,12 +66,51 @@ namespace Lgis
                     default: break;
                 }
                 Layer.Name = BaseName(fileInfo.Name);
-                //Ready to read record header
-                shxReader.BaseStream.Seek(100L, SeekOrigin.Begin);
-                shpReader.BaseStream.Seek(100L, SeekOrigin.Begin);
                 byte version = dbfReader.ReadByte();
                 Console.Write("Version:");
                 Console.WriteLine((int)version);
+                dbfReader.BaseStream.Seek(10L , SeekOrigin.Begin);
+                Int16 dbfRecordLen = dbfReader.ReadInt16();
+                Console.WriteLine(dbfRecordLen);
+                dbfReader.BaseStream.Seek(32L, SeekOrigin.Begin);
+                //Read FieldDescribe
+                char fieldType;
+                while (dbfReader.PeekChar()!=0x0d)
+                {
+                    byte[] fieldDesc = dbfReader.ReadBytes(32);
+                    string fieldName;
+                    LDataTable table = Layer.DataTable;
+                    unsafe
+                    {
+                        fixed (byte* pchar = fieldDesc)
+                        {
+                            fieldName = "";
+                            for (int i = 0; i < 10; ++i)
+                            {
+                                if (pchar[i] != 0x00)
+                                    fieldName += (char)pchar[i];
+                            }
+                            fieldType = (char)pchar[11];
+                            Console.WriteLine("type=" + fieldType.ToString());
+                            Console.WriteLine(fieldName);
+                        }
+                    }
+                    switch (fieldType)
+                    {
+                        case 'C':
+                            table.Columns.Add(new DataColumn(fieldName,typeof(string)));
+                            break;
+                        case 'N':
+                            table.Columns.Add(new DataColumn(fieldName,typeof(double)));
+                            break;
+                        default:
+                            throw new LNotImplementedException("Unrecognized dbf field");
+                    }
+                }
+                //Ready to read record header
+                shxReader.BaseStream.Seek(100L, SeekOrigin.Begin);
+                shpReader.BaseStream.Seek(100L, SeekOrigin.Begin);
+
                 for (int i = 0; i < nrecord; ++i)
                 {
                     int offset = ShiftEndian(shxReader.ReadInt32());
