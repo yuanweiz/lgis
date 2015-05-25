@@ -1,6 +1,6 @@
 ﻿namespace GUI
 {
-    partial class Form1
+    partial class FrmMain
     {
         /// <summary>
         /// 必需的设计器变量。
@@ -45,6 +45,7 @@
             this.lLayerView1 = new Lgis.LLayerTreeView();
             this.lWindow1 = new Lgis.LWindow();
             this.btnPan = new System.Windows.Forms.Button();
+            this.btnGridView = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnZoomIn
@@ -173,11 +174,22 @@
             this.btnPan.UseVisualStyleBackColor = true;
             this.btnPan.Click += new System.EventHandler(this.btnPan_Click);
             // 
+            // btnGridView
+            // 
+            this.btnGridView.Location = new System.Drawing.Point(696, 386);
+            this.btnGridView.Name = "btnGridView";
+            this.btnGridView.Size = new System.Drawing.Size(75, 23);
+            this.btnGridView.TabIndex = 15;
+            this.btnGridView.Text = "GridView";
+            this.btnGridView.UseVisualStyleBackColor = true;
+            this.btnGridView.Click += new System.EventHandler(this.btnGridView_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(774, 586);
+            this.Controls.Add(this.btnGridView);
             this.Controls.Add(this.btnPan);
             this.Controls.Add(this.lLayerComboBox1);
             this.Controls.Add(this.btnRotate);
@@ -192,7 +204,7 @@
             this.Controls.Add(this.btnZoomIn);
             this.DoubleBuffered = true;
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "bu";
             this.Load += new System.EventHandler(this.Form1_Load_1);
             this.ResumeLayout(false);
 
@@ -217,6 +229,7 @@
         private System.Windows.Forms.Button btnRotate;
         private Lgis.LLayerComboBox lLayerComboBox1;
         private System.Windows.Forms.Button btnPan;
+        private System.Windows.Forms.Button btnGridView;
     }
 }
 

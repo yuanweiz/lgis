@@ -14,6 +14,7 @@ namespace Lgis
     public class LLayer: LMapObject 
     {
         public readonly LayerType LayerType;
+        public LDataTable DataTable { get; protected set; }
         public bool Visible = true;
 
         protected LLayer (LayerType ft):base(ObjectType.Layer){
@@ -79,7 +80,7 @@ namespace Lgis
         }
         public int Count { get { return DataTable.Rows.Count; } }
 
-        public LDataTable DataTable { get; private set; }
+        //public LDataTable DataTable { get; private set; }
 
         public override LEnvelope Envelope
         {

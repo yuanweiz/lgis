@@ -17,6 +17,7 @@ namespace Lgis
         int length;
         delegate string strmap(string s);
         strmap BaseName = s => s.Substring(0, s.LastIndexOf('.'));
+
         public LShapefileReader(string filename)
         {
             this.filename = filename;
@@ -70,64 +71,115 @@ namespace Lgis
                 Console.Write("Version:");
                 Console.WriteLine((int)version);
                 dbfReader.BaseStream.Seek(10L , SeekOrigin.Begin);
-                Int16 dbfRecordLen = dbfReader.ReadInt16();
+                int dbfRecordLen = dbfReader.ReadInt16();
                 Console.WriteLine(dbfRecordLen);
                 dbfReader.BaseStream.Seek(32L, SeekOrigin.Begin);
                 //Read FieldDescribe
                 char fieldType;
+                LDataTable table = Layer.DataTable;
+                Dictionary<DataColumn, int> fieldLengths = new Dictionary<DataColumn,int>();
                 while (dbfReader.PeekChar()!=0x0d)
                 {
                     byte[] fieldDesc = dbfReader.ReadBytes(32);
-                    string fieldName;
-                    LDataTable table = Layer.DataTable;
+                    string columnName;
+                    byte fieldLen;
                     unsafe
                     {
                         fixed (byte* pchar = fieldDesc)
                         {
-                            fieldName = "";
+                            columnName = "";
                             for (int i = 0; i < 10; ++i)
                             {
                                 if (pchar[i] != 0x00)
-                                    fieldName += (char)pchar[i];
+                                    columnName += (char)pchar[i];
                             }
                             fieldType = (char)pchar[11];
-                            Console.WriteLine("type=" + fieldType.ToString());
-                            Console.WriteLine(fieldName);
+                            fieldLen = pchar[16];
+                            
                         }
                     }
+                    DataColumn col ;
                     switch (fieldType)
                     {
                         case 'C':
-                            table.Columns.Add(new DataColumn(fieldName,typeof(string)));
+                            col = new DataColumn(columnName,typeof(string));
                             break;
                         case 'N':
-                            table.Columns.Add(new DataColumn(fieldName,typeof(double)));
+                            col = new DataColumn(columnName, typeof(decimal));
+                            break;
+                        case 'D':
+                        case 'F':
+                            col = new DataColumn(columnName,typeof(double));
+                            break;
+                        case 'I':
+                        case 'L':
+                            col = new DataColumn(columnName,typeof(int));
                             break;
                         default:
                             throw new LNotImplementedException("Unrecognized dbf field");
                     }
+                    Console.WriteLine(fieldType);
+                    col.ColumnName = columnName;
+                    table.Columns.Add(col);
+                    fieldLengths[col] = (int)fieldLen;
                 }
                 //Ready to read record header
                 shxReader.BaseStream.Seek(100L, SeekOrigin.Begin);
                 shpReader.BaseStream.Seek(100L, SeekOrigin.Begin);
+                dbfReader.BaseStream.Seek(1L, SeekOrigin.Current); //Skip the 0x0D end flag
 
                 for (int i = 0; i < nrecord; ++i)
                 {
                     int offset = ShiftEndian(shxReader.ReadInt32());
-                    int recordLength = ShiftEndian(shxReader.ReadInt32()) * 2; // ESRI shp uses 16-bit DWORD as size unit
+                    int shpRecordLen = ShiftEndian(shxReader.ReadInt32()) * 2; // ESRI shp uses 16-bit short as size unit
                     int uid = ShiftEndian(shpReader.ReadInt32());
                     shpReader.BaseStream.Seek(4L, SeekOrigin.Current);// length, unused
                     //getblob
-                    byte[] blob = shpReader.ReadBytes(recordLength);
+                    byte[] shpblob = shpReader.ReadBytes(shpRecordLen);
+                    byte[] dbfblob = dbfReader.ReadBytes(dbfRecordLen);//TAG
+                    //Console.WriteLine(BlobToString(dbfblob));
                     LVectorObject vo;
-                    vo = ToLVectorObject(blob);
-                    //FIXME:unnecesary?
-                    Layer.Add(vo);
+                    DataRow row = table.NewRow();
+                    vo = ToLVectorObject(shpblob);
+                    //Layer.Add(vo); // Should use new api Layers.Rows.Add
+                    int start = 1; //The first is space ' ' or star '*'
+                    for (int j = 2; j < table.Columns.Count; ++j)
+                    {
+                        DataColumn col = table.Columns[j];
+                        int fieldLen = fieldLengths[col];
+                        unsafe{
+                            fixed (byte * pchar = dbfblob){
+                                if (col.DataType == typeof(string))
+                                {
+                                    string s = System.Text.Encoding.ASCII.GetString(dbfblob, start, fieldLen);
+                                    row[col] = s;
+                                }
+                                else if (col.DataType == typeof(decimal))
+                                {
+                                    string s = System.Text.Encoding.ASCII.GetString(dbfblob, start, fieldLen);
+                                    row[col] = decimal.Parse(s);
+                                }
+                                else if (col.DataType == typeof(int))
+                                {
+                                    throw new LNotImplementedException("Int Type not implemented");
+                                }
+                            }
+                        }
+                        start += fieldLen;
+                    }
+                    row["Geometry"] = vo;
+                    table.Rows.Add(row);
                 }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
+            }
+            finally
+            {
+                dbfReader.Close();
+                shpReader.Close();
+                shxReader.Close();
             }
         }
 
@@ -210,10 +262,26 @@ namespace Lgis
                 ((i >> 8) & 0x0000ff00) |
                 ((i >> 24) & 0x000000ff);
         }
+
         public static Int32 ShiftEndian(Int32 i)
         {
             UInt32 code = ShiftEndian((UInt32)i);
             return (Int32)code;
+        }
+
+        public static string BlobToString(byte[] blob)
+        {
+            string s="";
+            byte b;
+            for (int i = 0; i < blob.Length; ++i)
+            {
+                b = blob[i];
+                if (b >= 0x20 && b <= 126)
+                    s += (char)b;
+                else
+                    s += "0x??";
+            }
+            return s;
         }
 
     }

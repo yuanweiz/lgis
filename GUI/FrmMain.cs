@@ -11,7 +11,7 @@ using System.Reflection;
 using Lgis;
 namespace GUI
 {
-    public partial class Form1 : Form
+    public partial class FrmMain : Form
     {
         Point mouseLocation = new Point(0,0);
         LUnitTest ut = new LUnitTest();
@@ -20,8 +20,13 @@ namespace GUI
             get { return lWindow1.OpType; }
             set { lWindow1.OpType = value; }
         }
+        LLayerGroup Layers
+        {
+            get { return lWindow1.Layers; }
+            set { lWindow1.Layers = value; }
+        }
         //bool mouseDragging;
-        public Form1()
+        public FrmMain()
         {
             InitializeComponent();
             btnStopEditing.Enabled = false;
@@ -36,7 +41,7 @@ namespace GUI
             lLayerView1.Refresh();
             lLayerComboBox1.Layers = lWindow1.Layers;
             LDataTable table = sr.Layer.DataTable;
-            //table.Print();
+            table.Print();
             lLayerComboBox1.Refresh();
         }
 
@@ -133,9 +138,15 @@ namespace GUI
 
         private void lLayerView1_AfterCheck(object sender, TreeViewEventArgs e)
         {
-            lWindow1.Refresh();
+            //lWindow1.Refresh();
+            lWindow1.ForceRedraw();
         }
 
-
+        private void btnGridView_Click(object sender, EventArgs e)
+        {
+            FrmGridView frmGridView = new FrmGridView();
+            frmGridView.DataTable = ((LLayer)Layers[0]).DataTable;
+            frmGridView.Show(this);
+        }
     }
 }

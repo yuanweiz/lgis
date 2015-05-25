@@ -71,6 +71,9 @@
     <Report>
       <Path>GUI150522(2).vsp</Path>
     </Report>
+    <Report>
+      <Path>GUI150523.vsp</Path>
+    </Report>
   </Reports>
   <Launches>
     <ProjBinary>

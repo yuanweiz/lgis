@@ -33,7 +33,7 @@ namespace Lgis
             {
                 case SymbolStyle.SolidColorFill:
                     SolidBrush fillBrush = new SolidBrush(Symbol.FillColor);
-
+                    g.FillPolygon(fillBrush, points);
                     break;
                 default:
                     break;

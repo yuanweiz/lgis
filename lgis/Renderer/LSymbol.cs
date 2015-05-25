@@ -88,9 +88,11 @@ namespace Lgis
     }
     public class LPolygonSymbol : LSymbol
     {
-        public LPolygonSymbol() : base(SymbolType.Polygon) { }
+        public LPolygonSymbol() : base(SymbolType.Polygon) {
+            this.Style = SymbolStyle.SolidColorFill;
+        }
         public bool Hatch = false;
-        public Color FillColor = Color.Transparent;
+        public Color FillColor = Color.LightYellow;
 
         //Outline Related
         public Color OutlineColor = Color.Black;

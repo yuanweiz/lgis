@@ -98,6 +98,9 @@ namespace Lgis
 
         float zoomInRatio = 1.25f;
         float zoomOutRatio = .8f;
+
+        Point zoomStartLoc ;
+        Point zoomEndLoc;
         
         //mouse
         Point mouseLocation;
@@ -130,10 +133,16 @@ namespace Lgis
 
         public void ZoomToLayer()
         {
+            ZoomToExtent(Layers.Envelope);
+        }
+
+        public void ZoomToExtent(LEnvelope e)
+        {
             double ch = Height;
             double cw = Width;
-            double lh = Layers.Height;
-            double lw = Layers.Width;
+            double lh = e.YMax-e.YMin;
+            //double lw = Layers.Width;
+            double lw = e.XMax - e.XMin;
             if (double.IsNaN(lh) || double.IsNaN(lw) || Width == 0 || lw < 1.0)
                 return;
             Center.X = (Layers.XMax + Layers.XMin) / 2;
@@ -145,9 +154,7 @@ namespace Lgis
 
             // some alignment around the layer
             Scale *= .95;
-
-            RedrawBmpBuffer();
-            Refresh();
+            ForceRedraw();
         }
 
         public void ZoomToLayer( LLayerGroup l)
@@ -239,7 +246,6 @@ namespace Lgis
             }
         }
 
-
         void Draw(Graphics g, LLayer l)
         {
             switch (l.LayerType)
@@ -286,7 +292,6 @@ namespace Lgis
             }
         }
 
-
         #region Winform-related events
 
         private void LWindow_Load(object sender, EventArgs e)
@@ -319,10 +324,16 @@ namespace Lgis
         */
         private void LWindow_Paint(object sender, PaintEventArgs e)
         {
+            Redraw(sender, e, false);
+        }
+
+        void Redraw( object sender,PaintEventArgs e ,bool forceRedraw)
+        {
             if (Layers == null)
                 return;
             //if out of cache range, redraw it
-            if (false == ExtentWithinBitmap())
+            //if (false == ExtentWithinBitmap())
+            if (forceRedraw || (!ExtentWithinBitmap()))
                 RedrawBmpBuffer();
 
             //notice the centers may differ 
@@ -330,9 +341,9 @@ namespace Lgis
             float dx = (float)(-Width + -diff.X * Scale);
             float dy = (float)(-Height + diff.Y * Scale);
             e.Graphics.DrawImage(bmpCache, dx, dy);
-            
             //TODO : DrawTrackingLayers()
         }
+
 
         void RedrawBmpBuffer()
         {
@@ -354,14 +365,43 @@ namespace Lgis
             {
                 case OperationType.ZoomIn:
                 case OperationType.ZoomOut:
-                    ZoomByCenter(e.Location);
-                    RedrawBmpBuffer();
-                    Refresh();
-                    break;
-                case OperationType.None:
-                    OpType = OperationType.Pan;
+                    zoomEndLoc = zoomStartLoc = e.Location;
                     break;
                 case OperationType.Edit:
+                    break;
+                default:
+                    break;
+            }
+        }
+        private void LWindow_MouseUp(object sender, MouseEventArgs e)
+        {
+            mouseLocation = e.Location;
+            switch (OpType)
+            {
+                case OperationType.ZoomIn:
+                case OperationType.ZoomOut:
+                    Refresh();
+                    Graphics g = CreateGraphics();
+                    zoomEndLoc = e.Location;
+                    int dx = zoomEndLoc.X - zoomStartLoc.X;
+                    int dy = zoomEndLoc.Y - zoomStartLoc.Y;
+                    //If the zoom tracking rectangle is too small
+                    if (Math.Abs(dx) <5 && Math.Abs(dy) < 5)
+                    {
+                        ZoomByCenter(e.Location);
+                    }
+                    else if (OpType == OperationType.ZoomIn)
+                    {
+                        LPoint start = ToGeographicCoordinate(zoomStartLoc);
+                        LPoint end = ToGeographicCoordinate(zoomEndLoc);
+                        LEnvelope en = new LEnvelope(
+                            Math.Min(start.X, end.X),
+                            Math.Min(start.Y, end.Y),
+                            Math.Max(start.X, end.X),
+                            Math.Max(start.Y, end.Y)
+                            );
+                        ZoomToExtent( en);
+                    }
                     break;
                 default:
                     break;
@@ -387,30 +427,55 @@ namespace Lgis
 
         private void LWindow_MouseMove(object sender, MouseEventArgs e)
         {
+            mouseLocation = e.Location;
             switch (OpType)
             {
                 case OperationType.Pan:
                     if (e.Button != MouseButtons.Left)
                         return;
                     AlterCenter(e.Location.X - mouseLocation.X, e.Location.Y - mouseLocation.Y);
-                    mouseLocation = e.Location;
                     Refresh();
                     break;
+                case OperationType.ZoomIn:
+                case OperationType.ZoomOut:
+                    if (e.Button != System.Windows.Forms.MouseButtons.Left)
+                        return;
+                    Point lu;
+                    zoomEndLoc = e.Location;
+                    int dx = zoomEndLoc.X - zoomStartLoc.X;
+                    int dy = zoomEndLoc.Y - zoomStartLoc.Y;
+                    if (dx > 0)
+                        lu = zoomStartLoc;
+                    else{
+                        lu = zoomEndLoc;
+                        dx = -dx;
+                    }
+                    if (dy < 0)
+                    {
+                        lu.Y += dy;
+                        dy = -dy;
+                    }
+                    Refresh();
+                    Graphics g = CreateGraphics();
+                    g.DrawRectangle(Pens.Black,new Rectangle(lu.X,lu.Y,dx,dy));
+                    break;
                 case OperationType.Edit:
-                    mouseLocation = e.Location;
                     Refresh();
                     break;
                 default:
                     break;
             }
         }
+        public new void _Refresh()
+        {
+            //base.Refresh();
+            ForceRedraw();
+        }
 
         public void ForceRedraw()
         {
-            if (Layers == null)
-                return;
-            Graphics g = this.CreateGraphics();
-            Draw(g, Layers);
+            PaintEventArgs e = new PaintEventArgs(this.CreateGraphics(),this.Bounds);
+            Redraw(this,e,true);
         }
 
         #endregion
@@ -438,7 +503,8 @@ namespace Lgis
 
         void LWindow_ScaleChanged (object sender, LScaleChangedEventArgs e){
             RedrawBmpBuffer();
-            Refresh();
+            //Refresh();
+            ForceRedraw();
         }
         #endregion
 
