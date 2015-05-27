@@ -42,4 +42,32 @@ namespace Lgis
             return compVar.CompareTo(b);
         }
     }
+    public class LStringDataFilter : ILDataFilter
+    {
+        public bool Regular = false;
+        public DataColumn Column;
+        public string MatchString;
+        public LStringDataFilter(string matchstring , bool regex = false)
+        {
+            MatchString = matchstring;
+            Regular = regex;
+        }
+        public IEnumerable<DataRow> Filter(IEnumerable<DataRow> src)
+        {
+            if (!Regular)
+            {
+                return from row in src
+                       where row[Column] == MatchString
+                       select row;
+            }
+            else
+            {
+                System.Text.RegularExpressions.Regex pattern =
+                    new System.Text.RegularExpressions.Regex(MatchString);
+                return from row in src
+                       where pattern.IsMatch(row[Column].ToString())
+                       select row;
+            }
+        }
+    }
 }

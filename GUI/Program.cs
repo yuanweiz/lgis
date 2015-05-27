@@ -6,6 +6,7 @@ using Lgis;
 
 namespace GUI
 {
+
     static class Program
     {
         /// <summary>
@@ -17,7 +18,8 @@ namespace GUI
             LUnitTest ut = new LUnitTest();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FrmMain());
+            FrmMain frmMain = new FrmMain();
+            Application.Run(frmMain);
             Console.ReadLine();
 
         }

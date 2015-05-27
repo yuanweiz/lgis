@@ -53,11 +53,11 @@
     <Compile Include="DataGrid\FrmAddColumn.Designer.cs">
       <DependentUpon>FrmAddColumn.cs</DependentUpon>
     </Compile>
-    <Compile Include="DataGrid\FrmNumericQuery.cs">
+    <Compile Include="DataGrid\FrmQuery.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DataGrid\FrmNumericQuery.Designer.cs">
-      <DependentUpon>FrmNumericQuery.cs</DependentUpon>
+    <Compile Include="DataGrid\FrmQuery.Designer.cs">
+      <DependentUpon>FrmQuery.cs</DependentUpon>
     </Compile>
     <Compile Include="FrmMain.cs">
       <SubType>Form</SubType>
@@ -82,8 +82,8 @@
     <EmbeddedResource Include="DataGrid\FrmAddColumn.resx">
       <DependentUpon>FrmAddColumn.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DataGrid\FrmNumericQuery.resx">
-      <DependentUpon>FrmNumericQuery.cs</DependentUpon>
+    <EmbeddedResource Include="DataGrid\FrmQuery.resx">
+      <DependentUpon>FrmQuery.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmMain.resx">
       <DependentUpon>FrmMain.cs</DependentUpon>

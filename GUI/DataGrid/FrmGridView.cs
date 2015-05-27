@@ -57,20 +57,12 @@ namespace GUI
 
         private void btnQuery_Click(object sender, EventArgs e)
         {
-            if (gridView.SelectedCells.Count != 1)
-            {
-                MessageBox.Show("Please Select one cell at a certain column");
-                return;
-            }
             int idx =  gridView.SelectedCells[0].ColumnIndex;
             DataColumn col = DataTable.Columns[idx];
-            if (col.DataType.GetInterface("IComparable") != null)
-            {
-                FrmNumericQuery frmNumericQuery = new FrmNumericQuery();
-                frmNumericQuery.Column = col;
-                frmNumericQuery.DataTable = DataTable;
-                frmNumericQuery.ShowDialog(this);
-            }
+            FrmQuery frmQuery = new FrmQuery(DataTable);
+            frmQuery.frmMain = this.Owner as FrmMain;
+            frmQuery.Column = col;
+            frmQuery.ShowDialog(this);
         }
     }
 }
