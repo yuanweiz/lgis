@@ -11,3 +11,5 @@ D:\code\lgis\GUI\obj\x86\Debug\GUI.FrmSetting.resources
 D:\code\lgis\GUI\bin\Debug\System.Data.SQLite.dll
 D:\code\lgis\GUI\obj\x86\Debug\GUI.FrmGridView.resources
 D:\code\lgis\GUI\obj\x86\Debug\GUI.FrmMain.resources
+D:\code\lgis\GUI\obj\x86\Debug\GUI.FrmAddColumn.resources
+D:\code\lgis\GUI\obj\x86\Debug\GUI.FrmNumericQuery.resources

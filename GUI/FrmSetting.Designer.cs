@@ -57,6 +57,7 @@
             this.lblShowFillColor.Name = "lblShowFillColor";
             this.lblShowFillColor.Size = new System.Drawing.Size(100, 23);
             this.lblShowFillColor.TabIndex = 1;
+            this.lblShowFillColor.Click += new System.EventHandler(this.lblShowFillColor_Click);
             // 
             // btnFillColorSelect
             // 

@@ -38,20 +38,20 @@ namespace Lgis
             set
             {
                 _Center = value;
-                //RaiseCenterAlteredEvent(this,new LCenterAlteredEventArgs(value));
             }
         }
-
-        //linearunit per pixel
+        //pixel per linearunit
         public new double Scale
         {
             get { return _Scale; }
             set { 
                 _Scale = value;
-                //RaiseScaleChangedEvent(this, new LScaleChangedEventArgs(value));
             }
         }
-        public LVectorLayer editingLayer = null;
+        public LVectorLayer EditingLayer = null;
+        LPoint EditingPoint = new LPoint();
+        LPolyline EditingLine = new LPolyline();
+        LPolygon EditingPolygon = new LPolygon();
 
         public LLayerGroup Layers
         {
@@ -133,54 +133,49 @@ namespace Lgis
 
         public void ZoomToLayer()
         {
-            ZoomToExtent(Layers.Envelope);
+            ZoomToExtent(Layers.Envelope,true);
         }
-
-        public void ZoomToExtent(LEnvelope e)
+        public void ZoomToLayer( LLayerGroup l)
         {
-            double ch = Height;
-            double cw = Width;
-            double lh = e.YMax-e.YMin;
+            ZoomToExtent(l.Envelope,true);
+        }
+        public void ZoomToLayer(LLayer l)
+        {
+            ZoomToExtent(l.Envelope,true);
+        }
+        public void ZoomToExtent(LEnvelope e,bool ZoomIn)
+        {
+            double winHeight = Height;
+            double winWidth = Width;
+            double geoHeight = e.YMax - e.YMin;
             //double lw = Layers.Width;
-            double lw = e.XMax - e.XMin;
-            if (double.IsNaN(lh) || double.IsNaN(lw) || Width == 0 || lw < 1.0)
+            double geoWidth = e.XMax - e.XMin;
+            if (double.IsNaN(geoHeight) || double.IsNaN(geoWidth) || Width == 0 || geoWidth < 1.0)
                 return;
-            Center.X = (Layers.XMax + Layers.XMin) / 2;
-            Center.Y = (Layers.YMax + Layers.YMin) / 2;
-            if (ch / cw > lh / lw)
-                Scale = cw / lw;
+            if (ZoomIn)
+            {
+                Center.X = (e.XMax + e.XMin) / 2;
+                Center.Y = (e.YMax + e.YMin) / 2;
+                if (winHeight / winWidth > geoHeight / geoWidth)
+                    Scale = winWidth / geoWidth;
+                else
+                    Scale = winHeight / geoHeight;
+                // some alignment around the layer
+                //Scale *= .95;
+            }
             else
-                Scale = ch / lh;
-
-            // some alignment around the layer
-            Scale *= .95;
+            {
+                Center.X = 2* Center.X-(e.XMax + e.XMin) / 2;
+                Center.Y = 2* Center.Y - (e.YMax + e.YMin) / 2;
+                if (winHeight / winWidth < geoHeight / geoWidth)
+                    Scale = Scale * Scale *  geoWidth / winWidth;
+                else 
+                    Scale = Scale * Scale * geoHeight / winHeight;
+                //Not Implemented
+            }
             ForceRedraw();
         }
 
-        public void ZoomToLayer( LLayerGroup l)
-        {
-            double ch = Height;
-            double cw = Width;
-            double lh = l.Height;
-            double lw = l.Width;
-            if (double.IsNaN(lh) || double.IsNaN(lw) || Width == 0 || lw < 1.0)
-                return;
-            Center.X = (l.XMax + l.XMin) / 2;
-            Center.Y = (l.YMax + l.YMin) / 2;
-            if (ch / cw > lh / lw)
-                Scale = cw / lw;
-            else
-                Scale = ch / lh;
-            // some alignment around the layer
-            Scale *= .95;
-        }
-
-        public void ZoomToLayer(LLayer l)
-        {
-            LLayerGroup lg = new LLayerGroup();
-            lg.Add(l);
-            ZoomToLayer(lg);
-        }
 
         public void ZoomByCenter(Point p)
         {
@@ -302,7 +297,6 @@ namespace Lgis
             //
             //CenterAltered += new CenterAlteredEventHandler(LWindow_CenterAltered);
             //ScaleChanged += new ScaleChangedEventHandler(LWindow_ScaleChanged);
-
             bmpCache = new Bitmap(3 * Width, 3 * Height);
             //Force the ExtentWithInBitmap() to return false
             bmpCenter = new LPoint(double.MaxValue, double.MaxValue);
@@ -321,9 +315,10 @@ namespace Lgis
          * |         |
          * |         V  LWindowY
          * V bmpY
-        */
+        ************************************************/
         private void LWindow_Paint(object sender, PaintEventArgs e)
         {
+            Console.WriteLine("In _Paint() func");
             Redraw(sender, e, false);
         }
 
@@ -342,8 +337,36 @@ namespace Lgis
             float dy = (float)(-Height + diff.Y * Scale);
             e.Graphics.DrawImage(bmpCache, dx, dy);
             //TODO : DrawTrackingLayers()
-        }
 
+            try
+            {
+                DrawTrackingLine(e.Graphics);
+                DrawTrackingPolygon(e.Graphics);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            
+        }
+        void DrawTrackingPolygon(Graphics g )
+        {
+            if (EditingPolygon.Count < 2)
+                return;
+            PointF []points = new PointF[EditingPolygon.Count];
+            for (int i = 0; i < EditingPolygon.Count; ++i)
+                points[i] = ToScreenCoordinate(EditingPolygon[i]);
+            g.DrawPolygon(Pens.Black, points);
+        }
+        void DrawTrackingLine(Graphics g )
+        {
+            if (EditingLine.Count < 2)
+                return;
+            PointF []points = new PointF[EditingLine.Count];
+            for (int i = 0; i < EditingLine.Count; ++i)
+                points[i] = ToScreenCoordinate(EditingLine[i]);
+            g.DrawLines(Pens.Black, points);
+        }
 
         void RedrawBmpBuffer()
         {
@@ -368,6 +391,36 @@ namespace Lgis
                     zoomEndLoc = zoomStartLoc = e.Location;
                     break;
                 case OperationType.Edit:
+                    try
+                    {
+                        if (EditingLayer == null)
+                            return;
+                        Type t = EditingLayer.GetType();
+                        if (t == typeof(LPointLayer))
+                        {
+                            EditingPoint = ToGeographicCoordinate(e.Location);
+                            EditingLayer.Add(EditingPoint);
+                            EditingPoint = new LPoint();
+                            ForceRedraw();
+                        }
+                        else if (t == typeof(LLineLayer))
+                        {
+                            if (EditingLine.Count == 0)
+                                EditingLine.Add(ToGeographicCoordinate(e.Location));
+                            EditingLine.Add(ToGeographicCoordinate(e.Location));
+                            Console.WriteLine("Count=" + EditingLine.Count.ToString());
+                        }
+                        else if (t == typeof(LPolygonLayer))
+                        {
+                            if (EditingPolygon.Count == 0)
+                                EditingPolygon.Add(ToGeographicCoordinate(e.Location));
+                            EditingPolygon.Add(ToGeographicCoordinate(e.Location));
+                            Console.WriteLine("Count=" + EditingPolygon.Count.ToString());
+                        }
+                    }
+                    catch(Exception exce){
+                        Console.WriteLine(exce.Message);
+                    }
                     break;
                 default:
                     break;
@@ -390,18 +443,18 @@ namespace Lgis
                     {
                         ZoomByCenter(e.Location);
                     }
-                    else if (OpType == OperationType.ZoomIn)
-                    {
-                        LPoint start = ToGeographicCoordinate(zoomStartLoc);
-                        LPoint end = ToGeographicCoordinate(zoomEndLoc);
-                        LEnvelope en = new LEnvelope(
-                            Math.Min(start.X, end.X),
-                            Math.Min(start.Y, end.Y),
-                            Math.Max(start.X, end.X),
-                            Math.Max(start.Y, end.Y)
-                            );
-                        ZoomToExtent( en);
-                    }
+                    LPoint start = ToGeographicCoordinate(zoomStartLoc);
+                    LPoint end = ToGeographicCoordinate(zoomEndLoc);
+                    LEnvelope en = new LEnvelope(
+                        Math.Min(start.X, end.X),
+                        Math.Min(start.Y, end.Y),
+                        Math.Max(start.X, end.X),
+                        Math.Max(start.Y, end.Y)
+                        );
+                    if (OpType == OperationType.ZoomIn)
+                        ZoomToExtent(en, true);
+                    else 
+                        ZoomToExtent(en, false);
                     break;
                 default:
                     break;
@@ -411,6 +464,30 @@ namespace Lgis
 
         private void LWindow_MouseDoubleClick(object sender, MouseEventArgs e)
         {
+            switch (OpType)
+            {
+                case OperationType.Edit:
+                    mouseLocation = e.Location;
+                    if (EditingLayer == null || EditingLayer.Count ==0)
+                        return;
+                    Type t = EditingLayer.GetType();
+                    if (t == typeof(LLineLayer))
+                    {
+                        //Manually Set to null After Tracking
+                        if (EditingLine.Count > 1)
+                            EditingLayer.Add(EditingLine);
+                        EditingLine = new LPolyline();
+                    }
+                    else if (t==typeof(LPolygonLayer))
+                    {
+                        if (EditingPolygon.Count > 2)
+                            EditingLayer.Add(EditingPolygon);
+                        EditingPolygon = new LPolygon();
+                    }
+                    ForceRedraw();
+                    break;
+            }
+            
         }
 
         private bool ExtentWithinBitmap()
@@ -427,49 +504,83 @@ namespace Lgis
 
         private void LWindow_MouseMove(object sender, MouseEventArgs e)
         {
-            mouseLocation = e.Location;
             switch (OpType)
             {
                 case OperationType.Pan:
                     if (e.Button != MouseButtons.Left)
                         return;
                     AlterCenter(e.Location.X - mouseLocation.X, e.Location.Y - mouseLocation.Y);
+                    mouseLocation = e.Location;
                     Refresh();
                     break;
                 case OperationType.ZoomIn:
                 case OperationType.ZoomOut:
+                    mouseLocation = e.Location;
                     if (e.Button != System.Windows.Forms.MouseButtons.Left)
                         return;
-                    Point lu;
+                    Point lu= new Point();
                     zoomEndLoc = e.Location;
                     int dx = zoomEndLoc.X - zoomStartLoc.X;
                     int dy = zoomEndLoc.Y - zoomStartLoc.Y;
-                    if (dx > 0)
-                        lu = zoomStartLoc;
-                    else{
-                        lu = zoomEndLoc;
-                        dx = -dx;
-                    }
-                    if (dy < 0)
+                    // XXX:Awful coding style
+                    if (dx * dy > 0)
                     {
-                        lu.Y += dy;
-                        dy = -dy;
+                        if (dx > 0)
+                            lu = zoomStartLoc;
+                        else
+                        {
+                            lu = zoomEndLoc;
+                            dx = -dx;
+                            dy = -dy;
+                        }
                     }
+                    else
+                    {
+                        if (dx > 0)
+                        {
+                            lu.X = zoomStartLoc.X;
+                            lu.Y = zoomEndLoc.Y;
+                        }
+                        else
+                        {
+                            lu.X = zoomEndLoc.X;
+                            lu.Y = zoomStartLoc.Y;
+                            dx = -dx;
+                        }
+                    }
+                    if (dy < 0) dy = -dy;
                     Refresh();
                     Graphics g = CreateGraphics();
+                    Console.WriteLine(lu.X);
+                    Console.WriteLine(lu.Y);
                     g.DrawRectangle(Pens.Black,new Rectangle(lu.X,lu.Y,dx,dy));
                     break;
                 case OperationType.Edit:
+                    mouseLocation = e.Location;
+                    if (EditingLayer == null || EditingLayer.Count ==0)
+                        return;
+                    Type t = EditingLayer.GetType();
+                    if (t == typeof(LLineLayer) )
+                    {
+                        if (EditingLine.Count < 1)
+                            return;
+                        EditingLine[EditingLine.Count - 1] = ToGeographicCoordinate(e.Location);
+                    }
+                    else if (t==typeof(LPolygonLayer)  )
+                    {
+                        if (EditingPolygon.Count < 1)
+                            return;
+                        EditingPolygon[EditingPolygon.Count - 1] = ToGeographicCoordinate(e.Location);
+                    }
+                    else
+                    {
+                        return;
+                    }
                     Refresh();
                     break;
                 default:
                     break;
             }
-        }
-        public new void _Refresh()
-        {
-            //base.Refresh();
-            ForceRedraw();
         }
 
         public void ForceRedraw()
@@ -502,8 +613,6 @@ namespace Lgis
         }
 
         void LWindow_ScaleChanged (object sender, LScaleChangedEventArgs e){
-            RedrawBmpBuffer();
-            //Refresh();
             ForceRedraw();
         }
         #endregion

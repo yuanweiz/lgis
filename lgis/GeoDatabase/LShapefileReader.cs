@@ -105,7 +105,9 @@ namespace Lgis
                             col = new DataColumn(columnName,typeof(string));
                             break;
                         case 'N':
-                            col = new DataColumn(columnName, typeof(decimal));
+                            col = new DataColumn(columnName, typeof(double));
+                            //col = new DataColumn(columnName, typeof(object));
+                            //FIXME: dbf numeric field really sucks!
                             break;
                         case 'D':
                         case 'F':
@@ -154,10 +156,10 @@ namespace Lgis
                                     string s = System.Text.Encoding.ASCII.GetString(dbfblob, start, fieldLen);
                                     row[col] = s;
                                 }
-                                else if (col.DataType == typeof(decimal))
+                                else if (col.DataType == typeof(double))
                                 {
                                     string s = System.Text.Encoding.ASCII.GetString(dbfblob, start, fieldLen);
-                                    row[col] = decimal.Parse(s);
+                                    row[col] = System.Convert.ToDouble( decimal.Parse(s));
                                 }
                                 else if (col.DataType == typeof(int))
                                 {

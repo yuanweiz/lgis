@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Drawing;
+using System.Data;
 
 namespace Lgis
 {
@@ -20,6 +21,7 @@ namespace Lgis
             throw new LNotImplementedException("Can't Render this polygon feature");
         }
     }
+
     public class LSimplePolygonRenderer  : LPolygonRenderer
     {
         public LPolygonSymbol Symbol = new LPolygonSymbol();
@@ -63,6 +65,23 @@ namespace Lgis
             }
         }
     }
+
+    public class LUniqueValuePolygonRenderer : LPolygonRenderer
+    {
+
+        public LUniqueValuePolygonRenderer() { }
+        public LUniqueValuePolygonRenderer(DataColumn c)
+        {
+            IComparable iComp = c.DataType as IComparable;
+            if (iComp == null)
+                throw new LTypeMismatchException("the type of column is not comparable");
+        }
+        public override void Render(Graphics g, PointF[] points)
+        {
+            //TODO:
+        }
+    }
+
     public class LLineRenderer :LRenderer
     {
         public LLineSymbol Symbol = new LLineSymbol();
@@ -91,6 +110,7 @@ namespace Lgis
             g.DrawLines(Pens.Black, points);
         }
     }
+
     public class LPointRenderer : LRenderer
     {
         public LPointSymbol Symbol = new LPointSymbol();

@@ -47,16 +47,28 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataGrid\FrmAddColumn.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DataGrid\FrmAddColumn.Designer.cs">
+      <DependentUpon>FrmAddColumn.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataGrid\FrmNumericQuery.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DataGrid\FrmNumericQuery.Designer.cs">
+      <DependentUpon>FrmNumericQuery.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmMain.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FrmMain.Designer.cs">
       <DependentUpon>FrmMain.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrmGridView.cs">
+    <Compile Include="DataGrid\FrmGridView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FrmGridView.Designer.cs">
+    <Compile Include="DataGrid\FrmGridView.Designer.cs">
       <DependentUpon>FrmGridView.cs</DependentUpon>
     </Compile>
     <Compile Include="FrmSetting.cs">
@@ -67,10 +79,16 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="DataGrid\FrmAddColumn.resx">
+      <DependentUpon>FrmAddColumn.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataGrid\FrmNumericQuery.resx">
+      <DependentUpon>FrmNumericQuery.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FrmMain.resx">
       <DependentUpon>FrmMain.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FrmGridView.resx">
+    <EmbeddedResource Include="DataGrid\FrmGridView.resx">
       <DependentUpon>FrmGridView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmSetting.resx">

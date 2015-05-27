@@ -8,3 +8,4 @@ D:\code\lgis\lgis\obj\x86\Debug\lgis.pdb
 D:\code\lgis\lgis\obj\x86\Debug\Lgis.LLayerTreeView.resources
 D:\code\lgis\lgis\bin\Debug\System.Data.SQLite.dll
 D:\code\lgis\lgis\obj\x86\Debug\Lgis.LLayerComboBox.resources
+D:\code\lgis\lgis\obj\x86\Debug\Lgis.csprojResolveAssemblyReference.cache

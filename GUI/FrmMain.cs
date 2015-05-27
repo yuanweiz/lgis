@@ -14,6 +14,7 @@ namespace GUI
     public partial class FrmMain : Form
     {
         Point mouseLocation = new Point(0,0);
+        public IEnumerable<DataRow> RecordSet;
         LUnitTest ut = new LUnitTest();
         LWindow.OperationType OpType
         {
@@ -24,6 +25,14 @@ namespace GUI
         {
             get { return lWindow1.Layers; }
             set { lWindow1.Layers = value; }
+        }
+        LLayer EditingLayer
+        {
+            get { return lWindow1.EditingLayer; }
+            set
+            {
+                lWindow1.EditingLayer = value as LVectorLayer;
+            }
         }
         //bool mouseDragging;
         public FrmMain()
@@ -123,17 +132,19 @@ namespace GUI
 
         private void btnRotate_Click(object sender, EventArgs e)
         {
+            return;
             Matrix3D rot = LMapTools.GetRotateMatrix(30.0, new LPoint());
-            LMapTools.LinearTransform(lWindow1.editingLayer, rot);
+            LMapTools.LinearTransform(lWindow1.EditingLayer, rot);
             lWindow1.Refresh();
         }
 
         private void lLayerComboBox1_SelectedItemChanged(object sender, SelectedItemChangedEventArgs e)
         {
             Console.WriteLine(e.Layer.Name);
+            EditingLayer = e.Layer;
             //FIXME:Still some compatity problems
             if (e.Layer.LayerType == LayerType.Vector)
-                lWindow1.editingLayer = (LVectorLayer)e.Layer;
+                lWindow1.EditingLayer = (LVectorLayer)e.Layer;
         }
 
         private void lLayerView1_AfterCheck(object sender, TreeViewEventArgs e)
@@ -145,8 +156,28 @@ namespace GUI
         private void btnGridView_Click(object sender, EventArgs e)
         {
             FrmGridView frmGridView = new FrmGridView();
-            frmGridView.DataTable = ((LLayer)Layers[0]).DataTable;
+            if (EditingLayer == null)
+                return;
+            frmGridView.DataTable = EditingLayer.DataTable;
             frmGridView.Show(this);
+        }
+
+        private void openShapefileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofDialog = new OpenFileDialog();
+            ofDialog.Filter = "Shapefile(*.shp)|*.shp";
+            if (ofDialog.ShowDialog(this) == System.Windows.Forms.DialogResult.OK){
+                LShapefileReader reader = new LShapefileReader(ofDialog.FileName);
+                lWindow1.Layers.Add(reader.Layer);
+                lLayerView1.RefreshItems();
+                lLayerComboBox1.RefreshComboBoxItem();
+                lWindow1.ForceRedraw();
+            }
+        }
+
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

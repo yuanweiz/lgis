@@ -54,8 +54,8 @@ namespace Lgis
     {
         public double Diameter { get; set; }
         public double OffsetX = .0 , OffsetY = .0;
-        public LinearUnit LinearUnit = LinearUnit.Unknown;
-        double _Height = 2.0,_Width = 2.0;
+        //public LinearUnit LinearUnit = LinearUnit.Meter;
+        double _Height = 2.0E-3,_Width = 2.0E-3;
         public double Height
         {
             get { return _Height; }
@@ -77,13 +77,13 @@ namespace Lgis
             }
         }
 
-        public double OutLineWidth = 1.0;
+        public double OutLineWidth = 1.0E-4;
         public Color FillColor = Color.Azure;
         public Color OutLineColor = Color.Black;
         public LPointSymbol()
             : base(SymbolType.Point)
         {
-            
+            LinearUnit = Lgis.LinearUnit.Meter;
         }
     }
     public class LPolygonSymbol : LSymbol

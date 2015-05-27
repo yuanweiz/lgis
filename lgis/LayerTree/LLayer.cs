@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Data;
 using System.Collections.Generic;
 using System.Linq;
@@ -155,9 +156,10 @@ namespace Lgis
             LPointSymbol Symbol = new LPointSymbol();
             Renderer.Symbol = Symbol;
             Symbol.LinearUnit = LinearUnit.Meter;
-            Symbol.Diameter = 0.003;
-            Symbol.OutLineWidth = 0.001;
+            Symbol.Diameter = 1E-3;
+            Symbol.OutLineWidth = 2E-4;
             Symbol.Style = SymbolStyle.CircleMarker;
+            Symbol.FillColor = Color.LightBlue;
         }
         public override void Add(LVectorObject vo)
         {

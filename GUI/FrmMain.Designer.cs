@@ -39,13 +39,16 @@
             this.btnStartEditing = new System.Windows.Forms.Button();
             this.btnStopEditing = new System.Windows.Forms.Button();
             this.btnClear = new System.Windows.Forms.Button();
-            this.btnSetting = new System.Windows.Forms.Button();
             this.btnRotate = new System.Windows.Forms.Button();
+            this.btnPan = new System.Windows.Forms.Button();
+            this.btnGridView = new System.Windows.Forms.Button();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openShapefileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lLayerComboBox1 = new Lgis.LLayerComboBox();
             this.lLayerView1 = new Lgis.LLayerTreeView();
             this.lWindow1 = new Lgis.LWindow();
-            this.btnPan = new System.Windows.Forms.Button();
-            this.btnGridView = new System.Windows.Forms.Button();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnZoomIn
@@ -108,16 +111,6 @@
             this.btnClear.UseVisualStyleBackColor = true;
             this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
             // 
-            // btnSetting
-            // 
-            this.btnSetting.Location = new System.Drawing.Point(696, 306);
-            this.btnSetting.Name = "btnSetting";
-            this.btnSetting.Size = new System.Drawing.Size(75, 23);
-            this.btnSetting.TabIndex = 10;
-            this.btnSetting.Text = "Settings";
-            this.btnSetting.UseVisualStyleBackColor = true;
-            this.btnSetting.Click += new System.EventHandler(this.btnSetting_Click);
-            // 
             // btnRotate
             // 
             this.btnRotate.Location = new System.Drawing.Point(696, 348);
@@ -127,6 +120,52 @@
             this.btnRotate.Text = "Rotate";
             this.btnRotate.UseVisualStyleBackColor = true;
             this.btnRotate.Click += new System.EventHandler(this.btnRotate_Click);
+            // 
+            // btnPan
+            // 
+            this.btnPan.Location = new System.Drawing.Point(696, 140);
+            this.btnPan.Name = "btnPan";
+            this.btnPan.Size = new System.Drawing.Size(75, 23);
+            this.btnPan.TabIndex = 14;
+            this.btnPan.Text = "Pan";
+            this.btnPan.UseVisualStyleBackColor = true;
+            this.btnPan.Click += new System.EventHandler(this.btnPan_Click);
+            // 
+            // btnGridView
+            // 
+            this.btnGridView.Location = new System.Drawing.Point(696, 386);
+            this.btnGridView.Name = "btnGridView";
+            this.btnGridView.Size = new System.Drawing.Size(75, 23);
+            this.btnGridView.TabIndex = 15;
+            this.btnGridView.Text = "GridView";
+            this.btnGridView.UseVisualStyleBackColor = true;
+            this.btnGridView.Click += new System.EventHandler(this.btnGridView_Click);
+            // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(774, 25);
+            this.menuStrip1.TabIndex = 16;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // openToolStripMenuItem
+            // 
+            this.openToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openShapefileToolStripMenuItem});
+            this.openToolStripMenuItem.Name = "openToolStripMenuItem";
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(39, 21);
+            this.openToolStripMenuItem.Text = "File";
+            this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
+            // 
+            // openShapefileToolStripMenuItem
+            // 
+            this.openShapefileToolStripMenuItem.Name = "openShapefileToolStripMenuItem";
+            this.openShapefileToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.openShapefileToolStripMenuItem.Text = "Open Shapefile";
+            this.openShapefileToolStripMenuItem.Click += new System.EventHandler(this.openShapefileToolStripMenuItem_Click);
             // 
             // lLayerComboBox1
             // 
@@ -157,34 +196,14 @@
             this.lWindow1.Cursor = System.Windows.Forms.Cursors.Default;
             lLayerGroup3.Name = "NoName";
             this.lWindow1.Layers = lLayerGroup3;
-            this.lWindow1.Location = new System.Drawing.Point(207, 12);
+            this.lWindow1.Location = new System.Drawing.Point(207, 24);
             this.lWindow1.Name = "lWindow1";
             this.lWindow1.Scale = 1D;
-            this.lWindow1.Size = new System.Drawing.Size(483, 521);
+            this.lWindow1.Size = new System.Drawing.Size(483, 509);
             this.lWindow1.TabIndex = 8;
             this.lWindow1.Load += new System.EventHandler(this.lWindow1_Load);
             // 
-            // btnPan
-            // 
-            this.btnPan.Location = new System.Drawing.Point(696, 140);
-            this.btnPan.Name = "btnPan";
-            this.btnPan.Size = new System.Drawing.Size(75, 23);
-            this.btnPan.TabIndex = 14;
-            this.btnPan.Text = "Pan";
-            this.btnPan.UseVisualStyleBackColor = true;
-            this.btnPan.Click += new System.EventHandler(this.btnPan_Click);
-            // 
-            // btnGridView
-            // 
-            this.btnGridView.Location = new System.Drawing.Point(696, 386);
-            this.btnGridView.Name = "btnGridView";
-            this.btnGridView.Size = new System.Drawing.Size(75, 23);
-            this.btnGridView.TabIndex = 15;
-            this.btnGridView.Text = "GridView";
-            this.btnGridView.UseVisualStyleBackColor = true;
-            this.btnGridView.Click += new System.EventHandler(this.btnGridView_Click);
-            // 
-            // Form1
+            // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -194,7 +213,6 @@
             this.Controls.Add(this.lLayerComboBox1);
             this.Controls.Add(this.btnRotate);
             this.Controls.Add(this.lLayerView1);
-            this.Controls.Add(this.btnSetting);
             this.Controls.Add(this.btnClear);
             this.Controls.Add(this.lWindow1);
             this.Controls.Add(this.btnStopEditing);
@@ -202,11 +220,16 @@
             this.Controls.Add(this.btnZoomToLayer);
             this.Controls.Add(this.btnZoomOut);
             this.Controls.Add(this.btnZoomIn);
+            this.Controls.Add(this.menuStrip1);
             this.DoubleBuffered = true;
-            this.Name = "Form1";
+            this.MainMenuStrip = this.menuStrip1;
+            this.Name = "FrmMain";
             this.Text = "bu";
             this.Load += new System.EventHandler(this.Form1_Load_1);
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -224,12 +247,14 @@
         private System.Windows.Forms.Button btnStopEditing;
         private Lgis.LWindow lWindow1;
         private System.Windows.Forms.Button btnClear;
-        private System.Windows.Forms.Button btnSetting;
         private Lgis.LLayerTreeView lLayerView1;
         private System.Windows.Forms.Button btnRotate;
         private Lgis.LLayerComboBox lLayerComboBox1;
         private System.Windows.Forms.Button btnPan;
         private System.Windows.Forms.Button btnGridView;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openShapefileToolStripMenuItem;
     }
 }
 

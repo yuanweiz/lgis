@@ -54,5 +54,10 @@ namespace GUI
         {
 
         }
+
+        private void lblShowFillColor_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

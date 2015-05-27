@@ -86,6 +86,7 @@ namespace Lgis
             }
             OnAfterCheck (sender,e);
         }
+
         #region event
         public delegate void AfterCheckEventHandler (object sender ,TreeViewEventArgs e);
         public event AfterCheckEventHandler AfterCheck;
