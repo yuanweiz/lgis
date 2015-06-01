@@ -58,6 +58,7 @@ namespace NetworkDemo
             lWindow1.ForceRedraw();
             foreach (LPoint p in crossPointLayer)
                 Console.WriteLine(p.Info());
+            //network.PrintInfo();
         }
 
         private void btnOpenShp_Click(object sender, EventArgs e)
@@ -78,6 +79,17 @@ namespace NetworkDemo
         private void btnFullExtent_Click(object sender, EventArgs e)
         {
             lWindow1.ZoomToLayer();
+        }
+
+        private void lWindow1_MouseMove(object sender, MouseEventArgs e)
+        {
+            LPoint p = lWindow1.ToGeographicCoordinate(e.Location);
+            lblCoordinate.Text = "(" + p.X.ToString() + "," + p.Y.ToString() + ")";
+        }
+
+        private void btnSetFont_Click(object sender, EventArgs e)
+        {
+            crossPointLayer.Renderer.Symbol.SetFont();
         }
     }
 }

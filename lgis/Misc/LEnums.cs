@@ -51,7 +51,7 @@ namespace Lgis
         DashDotLine,
 
         //Point marker
-        ImageMarker,
+        TextMarker,
         CircleMarker,
 
         //Polygon

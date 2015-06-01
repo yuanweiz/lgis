@@ -117,6 +117,7 @@ namespace Lgis
         public void Clear()
         {
             DataTable.Rows.Clear();
+            DataTable.maxfid = 0;
         }
 
         public override string Info()
@@ -134,7 +135,7 @@ namespace Lgis
 
     public class LPointLayer : LVectorLayer
     {
-        public LPointRenderer Renderer = new LPointRenderer();
+        public LPointRenderer Renderer;
 
         public IEnumerable<LPoint> Points
         {
@@ -158,6 +159,7 @@ namespace Lgis
         {
             //default is 1mm
             LPointSymbol Symbol = new LPointSymbol();
+            Renderer = new LPointRenderer(this);
             Renderer.Symbol = Symbol;
             Symbol.LinearUnit = LinearUnit.Meter;
             Symbol.Diameter = 1E-3;

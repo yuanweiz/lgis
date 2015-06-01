@@ -9,7 +9,7 @@ namespace Lgis
     public class LDataTable:DataTable
     {
         LLayer Layer;
-        int maxfid = 0;
+        internal int maxfid = 0;
         public LDataTable(LLayer Layer)
             : base()
         {
@@ -34,5 +34,6 @@ namespace Lgis
             e.Row["FID"] = maxfid;
             maxfid++;
         }
+        
     }
 }

@@ -9,6 +9,7 @@ namespace Lgis
 {
     public abstract class LRenderer
     {
+        public LVectorLayer Layer;
         public static double ToPixels(double dpi, double val, LinearUnit unit){
             double nInches = 12.0 * LMathTools.UnitTransform(val, unit, LinearUnit.Foot);
             return dpi * nInches;
@@ -113,9 +114,12 @@ namespace Lgis
 
     public class LPointRenderer : LRenderer
     {
+        public LPointRenderer() { }
+        public LPointRenderer(LPointLayer layer) { Layer = layer; }
         public LPointSymbol Symbol = new LPointSymbol();
-        public void Render(Graphics g, PointF p)
+        public void Render(Graphics g, PointF p ,string text=null)
         {
+
             if (Symbol == null )
                 return;
             float size = (float)ToPixels(g.DpiX, Symbol.Diameter, Symbol.LinearUnit);
@@ -123,6 +127,7 @@ namespace Lgis
             float starty = p.Y - size /2;
             float outlineWidth = (float)ToPixels(g.DpiX, Symbol.OutLineWidth, Symbol.LinearUnit);
 
+            #region render shape
             Pen outlinePen = new Pen(Symbol.OutLineColor,outlineWidth);
             SolidBrush fillBrush = new SolidBrush(Symbol.FillColor);
             switch (Symbol.Style)
@@ -131,11 +136,26 @@ namespace Lgis
                     g.FillEllipse(fillBrush,startx,starty,size,size);
                     g.DrawEllipse(outlinePen, startx, starty, size, size);
                     break;
-                case SymbolStyle.ImageMarker:
+                case SymbolStyle.TextMarker:
                     break;
                 default:
                     break;
             }
+            #endregion
+
+            #region Render Text
+            if (Symbol.ShowLabel)
+            {
+                if (Layer!=null && text!=null)
+                {
+                        g.DrawString(text, Symbol.Font, Brushes.Black, p);
+                }
+                else
+                {
+                    //use default int id
+                }
+            }
+            #endregion
         }
     }
 

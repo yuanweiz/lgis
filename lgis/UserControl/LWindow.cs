@@ -104,6 +104,10 @@ namespace Lgis
         
         //mouse
         Point mouseLocation;
+        public LPoint MouseGeographicCorrdinate
+        {
+            get { return ToGeographicCoordinate(mouseLocation); } 
+        }
 
         #endregion
 
@@ -251,8 +255,17 @@ namespace Lgis
                     {
                         case FeatureType.Point:
                             LPointRenderer pointRenderer = ((LPointLayer)vl).Renderer;
-                            foreach (LPoint p in (LPointLayer)vl)
-                                pointRenderer.Render(g,ToScreenCoordinate(p));
+                            for (int i = 0; i < vl.Count; ++i)
+                            {
+                                LPoint p = vl.DataTable.Rows[i]["Geometry"] as LPoint;
+                                string text = null;
+                                if (pointRenderer.Symbol.ShowLabel)
+                                {
+                                    text = vl.DataTable.Rows[i][pointRenderer.Symbol.LabelColumn].ToString();
+                                }
+                                if(p!=null)
+                                pointRenderer.Render(g, ToScreenCoordinate(p),text);
+                            }
                             break;
                         case FeatureType.Line:
                             LLineRenderer lineRenderer = ((LLineLayer)vl).Renderer;
