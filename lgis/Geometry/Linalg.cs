@@ -67,6 +67,10 @@ namespace Lgis
         {
             return new LVector (a.X+b.X,a.Y+b.Y);
         }
+        public static LPoint operator + (LPoint a,LVector b)
+        {
+            return new LPoint (a.X+b.X,a.Y+b.Y);
+        }
 
         public static LVector operator - (LVector a,LVector b)
         {return new LVector ( a.X-b.X,a.Y-b.Y);}
@@ -75,10 +79,18 @@ namespace Lgis
         { 
             return new LVector(a.X * k, a.Y * k); 
         }
+        public static LVector operator * (double k , LVector a)
+        { 
+            return new LVector(a.X * k, a.Y * k); 
+        }
 
         public static double operator *(LVector a, LVector b)
         {
             return a.X * b.X + a.Y * b.Y;
+        }
+        public static double operator ^ (LVector a, LVector b)
+        {
+            return a.X * b.Y - a.Y * b.X;
         }
 
         public double Norm()

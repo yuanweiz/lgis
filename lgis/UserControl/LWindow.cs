@@ -468,7 +468,7 @@ namespace Lgis
             {
                 case OperationType.Edit:
                     mouseLocation = e.Location;
-                    if (EditingLayer == null || EditingLayer.Count ==0)
+                    if (EditingLayer == null )
                         return;
                     Type t = EditingLayer.GetType();
                     if (t == typeof(LLineLayer))
@@ -557,7 +557,7 @@ namespace Lgis
                     break;
                 case OperationType.Edit:
                     mouseLocation = e.Location;
-                    if (EditingLayer == null || EditingLayer.Count ==0)
+                    if (EditingLayer == null )
                         return;
                     Type t = EditingLayer.GetType();
                     if (t == typeof(LLineLayer) )

@@ -1,0 +1,12 @@
+D:\code\lgis\NetworkDemo\bin\Debug\NetworkDemo.exe.config
+D:\code\lgis\NetworkDemo\bin\Debug\NetworkDemo.exe
+D:\code\lgis\NetworkDemo\bin\Debug\NetworkDemo.pdb
+D:\code\lgis\NetworkDemo\bin\Debug\lgis.dll
+D:\code\lgis\NetworkDemo\bin\Debug\System.Data.SQLite.dll
+D:\code\lgis\NetworkDemo\bin\Debug\lgis.pdb
+D:\code\lgis\NetworkDemo\obj\Debug\NetworkDemo.csprojResolveAssemblyReference.cache
+D:\code\lgis\NetworkDemo\obj\Debug\NetworkDemo.FrmMain.resources
+D:\code\lgis\NetworkDemo\obj\Debug\NetworkDemo.Properties.Resources.resources
+D:\code\lgis\NetworkDemo\obj\Debug\NetworkDemo.csproj.GenerateResource.Cache
+D:\code\lgis\NetworkDemo\obj\Debug\NetworkDemo.exe
+D:\code\lgis\NetworkDemo\obj\Debug\NetworkDemo.pdb

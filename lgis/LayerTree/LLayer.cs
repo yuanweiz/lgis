@@ -114,6 +114,10 @@ namespace Lgis
         {
             DataTable.Rows.RemoveAt(idx);
         }
+        public void Clear()
+        {
+            DataTable.Rows.Clear();
+        }
 
         public override string Info()
         {

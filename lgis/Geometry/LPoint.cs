@@ -63,7 +63,7 @@ namespace Lgis
         }
         public static LVector operator -(LPoint A, LPoint B)
         {
-            return new LVector(B.X - A.X, B.Y - A.Y);
+            return new LVector(A.X - B.X, A.Y - B.Y);
         }
         public LPoint Copy()
         {

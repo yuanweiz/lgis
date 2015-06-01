@@ -29,23 +29,20 @@ namespace GUI
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            double value;
             if (cmbQueryType.Items.Count > 1)//numeric
             {
                 LNumericDataFilter numFilter = new LNumericDataFilter();
-                try
+                if (Column.DataType == typeof(double))
                 {
-                    value = Convert.ToDouble(txtThresValue.Text);
-                    numFilter.value = value;
-                    numFilter.Column = Column;
-                    if (Column == null)
-                        throw new NullReferenceException("Column or threshold not specified");
+                    numFilter.value = Convert.ToDouble(txtThresValue.Text);
                 }
-                catch (Exception ex)
+                else
                 {
-                    MessageBox.Show(ex.Message);
-                    return;
+                    numFilter.value = (int)Convert.ToDouble(txtThresValue.Text);
                 }
+                numFilter.Column = Column;
+                if (Column == null)
+                    throw new NullReferenceException("Column or threshold not specified");
                 switch (cmbQueryType.SelectedIndex)
                 {
                     case 0:
