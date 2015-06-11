@@ -179,9 +179,12 @@ namespace Lgis
             }
             finally
             {
-                dbfReader.Close();
-                shpReader.Close();
-                shxReader.Close();
+                if (dbfReader != null)
+                    dbfReader.Close();
+                if (shpReader != null)
+                    shpReader.Close();
+                if (shxReader != null)
+                    shxReader.Close();
             }
         }
 

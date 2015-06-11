@@ -33,8 +33,15 @@
             this.btnOpenShp = new System.Windows.Forms.Button();
             this.btnFullExtent = new System.Windows.Forms.Button();
             this.lblCoordinate = new System.Windows.Forms.Label();
-            this.lWindow1 = new Lgis.LWindow();
             this.btnSetFont = new System.Windows.Forms.Button();
+            this.btnDijkstra = new System.Windows.Forms.Button();
+            this.cmbStartPoint = new System.Windows.Forms.ComboBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.cmbEndPoint = new System.Windows.Forms.ComboBox();
+            this.txtNearestPath = new System.Windows.Forms.TextBox();
+            this.lWindow1 = new Lgis.LWindow();
+            this.btnClear = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnConvert
@@ -77,6 +84,71 @@
             this.lblCoordinate.TabIndex = 4;
             this.lblCoordinate.Text = "label1";
             // 
+            // btnSetFont
+            // 
+            this.btnSetFont.Location = new System.Drawing.Point(505, 145);
+            this.btnSetFont.Name = "btnSetFont";
+            this.btnSetFont.Size = new System.Drawing.Size(75, 23);
+            this.btnSetFont.TabIndex = 5;
+            this.btnSetFont.Text = "Set Font";
+            this.btnSetFont.UseVisualStyleBackColor = true;
+            this.btnSetFont.Click += new System.EventHandler(this.btnSetFont_Click);
+            // 
+            // btnDijkstra
+            // 
+            this.btnDijkstra.Location = new System.Drawing.Point(505, 285);
+            this.btnDijkstra.Name = "btnDijkstra";
+            this.btnDijkstra.Size = new System.Drawing.Size(75, 23);
+            this.btnDijkstra.TabIndex = 6;
+            this.btnDijkstra.Text = "MinDist";
+            this.btnDijkstra.UseVisualStyleBackColor = true;
+            this.btnDijkstra.Click += new System.EventHandler(this.btnDijkstra_Click);
+            // 
+            // cmbStartPoint
+            // 
+            this.cmbStartPoint.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbStartPoint.FormattingEnabled = true;
+            this.cmbStartPoint.Location = new System.Drawing.Point(505, 215);
+            this.cmbStartPoint.Name = "cmbStartPoint";
+            this.cmbStartPoint.Size = new System.Drawing.Size(75, 20);
+            this.cmbStartPoint.TabIndex = 7;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(503, 200);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(65, 12);
+            this.label1.TabIndex = 8;
+            this.label1.Text = "StartPoint";
+            this.label1.Click += new System.EventHandler(this.label1_Click);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(503, 238);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(53, 12);
+            this.label2.TabIndex = 9;
+            this.label2.Text = "EndPoint";
+            // 
+            // cmbEndPoint
+            // 
+            this.cmbEndPoint.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbEndPoint.FormattingEnabled = true;
+            this.cmbEndPoint.Location = new System.Drawing.Point(505, 253);
+            this.cmbEndPoint.Name = "cmbEndPoint";
+            this.cmbEndPoint.Size = new System.Drawing.Size(75, 20);
+            this.cmbEndPoint.TabIndex = 7;
+            // 
+            // txtNearestPath
+            // 
+            this.txtNearestPath.Location = new System.Drawing.Point(501, 314);
+            this.txtNearestPath.Multiline = true;
+            this.txtNearestPath.Name = "txtNearestPath";
+            this.txtNearestPath.Size = new System.Drawing.Size(89, 135);
+            this.txtNearestPath.TabIndex = 10;
+            // 
             // lWindow1
             // 
             this.lWindow1.BackColor = System.Drawing.Color.White;
@@ -91,21 +163,28 @@
             this.lWindow1.Load += new System.EventHandler(this.lWindow1_Load);
             this.lWindow1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.lWindow1_MouseMove);
             // 
-            // btnSetFont
+            // btnClear
             // 
-            this.btnSetFont.Location = new System.Drawing.Point(505, 145);
-            this.btnSetFont.Name = "btnSetFont";
-            this.btnSetFont.Size = new System.Drawing.Size(75, 23);
-            this.btnSetFont.TabIndex = 5;
-            this.btnSetFont.Text = "Set Font";
-            this.btnSetFont.UseVisualStyleBackColor = true;
-            this.btnSetFont.Click += new System.EventHandler(this.btnSetFont_Click);
+            this.btnClear.Location = new System.Drawing.Point(505, 174);
+            this.btnClear.Name = "btnClear";
+            this.btnClear.Size = new System.Drawing.Size(75, 23);
+            this.btnClear.TabIndex = 11;
+            this.btnClear.Text = "Clear";
+            this.btnClear.UseVisualStyleBackColor = true;
+            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
             // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(592, 476);
+            this.Controls.Add(this.btnClear);
+            this.Controls.Add(this.txtNearestPath);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.cmbEndPoint);
+            this.Controls.Add(this.cmbStartPoint);
+            this.Controls.Add(this.btnDijkstra);
             this.Controls.Add(this.btnSetFont);
             this.Controls.Add(this.lblCoordinate);
             this.Controls.Add(this.btnFullExtent);
@@ -128,6 +207,13 @@
         private System.Windows.Forms.Button btnFullExtent;
         private System.Windows.Forms.Label lblCoordinate;
         private System.Windows.Forms.Button btnSetFont;
+        private System.Windows.Forms.Button btnDijkstra;
+        private System.Windows.Forms.ComboBox cmbStartPoint;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.ComboBox cmbEndPoint;
+        private System.Windows.Forms.TextBox txtNearestPath;
+        private System.Windows.Forms.Button btnClear;
     }
 }
 

@@ -28,7 +28,7 @@ namespace NetworkDemo
              *  0     r               1
              * 
              * **************************/
-            public List<VertexRecord> AjacentVertices = new List<VertexRecord>();
+            public List<int> AjacentVertices = new List<int>();
             public Dictionary<LinesegRecord, double> Ratio = new Dictionary<LinesegRecord,double>();
             public LPoint Location;
             public VertexRecord() { }
@@ -118,12 +118,12 @@ namespace NetworkDemo
                 g_rec = rec;
                 lst.Sort(RatioComp);
                 //Add ajacent vertices
-                lst[0].AjacentVertices.Add(lst[1]);
-                lst[lst.Count - 1].AjacentVertices.Add(lst[lst.Count - 2]);
+                lst[0].AjacentVertices.Add(1);
+                lst[lst.Count - 1].AjacentVertices.Add(lst.Count - 2);
                 for (int i = 1; i < lst.Count - 1; ++i)
                 {
-                    lst[i].AjacentVertices.Add(lst[i - 1]);
-                    lst[i].AjacentVertices.Add(lst[i + 1]);
+                    lst[i].AjacentVertices.Add(i - 1);
+                    lst[i].AjacentVertices.Add(i + 1);
                 }
                 
             }
@@ -209,6 +209,99 @@ namespace NetworkDemo
             }
         }
 
+        double[,] GetDistMatrix()
+        {
+            int cnt = VertexTable.Count;
+            double [,]distmatrix=new double[cnt,cnt];
+            for (int i = 0; i < cnt; ++i)
+                for (int j = 0; j < cnt; ++j)
+                    distmatrix[i, j] = -1.0;
+            // notice that each edge is counted in twice,
+            //but matrix is symmetric so it's not a waste of time
+            for (int i = 0; i < cnt; ++i)
+            {
+                VertexRecord rec = VertexTable[i];
+                for (int j=0;j<rec.AjacentVertices.Count ;++j){
+                    int ajaidx = rec.AjacentVertices[j];
+                    distmatrix[i, ajaidx] = distmatrix [ ajaidx,i]
+                        = (VertexTable[i].Location - VertexTable[ajaidx].Location).Norm();
+                }
+            }
+            return distmatrix;
+        }
+        private static bool ElementInArray(int elem, int[] array)
+        {
+            foreach (int val in array)
+                if (val == elem)
+                    return true;
+            return false;
+        }
+        private static void AddToArray(int elem, int[] array)
+        {
+            for (int i = 0; i < array.Length; ++i)
+            {
+                if (array[i] < 0) { 
+                    array[i] = elem;
+                    return;
+                }
+            }
+        }
+
+        public int[] Dijkstra (int start,int end){
+            int npoint = VertexTable.Count;
+            int [] track = new int[npoint];
+            if (start >= VertexTable.Count || start < 0
+                || end >= VertexTable.Count || end <0)
+            return null;
+            double[,] distmatrix = GetDistMatrix();
+            for (int i = 0; i < npoint; ++i)
+            {
+                for (int j = 0; j < npoint; ++j)
+                    Console.Write(distmatrix[i,j].ToString() + " ");
+                Console.WriteLine();
+            }
+            /***mindist[i] represents the minimum distance from start point to point i, so
+             * it is trival that mindist[start] == 0
+             **/
+            return new int[1];
+            double[] mindist = new double[npoint];
+            /***track is a possible ( not the only one ) nearest path from start to end 
+             * It's initialized to { -1 ,-1,...,-1},and during the process of algorithm,
+             * points are added to the array list.
+             * e.g.{1,4,3,2,-1} means the nearest path is 1->4->3->2 
+             * */
+            for (int i = 0; i < npoint; ++i)
+            {
+                track[i] = -1;
+                mindist[i] = -1.0;
+            }
+            mindist[start] = 0;
+            track[0] = start;
+            while (mindist[end] < 0) //not calculated yet
+            {
+                double min = double.MaxValue;
+                int newpoint = -1;
+                for (int i = 0; i < npoint; ++i)
+                {
+                    if (!ElementInArray(i, track))
+                        continue;
+                    for (int j = 0; j < npoint; ++j)
+                    {
+                        if (ElementInArray(j, track) )
+                            continue;
+                        if ( distmatrix[i,j] >= 0 && min >= mindist[i] + distmatrix[i, j])
+                        {
+                            min = mindist[i] + distmatrix[i, j];
+                            newpoint = j;
+                        }
+                    }
+                }
+                mindist[newpoint] = min;
+                AddToArray(newpoint, track);
+            }
+            //return mindist[end];
+            return track;
+        }
         public void PrintInfo()
         {
             if (false)
@@ -240,8 +333,8 @@ namespace NetworkDemo
             //print ajacent relation
             foreach(VertexRecord vertex in VertexTable){
                 Console.WriteLine(vertex.Location.Info()+"'s ajacent vertices:");
-                foreach (VertexRecord adj_vertex in vertex.AjacentVertices)
-                    Console.Write(adj_vertex.Location.Info() + " ");
+                foreach (int idx in vertex.AjacentVertices)
+                    Console.Write(VertexTable[idx].Location.Info() + " ");
                 Console.WriteLine();
             }
         }

@@ -14,6 +14,7 @@ namespace NetworkDemo
     {
         LLineLayer lineLayer = new LLineLayer();
         LPointLayer crossPointLayer = new LPointLayer();
+        LNetwork network;
 
         public FrmMain()
         {
@@ -22,6 +23,7 @@ namespace NetworkDemo
 
         private void FrmMain_Load(object sender, EventArgs e)
         {
+            network = new LNetwork(lineLayer);
             lWindow1.Layers.Add(lineLayer);
             lWindow1.EditingLayer = lineLayer;
             lWindow1.Layers.Add(crossPointLayer);
@@ -50,7 +52,7 @@ namespace NetworkDemo
 
         private void btnConvert_Click(object sender, EventArgs e)
         {
-            LNetwork network = new LNetwork(lineLayer);
+            network = new LNetwork(lineLayer);
             network.BuildGraph();
             crossPointLayer.Clear();
             foreach (LPoint p in network.CrossPoints)
@@ -59,6 +61,8 @@ namespace NetworkDemo
             foreach (LPoint p in crossPointLayer)
                 Console.WriteLine(p.Info());
             //network.PrintInfo();
+            RefreshItem(cmbEndPoint);
+            RefreshItem(cmbStartPoint);
         }
 
         private void btnOpenShp_Click(object sender, EventArgs e)
@@ -74,6 +78,8 @@ namespace NetworkDemo
                 lWindow1.Layers.Add(lineLayer);
                 lWindow1.ForceRedraw();
             }
+            RefreshItem(cmbEndPoint);
+            RefreshItem(cmbStartPoint);
         }
 
         private void btnFullExtent_Click(object sender, EventArgs e)
@@ -90,6 +96,37 @@ namespace NetworkDemo
         private void btnSetFont_Click(object sender, EventArgs e)
         {
             crossPointLayer.Renderer.Symbol.SetFont();
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        void RefreshItem(ComboBox box)
+        {
+            int cnt = network.CrossPoints.Count();
+            box.BeginUpdate();
+            box.Items.Clear();
+            for (int i = 0; i < cnt; ++i)
+                box.Items.Add(i);
+            box.EndUpdate();
+        }
+        private void btnDijkstra_Click(object sender, EventArgs e)
+        {
+            int start, end;
+            start = cmbStartPoint.SelectedIndex;
+            end = cmbEndPoint.SelectedIndex;
+            int[] track = network.Dijkstra(start,end);
+            for (int i = 0; i < track.Length; ++i)
+                txtNearestPath.Text+=(track[i].ToString() + " ");
+        }
+
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            lineLayer.Clear();
+            crossPointLayer.Clear();
+            lWindow1.ForceRedraw();
         }
     }
 }

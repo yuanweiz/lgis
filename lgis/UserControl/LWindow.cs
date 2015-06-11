@@ -154,7 +154,7 @@ namespace Lgis
             double geoHeight = e.YMax - e.YMin;
             //double lw = Layers.Width;
             double geoWidth = e.XMax - e.XMin;
-            if (double.IsNaN(geoHeight) || double.IsNaN(geoWidth) || Width == 0 || geoWidth < 1.0)
+            if (double.IsNaN(geoHeight) || double.IsNaN(geoWidth) || Width == 0 || geoWidth == 0.0)
                 return;
             if (ZoomIn)
             {
@@ -331,7 +331,6 @@ namespace Lgis
         ************************************************/
         private void LWindow_Paint(object sender, PaintEventArgs e)
         {
-            Console.WriteLine("In _Paint() func");
             Redraw(sender, e, false);
         }
 
@@ -348,7 +347,7 @@ namespace Lgis
             LVector diff = bmpCenter - Center;
             float dx = (float)(-Width + -diff.X * Scale);
             float dy = (float)(-Height + diff.Y * Scale);
-            e.Graphics.DrawImage(bmpCache, dx, dy);
+            e.Graphics.DrawImage(bmpCache, dx,dy);
             //TODO : DrawTrackingLayers()
 
             try
@@ -389,7 +388,7 @@ namespace Lgis
             grLayers.FillRectangle(new SolidBrush(Color.White), 0, 0, 3 * Width, 3 * Height);
             grLayers.TranslateTransform(Width, Height);
             Draw(grLayers, Layers);
-            Console.WriteLine("Trigger redraw buffer");
+            Console.WriteLine("Trigger redraw buffer,Center="+Center.Info());
         }
 
         private void LWindow_MouseDown(object sender, MouseEventArgs e)
@@ -489,12 +488,14 @@ namespace Lgis
                         //Manually Set to null After Tracking
                         if (EditingLine.Count > 1)
                             EditingLayer.Add(EditingLine);
+                        EditingLine.RemoveAt(EditingLine.Count - 1);
                         EditingLine = new LPolyline();
                     }
                     else if (t==typeof(LPolygonLayer))
                     {
                         if (EditingPolygon.Count > 2)
                             EditingLayer.Add(EditingPolygon);
+                        EditingPolygon.RemoveAt(EditingPolygon.Count - 1);
                         EditingPolygon = new LPolygon();
                     }
                     ForceRedraw();
