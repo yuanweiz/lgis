@@ -38,7 +38,6 @@
             this.btnZoomToLayer = new System.Windows.Forms.Button();
             this.btnStartEditing = new System.Windows.Forms.Button();
             this.btnStopEditing = new System.Windows.Forms.Button();
-            this.btnClear = new System.Windows.Forms.Button();
             this.btnRotate = new System.Windows.Forms.Button();
             this.btnPan = new System.Windows.Forms.Button();
             this.btnGridView = new System.Windows.Forms.Button();
@@ -48,6 +47,11 @@
             this.lLayerComboBox1 = new Lgis.LLayerComboBox();
             this.lLayerView1 = new Lgis.LLayerTreeView();
             this.lWindow1 = new Lgis.LWindow();
+            this.btnStaticSymbol = new System.Windows.Forms.Button();
+            this.btnSelect = new System.Windows.Forms.Button();
+            this.btnUniqueValue = new System.Windows.Forms.Button();
+            this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnClassBreak = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -63,7 +67,7 @@
             // 
             // btnZoomOut
             // 
-            this.btnZoomOut.Location = new System.Drawing.Point(696, 63);
+            this.btnZoomOut.Location = new System.Drawing.Point(696, 53);
             this.btnZoomOut.Name = "btnZoomOut";
             this.btnZoomOut.Size = new System.Drawing.Size(75, 23);
             this.btnZoomOut.TabIndex = 2;
@@ -73,17 +77,17 @@
             // 
             // btnZoomToLayer
             // 
-            this.btnZoomToLayer.Location = new System.Drawing.Point(696, 100);
+            this.btnZoomToLayer.Location = new System.Drawing.Point(696, 82);
             this.btnZoomToLayer.Name = "btnZoomToLayer";
             this.btnZoomToLayer.Size = new System.Drawing.Size(75, 34);
             this.btnZoomToLayer.TabIndex = 3;
-            this.btnZoomToLayer.Text = "Zoom To Layer";
+            this.btnZoomToLayer.Text = "Full Extent";
             this.btnZoomToLayer.UseVisualStyleBackColor = true;
             this.btnZoomToLayer.Click += new System.EventHandler(this.btnZoomToLayer_Click);
             // 
             // btnStartEditing
             // 
-            this.btnStartEditing.Location = new System.Drawing.Point(696, 169);
+            this.btnStartEditing.Location = new System.Drawing.Point(696, 151);
             this.btnStartEditing.Name = "btnStartEditing";
             this.btnStartEditing.Size = new System.Drawing.Size(75, 36);
             this.btnStartEditing.TabIndex = 6;
@@ -93,7 +97,7 @@
             // 
             // btnStopEditing
             // 
-            this.btnStopEditing.Location = new System.Drawing.Point(696, 211);
+            this.btnStopEditing.Location = new System.Drawing.Point(696, 193);
             this.btnStopEditing.Name = "btnStopEditing";
             this.btnStopEditing.Size = new System.Drawing.Size(75, 38);
             this.btnStopEditing.TabIndex = 7;
@@ -101,29 +105,20 @@
             this.btnStopEditing.UseVisualStyleBackColor = true;
             this.btnStopEditing.Click += new System.EventHandler(this.btnStopEditing_Click);
             // 
-            // btnClear
-            // 
-            this.btnClear.Location = new System.Drawing.Point(696, 267);
-            this.btnClear.Name = "btnClear";
-            this.btnClear.Size = new System.Drawing.Size(75, 23);
-            this.btnClear.TabIndex = 9;
-            this.btnClear.Text = "Clear";
-            this.btnClear.UseVisualStyleBackColor = true;
-            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
-            // 
             // btnRotate
             // 
-            this.btnRotate.Location = new System.Drawing.Point(696, 348);
+            this.btnRotate.Location = new System.Drawing.Point(696, 539);
             this.btnRotate.Name = "btnRotate";
             this.btnRotate.Size = new System.Drawing.Size(75, 23);
             this.btnRotate.TabIndex = 12;
             this.btnRotate.Text = "Rotate";
             this.btnRotate.UseVisualStyleBackColor = true;
+            this.btnRotate.Visible = false;
             this.btnRotate.Click += new System.EventHandler(this.btnRotate_Click);
             // 
             // btnPan
             // 
-            this.btnPan.Location = new System.Drawing.Point(696, 140);
+            this.btnPan.Location = new System.Drawing.Point(696, 122);
             this.btnPan.Name = "btnPan";
             this.btnPan.Size = new System.Drawing.Size(75, 23);
             this.btnPan.TabIndex = 14;
@@ -133,7 +128,7 @@
             // 
             // btnGridView
             // 
-            this.btnGridView.Location = new System.Drawing.Point(696, 386);
+            this.btnGridView.Location = new System.Drawing.Point(696, 510);
             this.btnGridView.Name = "btnGridView";
             this.btnGridView.Size = new System.Drawing.Size(75, 23);
             this.btnGridView.TabIndex = 15;
@@ -144,7 +139,8 @@
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.openToolStripMenuItem});
+            this.openToolStripMenuItem,
+            this.optionsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(774, 25);
@@ -203,17 +199,63 @@
             this.lWindow1.TabIndex = 8;
             this.lWindow1.Load += new System.EventHandler(this.lWindow1_Load);
             // 
+            // btnStaticSymbol
+            // 
+            this.btnStaticSymbol.Location = new System.Drawing.Point(696, 304);
+            this.btnStaticSymbol.Name = "btnStaticSymbol";
+            this.btnStaticSymbol.Size = new System.Drawing.Size(75, 35);
+            this.btnStaticSymbol.TabIndex = 17;
+            this.btnStaticSymbol.Text = "Static Symbol";
+            this.btnStaticSymbol.UseVisualStyleBackColor = true;
+            // 
+            // btnSelect
+            // 
+            this.btnSelect.Location = new System.Drawing.Point(696, 237);
+            this.btnSelect.Name = "btnSelect";
+            this.btnSelect.Size = new System.Drawing.Size(75, 23);
+            this.btnSelect.TabIndex = 18;
+            this.btnSelect.Text = "Select";
+            this.btnSelect.UseVisualStyleBackColor = true;
+            this.btnSelect.Click += new System.EventHandler(this.btnSelect_Click);
+            // 
+            // btnUniqueValue
+            // 
+            this.btnUniqueValue.Location = new System.Drawing.Point(696, 266);
+            this.btnUniqueValue.Name = "btnUniqueValue";
+            this.btnUniqueValue.Size = new System.Drawing.Size(75, 32);
+            this.btnUniqueValue.TabIndex = 19;
+            this.btnUniqueValue.Text = "Unique Value";
+            this.btnUniqueValue.UseVisualStyleBackColor = true;
+            // 
+            // optionsToolStripMenuItem
+            // 
+            this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(66, 21);
+            this.optionsToolStripMenuItem.Text = "Options";
+            // 
+            // btnClassBreak
+            // 
+            this.btnClassBreak.Location = new System.Drawing.Point(696, 345);
+            this.btnClassBreak.Name = "btnClassBreak";
+            this.btnClassBreak.Size = new System.Drawing.Size(75, 35);
+            this.btnClassBreak.TabIndex = 20;
+            this.btnClassBreak.Text = "Class Break";
+            this.btnClassBreak.UseVisualStyleBackColor = true;
+            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(774, 586);
+            this.Controls.Add(this.btnClassBreak);
+            this.Controls.Add(this.btnUniqueValue);
+            this.Controls.Add(this.btnSelect);
+            this.Controls.Add(this.btnStaticSymbol);
             this.Controls.Add(this.btnGridView);
             this.Controls.Add(this.btnPan);
             this.Controls.Add(this.lLayerComboBox1);
             this.Controls.Add(this.btnRotate);
             this.Controls.Add(this.lLayerView1);
-            this.Controls.Add(this.btnClear);
             this.Controls.Add(this.lWindow1);
             this.Controls.Add(this.btnStopEditing);
             this.Controls.Add(this.btnStartEditing);
@@ -246,7 +288,6 @@
         private System.Windows.Forms.Button btnStartEditing;
         private System.Windows.Forms.Button btnStopEditing;
         private Lgis.LWindow lWindow1;
-        private System.Windows.Forms.Button btnClear;
         private Lgis.LLayerTreeView lLayerView1;
         private System.Windows.Forms.Button btnRotate;
         private Lgis.LLayerComboBox lLayerComboBox1;
@@ -255,6 +296,11 @@
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openShapefileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
+        private System.Windows.Forms.Button btnStaticSymbol;
+        private System.Windows.Forms.Button btnSelect;
+        private System.Windows.Forms.Button btnUniqueValue;
+        private System.Windows.Forms.Button btnClassBreak;
     }
 }
 

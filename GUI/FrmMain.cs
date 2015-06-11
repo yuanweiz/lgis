@@ -179,5 +179,10 @@ namespace GUI
         {
 
         }
+
+        private void btnSelect_Click(object sender, EventArgs e)
+        {
+            OpType = LWindow.OperationType.Select;
+        }
     }
 }

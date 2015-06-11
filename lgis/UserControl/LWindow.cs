@@ -30,7 +30,7 @@ namespace Lgis
         [ToolboxItem(true)]
 
         #region Public Properties and fields
-        public enum OperationType { Lock, Edit, Pan, None ,ZoomIn,ZoomOut}
+        public enum OperationType { Lock, Edit, Pan, None ,ZoomIn,ZoomOut , Select}
         public OperationType OpType;
         public LPoint Center
         {
@@ -99,8 +99,8 @@ namespace Lgis
         float zoomInRatio = 1.25f;
         float zoomOutRatio = .8f;
 
-        Point zoomStartLoc ;
-        Point zoomEndLoc;
+        Point selectStartLoc ;
+        Point selectEndLoc;
         
         //mouse
         Point mouseLocation;
@@ -345,8 +345,8 @@ namespace Lgis
 
             //notice the centers may differ 
             LVector diff = bmpCenter - Center;
-            float dx = (float)(-Width + -diff.X * Scale);
-            float dy = (float)(-Height + diff.Y * Scale);
+            float dx = (float)(-Width +diff.X * Scale);
+            float dy = (float)(-Height - diff.Y * Scale);
             e.Graphics.DrawImage(bmpCache, dx,dy);
             //TODO : DrawTrackingLayers()
 
@@ -400,38 +400,33 @@ namespace Lgis
             {
                 case OperationType.ZoomIn:
                 case OperationType.ZoomOut:
-                    zoomEndLoc = zoomStartLoc = e.Location;
+                    selectEndLoc = selectStartLoc = e.Location;
                     break;
                 case OperationType.Edit:
-                    try
+                    if (EditingLayer == null)
                     {
-                        if (EditingLayer == null)
-                            return;
-                        Type t = EditingLayer.GetType();
-                        if (t == typeof(LPointLayer))
-                        {
-                            EditingPoint = ToGeographicCoordinate(e.Location);
-                            EditingLayer.Add(EditingPoint);
-                            EditingPoint = new LPoint();
-                            ForceRedraw();
-                        }
-                        else if (t == typeof(LLineLayer))
-                        {
-                            if (EditingLine.Count == 0)
-                                EditingLine.Add(ToGeographicCoordinate(e.Location));
-                            EditingLine.Add(ToGeographicCoordinate(e.Location));
-                            Console.WriteLine("Count=" + EditingLine.Count.ToString());
-                        }
-                        else if (t == typeof(LPolygonLayer))
-                        {
-                            if (EditingPolygon.Count == 0)
-                                EditingPolygon.Add(ToGeographicCoordinate(e.Location));
-                            EditingPolygon.Add(ToGeographicCoordinate(e.Location));
-                            Console.WriteLine("Count=" + EditingPolygon.Count.ToString());
-                        }
+                        MessageBox.Show("Please select a layer first");
+                        return;
                     }
-                    catch(Exception exce){
-                        Console.WriteLine(exce.Message);
+                    Type t = EditingLayer.GetType();
+                    if (t == typeof(LPointLayer))
+                    {
+                        EditingPoint = ToGeographicCoordinate(e.Location);
+                        EditingLayer.Add(EditingPoint);
+                        EditingPoint = new LPoint();
+                        ForceRedraw();
+                    }
+                    else if (t == typeof(LLineLayer))
+                    {
+                        if (EditingLine.Count == 0)
+                            EditingLine.Add(ToGeographicCoordinate(e.Location));
+                        EditingLine.Add(ToGeographicCoordinate(e.Location));
+                    }
+                    else if (t == typeof(LPolygonLayer))
+                    {
+                        if (EditingPolygon.Count == 0)
+                            EditingPolygon.Add(ToGeographicCoordinate(e.Location));
+                        EditingPolygon.Add(ToGeographicCoordinate(e.Location));
                     }
                     break;
                 default:
@@ -441,28 +436,31 @@ namespace Lgis
         private void LWindow_MouseUp(object sender, MouseEventArgs e)
         {
             mouseLocation = e.Location;
+            // get select region
+            Refresh();
+            Graphics g = CreateGraphics();
+            selectEndLoc = e.Location;
+            int dx = selectEndLoc.X - selectStartLoc.X;
+            int dy = selectEndLoc.Y - selectStartLoc.Y;
+            //If the zoom tracking rectangle is too small
+            if (Math.Abs(dx) < 5 && Math.Abs(dy) < 5)
+            {
+                ZoomByCenter(e.Location);
+            }
+            LPoint start = ToGeographicCoordinate(selectStartLoc);
+            LPoint end = ToGeographicCoordinate(selectEndLoc);
+            LEnvelope en = new LEnvelope(
+                Math.Min(start.X, end.X),
+                Math.Min(start.Y, end.Y),
+                Math.Max(start.X, end.X),
+                Math.Max(start.Y, end.Y)
+                );
             switch (OpType)
             {
+                case OperationType.Select:
+                    break;
                 case OperationType.ZoomIn:
                 case OperationType.ZoomOut:
-                    Refresh();
-                    Graphics g = CreateGraphics();
-                    zoomEndLoc = e.Location;
-                    int dx = zoomEndLoc.X - zoomStartLoc.X;
-                    int dy = zoomEndLoc.Y - zoomStartLoc.Y;
-                    //If the zoom tracking rectangle is too small
-                    if (Math.Abs(dx) <5 && Math.Abs(dy) < 5)
-                    {
-                        ZoomByCenter(e.Location);
-                    }
-                    LPoint start = ToGeographicCoordinate(zoomStartLoc);
-                    LPoint end = ToGeographicCoordinate(zoomEndLoc);
-                    LEnvelope en = new LEnvelope(
-                        Math.Min(start.X, end.X),
-                        Math.Min(start.Y, end.Y),
-                        Math.Max(start.X, end.X),
-                        Math.Max(start.Y, end.Y)
-                        );
                     if (OpType == OperationType.ZoomIn)
                         ZoomToExtent(en, true);
                     else 
@@ -527,47 +525,14 @@ namespace Lgis
                     mouseLocation = e.Location;
                     Refresh();
                     break;
+                case OperationType.Select:
                 case OperationType.ZoomIn:
                 case OperationType.ZoomOut:
                     mouseLocation = e.Location;
                     if (e.Button != System.Windows.Forms.MouseButtons.Left)
                         return;
-                    Point lu= new Point();
-                    zoomEndLoc = e.Location;
-                    int dx = zoomEndLoc.X - zoomStartLoc.X;
-                    int dy = zoomEndLoc.Y - zoomStartLoc.Y;
-                    // XXX:Awful coding style
-                    if (dx * dy > 0)
-                    {
-                        if (dx > 0)
-                            lu = zoomStartLoc;
-                        else
-                        {
-                            lu = zoomEndLoc;
-                            dx = -dx;
-                            dy = -dy;
-                        }
-                    }
-                    else
-                    {
-                        if (dx > 0)
-                        {
-                            lu.X = zoomStartLoc.X;
-                            lu.Y = zoomEndLoc.Y;
-                        }
-                        else
-                        {
-                            lu.X = zoomEndLoc.X;
-                            lu.Y = zoomStartLoc.Y;
-                            dx = -dx;
-                        }
-                    }
-                    if (dy < 0) dy = -dy;
-                    Refresh();
-                    Graphics g = CreateGraphics();
-                    Console.WriteLine(lu.X);
-                    Console.WriteLine(lu.Y);
-                    g.DrawRectangle(Pens.Black,new Rectangle(lu.X,lu.Y,dx,dy));
+                    selectEndLoc = e.Location;
+                    DrawSelectRegion();
                     break;
                 case OperationType.Edit:
                     mouseLocation = e.Location;
@@ -601,6 +566,43 @@ namespace Lgis
         {
             PaintEventArgs e = new PaintEventArgs(this.CreateGraphics(),this.Bounds);
             Redraw(this,e,true);
+        }
+
+        private void DrawSelectRegion()
+        {
+                    int dx = selectEndLoc.X - selectStartLoc.X;
+                    int dy = selectEndLoc.Y - selectStartLoc.Y;
+                    Point lu= new Point();
+                    // XXX:Awful coding style
+                    if (dx * dy > 0)
+                    {
+                        if (dx > 0)
+                            lu = selectStartLoc;
+                        else
+                        {
+                            lu = selectEndLoc;
+                            dx = -dx;
+                            dy = -dy;
+                        }
+                    }
+                    else
+                    {
+                        if (dx > 0)
+                        {
+                            lu.X = selectStartLoc.X;
+                            lu.Y = selectEndLoc.Y;
+                        }
+                        else
+                        {
+                            lu.X = selectEndLoc.X;
+                            lu.Y = selectStartLoc.Y;
+                            dx = -dx;
+                        }
+                    }
+                    if (dy < 0) dy = -dy;
+                    Refresh();
+                    Graphics g = CreateGraphics();
+                    g.DrawRectangle(Pens.Black,new Rectangle(lu.X,lu.Y,dx,dy));
         }
 
         #endregion
