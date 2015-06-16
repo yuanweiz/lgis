@@ -11,6 +11,8 @@ namespace Lgis
     {
         public LVectorLayer Layer;
         public static double ToPixels(double dpi, double val, LinearUnit unit){
+            if (unit == LinearUnit.Pixel)
+                return 1.0;
             double nInches = 12.0 * LMathTools.UnitTransform(val, unit, LinearUnit.Foot);
             return dpi * nInches;
         }
@@ -86,7 +88,12 @@ namespace Lgis
     public class LLineRenderer :LRenderer
     {
         public LLineSymbol Symbol = new LLineSymbol();
-        
+
+        public LLineRenderer()
+        {
+            Symbol.Style = SymbolStyle.SolidLine;
+            Symbol.Width = 0.001;
+        }
         public void Render(Graphics g, PointF[] points)
         {
             Pen pen = new Pen(Symbol.Color);
@@ -108,7 +115,8 @@ namespace Lgis
                     break;
             }
             pen.Width = (float)ToPixels(g.DpiX, Symbol.Width, Symbol.LinearUnit);
-            g.DrawLines(Pens.Black, points);
+            pen.Color = Symbol.Color;
+            g.DrawLines(pen, points);
         }
     }
 
@@ -148,7 +156,7 @@ namespace Lgis
             {
                 if (Layer!=null && text!=null)
                 {
-                        g.DrawString(text, Symbol.Font, Brushes.Black, p);
+                    g.DrawString(text, Symbol.Font, Brushes.Black, p);
                 }
                 else
                 {

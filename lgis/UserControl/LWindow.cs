@@ -398,6 +398,7 @@ namespace Lgis
                 return;
             switch (OpType)
             {
+                case OperationType.Select:
                 case OperationType.ZoomIn:
                 case OperationType.ZoomOut:
                     selectEndLoc = selectStartLoc = e.Location;

@@ -44,14 +44,16 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openShapefileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.lLayerComboBox1 = new Lgis.LLayerComboBox();
-            this.lLayerView1 = new Lgis.LLayerTreeView();
-            this.lWindow1 = new Lgis.LWindow();
+            this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.btnStaticSymbol = new System.Windows.Forms.Button();
             this.btnSelect = new System.Windows.Forms.Button();
             this.btnUniqueValue = new System.Windows.Forms.Button();
-            this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.btnClassBreak = new System.Windows.Forms.Button();
+            this.btnSingleValue = new System.Windows.Forms.Button();
+            this.btnShowLabel = new System.Windows.Forms.Button();
+            this.lLayerComboBox1 = new Lgis.LLayerComboBox();
+            this.lLayerView1 = new Lgis.LLayerTreeView();
+            this.lWindow1 = new Lgis.LWindow();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -113,7 +115,6 @@
             this.btnRotate.TabIndex = 12;
             this.btnRotate.Text = "Rotate";
             this.btnRotate.UseVisualStyleBackColor = true;
-            this.btnRotate.Visible = false;
             this.btnRotate.Click += new System.EventHandler(this.btnRotate_Click);
             // 
             // btnPan
@@ -163,6 +164,70 @@
             this.openShapefileToolStripMenuItem.Text = "Open Shapefile";
             this.openShapefileToolStripMenuItem.Click += new System.EventHandler(this.openShapefileToolStripMenuItem_Click);
             // 
+            // optionsToolStripMenuItem
+            // 
+            this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(66, 21);
+            this.optionsToolStripMenuItem.Text = "Options";
+            // 
+            // btnStaticSymbol
+            // 
+            this.btnStaticSymbol.Location = new System.Drawing.Point(696, 343);
+            this.btnStaticSymbol.Name = "btnStaticSymbol";
+            this.btnStaticSymbol.Size = new System.Drawing.Size(75, 35);
+            this.btnStaticSymbol.TabIndex = 17;
+            this.btnStaticSymbol.Text = "Static Symbol";
+            this.btnStaticSymbol.UseVisualStyleBackColor = true;
+            // 
+            // btnSelect
+            // 
+            this.btnSelect.Location = new System.Drawing.Point(696, 237);
+            this.btnSelect.Name = "btnSelect";
+            this.btnSelect.Size = new System.Drawing.Size(75, 23);
+            this.btnSelect.TabIndex = 18;
+            this.btnSelect.Text = "Select";
+            this.btnSelect.UseVisualStyleBackColor = true;
+            this.btnSelect.Click += new System.EventHandler(this.btnSelect_Click);
+            // 
+            // btnUniqueValue
+            // 
+            this.btnUniqueValue.Location = new System.Drawing.Point(696, 305);
+            this.btnUniqueValue.Name = "btnUniqueValue";
+            this.btnUniqueValue.Size = new System.Drawing.Size(75, 32);
+            this.btnUniqueValue.TabIndex = 19;
+            this.btnUniqueValue.Text = "Unique Value";
+            this.btnUniqueValue.UseVisualStyleBackColor = true;
+            this.btnUniqueValue.Click += new System.EventHandler(this.btnUniqueValue_Click);
+            // 
+            // btnClassBreak
+            // 
+            this.btnClassBreak.Location = new System.Drawing.Point(696, 384);
+            this.btnClassBreak.Name = "btnClassBreak";
+            this.btnClassBreak.Size = new System.Drawing.Size(75, 35);
+            this.btnClassBreak.TabIndex = 20;
+            this.btnClassBreak.Text = "Class Break";
+            this.btnClassBreak.UseVisualStyleBackColor = true;
+            // 
+            // btnSingleValue
+            // 
+            this.btnSingleValue.Location = new System.Drawing.Point(696, 266);
+            this.btnSingleValue.Name = "btnSingleValue";
+            this.btnSingleValue.Size = new System.Drawing.Size(75, 33);
+            this.btnSingleValue.TabIndex = 21;
+            this.btnSingleValue.Text = "Single Value";
+            this.btnSingleValue.UseVisualStyleBackColor = true;
+            this.btnSingleValue.Click += new System.EventHandler(this.btnSingleValue_Click);
+            // 
+            // btnShowLabel
+            // 
+            this.btnShowLabel.Location = new System.Drawing.Point(696, 459);
+            this.btnShowLabel.Name = "btnShowLabel";
+            this.btnShowLabel.Size = new System.Drawing.Size(75, 45);
+            this.btnShowLabel.TabIndex = 22;
+            this.btnShowLabel.Text = "Show/Hide Label";
+            this.btnShowLabel.UseVisualStyleBackColor = true;
+            this.btnShowLabel.Click += new System.EventHandler(this.btnShowLabel_Click);
+            // 
             // lLayerComboBox1
             // 
             this.lLayerComboBox1.LabelText = "Active Layer";
@@ -199,54 +264,13 @@
             this.lWindow1.TabIndex = 8;
             this.lWindow1.Load += new System.EventHandler(this.lWindow1_Load);
             // 
-            // btnStaticSymbol
-            // 
-            this.btnStaticSymbol.Location = new System.Drawing.Point(696, 304);
-            this.btnStaticSymbol.Name = "btnStaticSymbol";
-            this.btnStaticSymbol.Size = new System.Drawing.Size(75, 35);
-            this.btnStaticSymbol.TabIndex = 17;
-            this.btnStaticSymbol.Text = "Static Symbol";
-            this.btnStaticSymbol.UseVisualStyleBackColor = true;
-            // 
-            // btnSelect
-            // 
-            this.btnSelect.Location = new System.Drawing.Point(696, 237);
-            this.btnSelect.Name = "btnSelect";
-            this.btnSelect.Size = new System.Drawing.Size(75, 23);
-            this.btnSelect.TabIndex = 18;
-            this.btnSelect.Text = "Select";
-            this.btnSelect.UseVisualStyleBackColor = true;
-            this.btnSelect.Click += new System.EventHandler(this.btnSelect_Click);
-            // 
-            // btnUniqueValue
-            // 
-            this.btnUniqueValue.Location = new System.Drawing.Point(696, 266);
-            this.btnUniqueValue.Name = "btnUniqueValue";
-            this.btnUniqueValue.Size = new System.Drawing.Size(75, 32);
-            this.btnUniqueValue.TabIndex = 19;
-            this.btnUniqueValue.Text = "Unique Value";
-            this.btnUniqueValue.UseVisualStyleBackColor = true;
-            // 
-            // optionsToolStripMenuItem
-            // 
-            this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(66, 21);
-            this.optionsToolStripMenuItem.Text = "Options";
-            // 
-            // btnClassBreak
-            // 
-            this.btnClassBreak.Location = new System.Drawing.Point(696, 345);
-            this.btnClassBreak.Name = "btnClassBreak";
-            this.btnClassBreak.Size = new System.Drawing.Size(75, 35);
-            this.btnClassBreak.TabIndex = 20;
-            this.btnClassBreak.Text = "Class Break";
-            this.btnClassBreak.UseVisualStyleBackColor = true;
-            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(774, 586);
+            this.Controls.Add(this.btnShowLabel);
+            this.Controls.Add(this.btnSingleValue);
             this.Controls.Add(this.btnClassBreak);
             this.Controls.Add(this.btnUniqueValue);
             this.Controls.Add(this.btnSelect);
@@ -266,7 +290,7 @@
             this.DoubleBuffered = true;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "FrmMain";
-            this.Text = "bu";
+            this.Text = "LGIS";
             this.Load += new System.EventHandler(this.Form1_Load_1);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
@@ -301,6 +325,8 @@
         private System.Windows.Forms.Button btnSelect;
         private System.Windows.Forms.Button btnUniqueValue;
         private System.Windows.Forms.Button btnClassBreak;
+        private System.Windows.Forms.Button btnSingleValue;
+        private System.Windows.Forms.Button btnShowLabel;
     }
 }
 

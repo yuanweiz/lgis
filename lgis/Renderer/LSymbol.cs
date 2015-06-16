@@ -11,6 +11,7 @@ namespace Lgis
     {
         public readonly SymbolType Type;
         public LinearUnit LinearUnit = LinearUnit.Unknown;
+        public bool ShowLabel = true;
         protected SymbolStyle _Style = SymbolStyle.Unknown;
         public virtual SymbolStyle Style
         {
@@ -27,7 +28,7 @@ namespace Lgis
 
     public class LLineSymbol : LSymbol
     {
-        public Color Color;
+        public Color Color = Color.Black;
         public override SymbolStyle Style
         {
             get { return _Style; }
@@ -48,8 +49,9 @@ namespace Lgis
         public LLineSymbol()
             : base(SymbolType.Line)
         {
+            LinearUnit = Lgis.LinearUnit.Pixel;
         }
-        public double Width;
+        public double Width=.0;
     }
     public class LPolygonSymbol : LSymbol
     {
@@ -89,11 +91,11 @@ namespace Lgis
         }
         public double OffsetX = .0 , OffsetY = .0;
     }
+
     public class LPointSymbol : LSymbol
     {
         public double Diameter { get; set; }
         public double OffsetX = .0 , OffsetY = .0;
-        public bool ShowLabel = true;
         public string LabelColumn = "FID";
         //public LinearUnit LinearUnit = LinearUnit.Meter;
         double _Height = 2.0E-3,_Width = 2.0E-3;
@@ -138,4 +140,5 @@ namespace Lgis
             Font = new Font("宋体", 12);
         }
     }
+
 }

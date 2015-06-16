@@ -34,7 +34,8 @@ namespace Lgis
         Foot = 2,
         Mile = 3,
         Unknown = 4,
-        KiloMiter = 5
+        KiloMiter = 5,
+        Pixel
     };
     public enum AngularUnit { Degree,Unknown}
 

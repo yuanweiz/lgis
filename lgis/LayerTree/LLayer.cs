@@ -212,7 +212,9 @@ namespace Lgis
         }
         
         public LLineRenderer Renderer = new LLineRenderer ();
-        public LLineLayer ():base (FeatureType.Line){}
+        public LLineLayer ():base (FeatureType.Line){
+
+        }
         public override void Add(LVectorObject vo)
         {
             switch (vo.GeometryType)

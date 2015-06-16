@@ -67,8 +67,8 @@ namespace GUI
             }
             foreach (DataRow row in frmMain.RecordSet)
             {
-                foreach (DataColumn col in DataTable.Columns)
-                    Console.Write(row[col].ToString() + "");
+                //foreach (DataColumn col in DataTable.Columns)
+                    Console.Write(row[Column].ToString() + "");
                 Console.WriteLine();
             }
         }

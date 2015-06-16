@@ -26,7 +26,7 @@ namespace GUI
             get { return lWindow1.Layers; }
             set { lWindow1.Layers = value; }
         }
-        LLayer EditingLayer
+        LVectorLayer EditingLayer
         {
             get { return lWindow1.EditingLayer; }
             set
@@ -39,19 +39,21 @@ namespace GUI
         {
             InitializeComponent();
             btnStopEditing.Enabled = false;
+            lLayerComboBox1.Layers = lWindow1.Layers;
+            lLayerView1.Layers = lWindow1.Layers;
             //lWindow1.Layers=ut.TestLayerView();
+            /*
             LShapefileReader sr = new LShapefileReader(@"C:\Program Files\ESRI\MapObjects2\Samples\Data\USA\STATES.SHP");
             lWindow1.Layers.Add(sr.Layer);
             sr = new LShapefileReader(@"C:\Program Files\ESRI\MapObjects2\Samples\Data\USA\USHIGH.SHP");
             lWindow1.Layers.Add(sr.Layer);
             sr = new LShapefileReader(@"C:\Program Files\ESRI\MapObjects2\Samples\Data\USA\CAPITALS.SHP");
             lWindow1.Layers.Add(sr.Layer);
-            lLayerView1.Layers = lWindow1.Layers;
             lLayerView1.Refresh();
-            lLayerComboBox1.Layers = lWindow1.Layers;
             LDataTable table = sr.Layer.DataTable;
             table.Print();
             lLayerComboBox1.Refresh();
+            */
         }
 
         private void btnZoomIn_Click(object sender, EventArgs e)
@@ -132,16 +134,15 @@ namespace GUI
 
         private void btnRotate_Click(object sender, EventArgs e)
         {
-            return;
             Matrix3D rot = LMapTools.GetRotateMatrix(30.0, new LPoint());
             LMapTools.LinearTransform(lWindow1.EditingLayer, rot);
-            lWindow1.Refresh();
+            lWindow1.ForceRedraw();
         }
 
         private void lLayerComboBox1_SelectedItemChanged(object sender, SelectedItemChangedEventArgs e)
         {
             Console.WriteLine(e.Layer.Name);
-            EditingLayer = e.Layer;
+            EditingLayer = e.Layer as LVectorLayer;
             //FIXME:Still some compatity problems
             if (e.Layer.LayerType == LayerType.Vector)
                 lWindow1.EditingLayer = (LVectorLayer)e.Layer;
@@ -183,6 +184,68 @@ namespace GUI
         private void btnSelect_Click(object sender, EventArgs e)
         {
             OpType = LWindow.OperationType.Select;
+        }
+
+        private void lWindow1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void lWindow1_MouseUp(object sender, MouseEventArgs e)
+        {
+
+        }
+
+        private void btnUniqueValue_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnSingleValue_Click(object sender, EventArgs e)
+        {
+            if (EditingLayer == null)
+                return;
+            ColorDialog dialog = new ColorDialog();
+            Color color;
+            if (dialog.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
+            {
+                color = dialog.Color;
+            }
+            else return;
+            
+            switch (EditingLayer.FeatureType)
+            {
+                case FeatureType.Polygon:
+                    LPolygonLayer plgLayer = EditingLayer as LPolygonLayer;
+                    LSimplePolygonRenderer renderer = new LSimplePolygonRenderer();
+                    plgLayer.Renderer = renderer;
+                    renderer.Symbol.FillColor = color;
+                    renderer.Symbol.OutlineStyle = SymbolStyle.SolidLine;
+                    renderer.Symbol.Style = SymbolStyle.SolidColorFill;
+                    break;
+                case FeatureType.Line:
+                    LLineLayer lLayer = EditingLayer as LLineLayer;
+                    lLayer.Renderer.Symbol.Color = color;
+                    break;
+                case FeatureType.Point:
+                    LPointLayer pLayer = EditingLayer as LPointLayer;
+                    pLayer.Renderer.Symbol.FillColor = color;
+                    break;
+            }
+            lWindow1.ForceRedraw();
+        }
+
+        private void btnShowLabel_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < Layers.Count; ++i)
+            {
+                if (((LVectorLayer)Layers[i]).FeatureType == FeatureType.Point)
+                {
+                    bool show = (Layers[i] as LPointLayer).Renderer.Symbol.ShowLabel;
+                    (Layers[i] as LPointLayer).Renderer.Symbol.ShowLabel = !show;
+                }
+            }
+            lWindow1.ForceRedraw();
         }
     }
 }

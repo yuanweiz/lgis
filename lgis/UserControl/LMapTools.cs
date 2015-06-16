@@ -299,6 +299,7 @@ namespace Lgis
 
         public static void LinearTransform(LVectorLayer l ,Matrix3D rot)
         {
+            if (l == null) return;
             switch (l.LayerType)
             {
                 case LayerType.Raster:
